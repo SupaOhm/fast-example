@@ -73,8 +73,8 @@ export const packages: Package[] = [
     priceTHB: 5900,
     title: { th: "เว็บแอป · Basic", en: "Web app · Basic" },
     scope: {
-      th: ["ระบบหลังบ้าน 1 โมดูล", "REST API สูงสุด 4 endpoint", "ข้อมูล 1 ประเภท"],
-      en: ["One small backend module", "Up to 4 REST endpoints", "One data resource"],
+      th: ["ระบบหลังบ้าน 1 โมดูล", "REST API สูงสุด 4 endpoint", "ตรวจสอบข้อมูลและเชื่อมฐานข้อมูล", "แก้ไข 1 ครั้ง"],
+      en: ["One small backend module", "Up to 4 REST endpoints", "Validation & database connection", "1 revision"],
     },
     demoName: { th: "Orders API — เอกสาร API ทดลองยิงได้", en: "Orders API — interactive API docs" },
     demoPath: "/demos/orders-api",
@@ -87,8 +87,8 @@ export const packages: Package[] = [
     priceTHB: 14900,
     title: { th: "เว็บแอป · Standard", en: "Web app · Standard" },
     scope: {
-      th: ["แดชบอร์ดสูงสุด 3 หน้าจอ", "ระบบล็อกอินพื้นฐาน", "ข้อมูล 2 โมดูล", "ตารางและกราฟ"],
-      en: ["Up to 3 dashboard screens", "Basic login", "2 data modules", "Tables & simple charts"],
+      th: ["แดชบอร์ดสูงสุด 3 หน้าจอ", "ระบบล็อกอินพื้นฐาน", "ข้อมูล 2 โมดูล", "ตารางและกราฟ", "แก้ไข 2 ครั้ง"],
+      en: ["Up to 3 dashboard screens", "Basic login", "2 data modules", "Tables & simple charts", "2 revisions"],
     },
     demoName: { th: "ร้านดี — ระบบหลังร้าน", en: "Ran Dee — shop back office" },
     demoPath: "/demos/shop-admin",
@@ -101,8 +101,8 @@ export const packages: Package[] = [
     priceTHB: 29900,
     title: { th: "เว็บแอป · Premium", en: "Web app · Premium" },
     scope: {
-      th: ["MVP สูงสุด 5 หน้าจอ", "ระบบยืนยันตัวตน", "ข้อมูลหลักสูงสุด 3 โมดูล", "รองรับทุกอุปกรณ์"],
-      en: ["MVP with up to 5 screens", "Authentication", "Up to 3 core data modules", "Responsive"],
+      th: ["MVP สูงสุด 5 หน้าจอ", "ระบบยืนยันตัวตน", "ข้อมูลหลักสูงสุด 3 โมดูล", "รองรับทุกอุปกรณ์", "แก้ไข 3 ครั้ง"],
+      en: ["MVP with up to 5 screens", "Authentication", "Up to 3 core data modules", "Responsive", "3 revisions"],
     },
     demoName: { th: "ลูมิ คลินิก — ระบบจองคิว", en: "Lumi Clinic — booking system" },
     demoPath: "/demos/clinic-booking",
