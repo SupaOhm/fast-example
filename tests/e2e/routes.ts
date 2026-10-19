@@ -16,4 +16,6 @@ export const routes: string[] = [
   "/demos/shop-admin",
   "/demos/shop-admin/orders",
   "/demos/shop-admin/stock",
+  "/demos/clinic-booking",
+  "/demos/clinic-booking/book",
 ];
