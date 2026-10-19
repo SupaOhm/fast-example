@@ -64,4 +64,36 @@ describe("createDemoStore", () => {
     store.set(2);
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
+  it("re-reads and notifies on a storage event for its key (cross-tab sync)", () => {
+    const store = createDemoStore("t8", { n: 0 });
+    expect(store.get()).toEqual({ n: 0 });
+    const fn = vi.fn();
+    const off = store.subscribe(fn);
+    // Simulate another tab writing the key.
+    localStorage.setItem("demo:t8", '{"n":42}');
+    window.dispatchEvent(new StorageEvent("storage", { key: "demo:t8" }));
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(store.get()).toEqual({ n: 42 });
+    // A cleared storage (key === null) also invalidates.
+    localStorage.clear();
+    window.dispatchEvent(new StorageEvent("storage", { key: null }));
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(store.get()).toEqual({ n: 0 });
+    off();
+    window.dispatchEvent(new StorageEvent("storage", { key: "demo:t8" }));
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it("ignores storage events for other keys", () => {
+    const store = createDemoStore("t9", { n: 1 });
+    store.get();
+    const fn = vi.fn();
+    const off = store.subscribe(fn);
+    localStorage.setItem("demo:t9", '{"n":7}');
+    window.dispatchEvent(new StorageEvent("storage", { key: "demo:other" }));
+    expect(fn).not.toHaveBeenCalled();
+    expect(store.get()).toEqual({ n: 1 });
+    off();
+  });
 });

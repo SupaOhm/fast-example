@@ -59,8 +59,21 @@ export function createDemoStore<T>(key: string, seed: T): DemoStore<T> {
 
   function subscribe(fn: () => void) {
     listeners.add(fn);
+    // Cross-tab sync: another tab writing the same key (or clearing storage)
+    // invalidates our cached value so the next get() re-reads localStorage.
+    let onStorage: ((e: StorageEvent) => void) | undefined;
+    if (typeof window !== "undefined") {
+      onStorage = (e: StorageEvent) => {
+        if (e.key === storageKey || e.key === null) {
+          current = undefined;
+          fn();
+        }
+      };
+      window.addEventListener("storage", onStorage);
+    }
     return () => {
       listeners.delete(fn);
+      if (onStorage) window.removeEventListener("storage", onStorage);
     };
   }
 

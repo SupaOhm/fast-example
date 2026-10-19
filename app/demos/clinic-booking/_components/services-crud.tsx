@@ -72,7 +72,8 @@ export function ServicesCrud() {
   function remove(s: Service) {
     setSaved(null);
     try {
-      setData(deleteService(data, s.id));
+      const next = deleteService(clinicData.get(), s.id);
+      setData(next);
       setCrudError(null);
       if (draft?.id === s.id) setDraft(null);
     } catch (err) {
