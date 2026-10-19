@@ -29,7 +29,8 @@ Edit `lib/packages.ts`. The hub cards and demo pills read from it.
 ## Refresh hub thumbnails / Fastwork cover images
 
 ```bash
-pnpm build && pnpm start --port 3100 &
+pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 node scripts/capture-thumbs.mjs http://localhost:3100
+lsof -ti tcp:3100 | xargs kill
 ```
 Screenshots land in `public/thumbs/` and can be uploaded as Fastwork listing covers.
