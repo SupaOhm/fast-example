@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 test("unauthenticated visit redirects to login, login reaches overview", async ({ page }) => {
   await page.goto("/demos/shop-admin");
@@ -29,4 +29,90 @@ test("orders table filters by status and search", async ({ page }) => {
   await page.getByRole("link", { name: "คำสั่งซื้อ" }).click();
   await page.getByTestId("orders-search").fill("ไม่มีลูกค้าคนนี้");
   await expect(page.getByTestId("orders-empty")).toBeVisible();
+});
+
+async function login(page: Page) {
+  await page.goto("/demos/shop-admin/login");
+  await page.getByTestId("login-submit").click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
+}
+
+async function openOrders(page: Page) {
+  await login(page);
+  await page.getByRole("link", { name: "คำสั่งซื้อ" }).click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/orders$/);
+}
+
+const rowStatusSelects = (page: Page) => page.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ / });
+const orderIds = (page: Page) =>
+  rowStatusSelects(page).evaluateAll((els) => els.map((e) => (e.getAttribute("aria-label") ?? "").replace("สถานะคำสั่งซื้อ ", "")));
+
+test("orders status filter shows only cancelled orders", async ({ page }) => {
+  await openOrders(page);
+  await expect(rowStatusSelects(page)).toHaveCount(15);
+  await page.getByRole("combobox", { name: "สถานะ", exact: true }).selectOption("cancelled");
+  const selects = rowStatusSelects(page);
+  await expect(selects.first()).toBeVisible();
+  const count = await selects.count();
+  expect(count).toBeGreaterThan(0);
+  expect(count).toBeLessThan(15);
+  for (let i = 0; i < count; i++) {
+    await expect(selects.nth(i)).toHaveValue("cancelled");
+    await expect(selects.nth(i).locator("option:checked")).toHaveText("ยกเลิก");
+  }
+});
+
+test("changing an order status persists across reload", async ({ page }) => {
+  await openOrders(page);
+  const first = rowStatusSelects(page).first();
+  await expect(first).toBeVisible();
+  const label = await first.getAttribute("aria-label");
+  const current = await first.inputValue();
+  const next = current === "cancelled" ? "paid" : "cancelled";
+  await first.selectOption(next);
+  await expect(first).toHaveValue(next);
+  await page.reload();
+  await expect(page.getByRole("combobox", { name: label ?? "" })).toHaveValue(next);
+});
+
+test("orders paginate 15 per page", async ({ page }) => {
+  await openOrders(page);
+  await expect(rowStatusSelects(page)).toHaveCount(15);
+  const firstPage = await orderIds(page);
+  expect(new Set(firstPage).size).toBe(15);
+  await page.getByRole("button", { name: "หน้าถัดไป" }).click();
+  await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
+  const count = await rowStatusSelects(page).count();
+  expect(count).toBeGreaterThan(0);
+  expect(count).toBeLessThanOrEqual(15);
+  const secondPage = await orderIds(page);
+  expect(secondPage.filter((id) => firstPage.includes(id))).toEqual([]);
+});
+
+test("empty stock input shows inline error and keeps stored stock", async ({ page }) => {
+  await login(page);
+  await page.getByRole("link", { name: "สต็อกสินค้า" }).click();
+  const row = page.getByTestId("stock-row-NP-02");
+  const input = row.getByTestId("stock-input");
+  const before = await input.inputValue();
+  await input.fill("");
+  await row.getByTestId("stock-save").click();
+  await expect(row.getByRole("alert")).toBeVisible();
+  await page.reload();
+  await expect(page.getByTestId("stock-row-NP-02").getByTestId("stock-input")).toHaveValue(before);
+  await expect(page.getByTestId("stock-row-NP-02").getByRole("alert")).toHaveCount(0);
+});
+
+test("logout returns to login and protects the admin routes", async ({ page }) => {
+  await login(page);
+  await page.getByRole("button", { name: "ออกจากระบบ" }).click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
+  await page.goto("/demos/shop-admin");
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
+});
+
+test("logged-in visit to login redirects to overview", async ({ page }) => {
+  await login(page);
+  await page.goto("/demos/shop-admin/login");
+  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
 });
