@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "SupaOhm — Website & web app demos",
+    "description": "Try a live demo of every package: sale page, company site, resort site, API, dashboard and booking system, built with Next.js."
+  },
+  "nav": {
+    "services": "Services",
+    "process": "Process",
+    "stack": "Stack",
+    "about": "About",
+    "switchLocale": "ไทย",
+    "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย"
+  },
+  "hero": {
+    "eyebrow": "Full-stack web developer · Bangkok",
+    "title": "Websites and web apps your business can actually use",
+    "subtitle": "Every package on Fastwork has a live demo you can click through before you hire, so you see exactly what your budget gets.",
+    "ctaDemos": "See the demos",
+    "ctaFastwork": "Fastwork profile"
+  },
+  "services": {
+    "heading": "Pick a package, then try its demo",
+    "web": {
+      "title": "Website / landing page",
+      "description": "Responsive websites built with Next.js: fast, on-brand, and never a prebuilt template."
+    },
+    "app": {
+      "title": "Web app / dashboard / API",
+      "description": "Back-office systems, dashboards and APIs that manage your data and day-to-day operations."
+    },
+    "viewDemo": "View demo",
+    "order": "Order on Fastwork",
+    "perProject": "/ project",
+    "tiers": { "basic": "Basic", "standard": "Standard", "premium": "Premium" }
+  },
+  "process": {
+    "heading": "How I work",
+    "steps": [
+      { "title": "Brief", "body": "Share your goals, references and deadline. I confirm scope and price before you order." },
+      { "title": "Design", "body": "I sketch the layout and look first. Code starts once you approve." },
+      { "title": "Build", "body": "Next.js + TypeScript + Tailwind, tested on mobile, tablet and desktop." },
+      { "title": "Revise", "body": "Revision rounds are included in your package." },
+      { "title": "Deliver", "body": "Source code, help going live, and a short handover." }
+    ]
+  },
+  "stack": {
+    "heading": "Stack",
+    "body": "Every demo on this page is built with the same tools I use for client work."
+  },
+  "about": {
+    "heading": "About SupaOhm",
+    "body": "I'm Supakorn (Ohm), a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces, including as an AI Developer intern at Mizuhada Group and a UX/UI Researcher intern at BAKA Group.",
+    "portfolio": "View personal portfolio"
+  },
+  "footer": {
+    "heading": "Have a project in mind?",
+    "body": "Send your details, references and deadline on Fastwork, and I'll confirm scope and price before starting.",
+    "button": "Talk on Fastwork",
+    "note": "All businesses, people and reviews in the demos are fictional."
+  }
+}
