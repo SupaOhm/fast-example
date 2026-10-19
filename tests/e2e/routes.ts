@@ -11,4 +11,5 @@ export const routes: string[] = [
   "/demos/resort/gallery",
   "/demos/resort/about",
   "/demos/resort/booking",
+  "/demos/orders-api",
 ];
