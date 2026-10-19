@@ -1,9 +1,8 @@
 "use client";
 
 import { Check, Copy, Loader2, Send } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ResetDemoButton } from "@/components/demo/reset-demo-button";
-import type { DemoStore } from "@/lib/demo-store";
 import { ORDER_STATUSES, handleRequest, type HttpMethod } from "@/lib/demos/orders-api/api";
 import { ordersStore } from "@/lib/demos/orders-api/store";
 import { useDemoStore } from "@/lib/use-demo-store";
@@ -60,12 +59,14 @@ export function ApiConsole({
   method,
   path,
   body,
+  endpointKey,
   onPathChange,
   onBodyChange,
 }: {
   method: HttpMethod;
   path: string;
   body: string;
+  endpointKey: string;
   onPathChange: (path: string) => void;
   onBodyChange: (body: string) => void;
 }) {
@@ -77,8 +78,47 @@ export function ApiConsole({
   const [copied, setCopied] = useState(false);
   const busy = useRef(false);
   const msgId = useRef(0);
+  const requestId = useRef(0);
+  const timers = useRef(new Set<number>());
   const s = METHOD_STYLE[method];
   const hasBody = method !== "GET";
+
+  function later(fn: () => void, ms: number) {
+    const t = window.setTimeout(() => {
+      timers.current.delete(t);
+      fn();
+    }, ms);
+    timers.current.add(t);
+  }
+
+  // Drops any in-flight request so its delayed callback can no longer apply.
+  function invalidateRequest() {
+    requestId.current++;
+    busy.current = false;
+    setLoading(false);
+  }
+
+  function clearResponse() {
+    invalidateRequest();
+    setShown(null);
+    setJsonError(null);
+  }
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      pending.forEach((t) => window.clearTimeout(t));
+      pending.clear();
+    };
+  }, []);
+
+  // A different endpoint was selected: drop the shown response (LINE history stays).
+  const lastEndpoint = useRef(endpointKey);
+  useEffect(() => {
+    if (lastEndpoint.current === endpointKey) return;
+    lastEndpoint.current = endpointKey;
+    clearResponse();
+  });
 
   function send() {
     if (busy.current) return;
@@ -102,10 +142,12 @@ export function ApiConsole({
     const result = handleRequest(ordersStore.get(), { method, path, body: parsed }, now);
     ordersStore.set(result.orders);
 
+    const token = ++requestId.current;
     busy.current = true;
     setLoading(true);
     const ms = Math.round(120 + Math.random() * 180);
-    window.setTimeout(() => {
+    later(() => {
+      if (token !== requestId.current) return;
       const { notification } = result.response;
       if (notification) {
         const time = new Intl.DateTimeFormat("th-TH", { hour: "2-digit", minute: "2-digit" }).format(now);
@@ -122,7 +164,7 @@ export function ApiConsole({
     try {
       await navigator.clipboard.writeText(curlFor(method, path, body));
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      later(() => setCopied(false), 1600);
     } catch {
       // clipboard unavailable; the snippet is still selectable
     }
@@ -184,7 +226,10 @@ export function ApiConsole({
               id="api-body"
               data-testid="api-body"
               value={body}
-              onChange={(e) => onBodyChange(e.target.value)}
+              onChange={(e) => {
+                setJsonError(null);
+                onBodyChange(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
                   e.preventDefault();
@@ -303,7 +348,11 @@ export function ApiConsole({
           เก็บไว้ในเบราว์เซอร์นี้เท่านั้น
         </p>
         <ResetDemoButton
-          stores={[ordersStore as DemoStore<unknown>]}
+          stores={[ordersStore]}
+          onReset={() => {
+            clearResponse();
+            setMessages([]);
+          }}
           className="rounded-lg border border-(--line) px-3 py-1.5 text-(--text) hover:border-(--muted)"
         />
       </div>

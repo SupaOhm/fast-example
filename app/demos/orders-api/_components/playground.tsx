@@ -71,6 +71,7 @@ export function Playground() {
         method={ENDPOINTS[selected].method}
         path={path}
         body={body}
+        endpointKey={`${ENDPOINTS[selected].method} ${ENDPOINTS[selected].path}`}
         onPathChange={setPath}
         onBodyChange={setBody}
       />

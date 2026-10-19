@@ -21,6 +21,8 @@ test("reset restores seed data", async ({ page }) => {
   await page.getByTestId("endpoint-POST-/orders").click();
   await page.getByTestId("api-send").click();
   await page.getByTestId("reset-demo").click();
+  await expect(page.getByTestId("line-preview")).toHaveCount(0);
+  await expect(page.getByTestId("api-status")).toHaveCount(0);
   await page.getByTestId("endpoint-GET-/orders").click();
   await page.getByTestId("api-path").fill("/orders");
   await page.getByTestId("api-send").click();
