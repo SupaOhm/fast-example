@@ -104,16 +104,14 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
           </ul>
 
           <div className="mx-3 mt-6 hidden border-t border-(--line) pt-4 lg:block">
-            {/* Its accessible name avoids the word "ลูกค้า" so it never shadows the nav link above. */}
             <Link
               href="/demos/clinic-booking/book"
               target="_blank"
               rel="noopener"
-              aria-label="เปิดหน้าจองคิวผ่าน LINE ในแท็บใหม่"
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-(--muted) hover:bg-(--blush)/60 hover:text-(--ink) ${focusRing}`}
             >
               <ExternalLink className="size-[18px]" aria-hidden />
-              หน้าจองของลูกค้า ↗
+              หน้าจองคิวผ่าน LINE ↗
             </Link>
           </div>
         </nav>
