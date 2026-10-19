@@ -10,6 +10,8 @@
   --font-display: var(--font-bricolage), var(--font-anuphan), ui-sans-serif, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }

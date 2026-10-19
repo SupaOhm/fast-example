@@ -83,7 +83,7 @@ export const ui = {
   loading: { th: "กำลังโหลดแบบฟอร์ม…", en: "Loading the form…" },
 
   address: { th: "88 หมู่ 2 ต.อ่าวนาง อ.เมือง จ.กระบี่ 81180", en: "88 Moo 2, Ao Nang, Mueang Krabi 81180" },
-  phone: { th: "โทร 080-000-4512", en: "Tel 080-000-4512" },
+  phone: { th: "โทร 080-000-0000 (ตัวอย่าง)", en: "Tel 080-000-0000 (sample)" },
   footerNote: { th: "ธุรกิจสมมติสำหรับเว็บตัวอย่าง", en: "A fictional business for a demo site" },
 } satisfies Record<string, L>;
 

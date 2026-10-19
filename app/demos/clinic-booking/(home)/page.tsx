@@ -2,15 +2,14 @@ import { CalendarCheck, Car, Clock, LockKeyhole, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { buildClinicSeed, CLOSE, OPEN, STAFF } from "@/lib/demos/clinic-booking/data";
+import { CLOSE, OPEN, SERVICES, STAFF } from "@/lib/demos/clinic-booking/data";
 import { PHOTOS, unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { LineGlyph } from "../_components/line-glyph";
 
 export const metadata: Metadata = { title: "คลินิกดูแลผิว จองคิวผ่าน LINE" };
 
-const services = buildClinicSeed(new Date()).services;
-const serviceName = new Map(services.map((s) => [s.id, s.name]));
+const serviceName = new Map(SERVICES.map((s) => [s.id, s.name]));
 
 const STEPS = ["เลือกทรีตเมนต์", "เลือกแพทย์หรือนักบำบัด", "เลือกวันและเวลาที่ว่าง", "รับข้อความยืนยันใน LINE"];
 
@@ -116,7 +115,7 @@ export default function ClinicHome() {
             </p>
           </div>
           <ul className="divide-y divide-(--line) border-y border-(--line) lg:col-span-8">
-            {services.map((s) => (
+            {SERVICES.map((s) => (
               <li key={s.id} className="flex items-baseline gap-4 py-5">
                 <div className="min-w-0">
                   <p className="text-lg leading-[1.4] sm:text-xl">{s.name}</p>

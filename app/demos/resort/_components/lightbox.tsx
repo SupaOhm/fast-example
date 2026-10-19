@@ -17,6 +17,7 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
   const [index, setIndex] = useState<number | null>(null);
   const triggers = useRef<(HTMLButtonElement | null)[]>([]);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const count = items.length;
 
   const openedFrom = useRef(0);
@@ -39,7 +40,24 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
-      else if (e.key === "ArrowRight") step(1);
+      else if (e.key === "Tab") {
+        // Focus trap: cycle Tab / Shift+Tab among the dialog's controls only.
+        const focusables = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])") ?? [],
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        const inside = active instanceof Node && dialogRef.current?.contains(active);
+        if (e.shiftKey && (!inside || active === first)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (!inside || active === last)) {
+          e.preventDefault();
+          first.focus();
+        }
+      } else if (e.key === "ArrowRight") step(1);
       else if (e.key === "ArrowLeft") step(-1);
     };
     window.addEventListener("keydown", onKey);
@@ -82,6 +100,7 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
 
       {current && index !== null && (
         <div
+          ref={dialogRef}
           data-testid="lightbox"
           role="dialog"
           aria-modal="true"

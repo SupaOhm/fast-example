@@ -22,7 +22,7 @@ export default async function HubLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return (
-    <html lang={locale} className={`${anuphan.variable} ${bricolage.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${anuphan.variable} ${bricolage.variable}`}>
       <body className="bg-paper font-sans text-ink antialiased">{children}</body>
     </html>
   );

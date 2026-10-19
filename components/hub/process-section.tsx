@@ -4,7 +4,7 @@ export function ProcessSection({ t }: { t: Dictionary }) {
   return (
     <section id="process" className="scroll-mt-20 border-t border-line">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <h2 className="font-display text-3xl font-bold sm:text-4xl">{t.process.heading}</h2>
+        <h2 className="font-display text-3xl leading-[1.2] font-bold sm:text-4xl">{t.process.heading}</h2>
         <ol className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
           {t.process.steps.map((step, i) => (
             <li key={step.title} className="bg-paper p-6">

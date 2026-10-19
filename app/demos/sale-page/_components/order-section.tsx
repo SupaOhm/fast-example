@@ -31,14 +31,14 @@ export function OrderSection() {
                 }`}
               >
                 {hi && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-(--gold) px-4 py-1 text-sm leading-[1.4] font-semibold text-(--cream) shadow-md">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-(--gold-ink) px-4 py-1 text-sm leading-[1.4] font-semibold text-(--cream) shadow-md">
                     ขายดี
                   </span>
                 )}
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-2xl leading-[1.3] font-semibold">{b.label}</h3>
-                    <p className={`mt-1 text-sm leading-[1.5] ${hi ? "text-(--leaf-soft)" : "text-(--gold)"}`}>
+                    <p className={`mt-1 text-sm leading-[1.5] ${hi ? "text-(--leaf-soft)" : "text-(--gold-ink)"}`}>
                       {b.note}
                     </p>
                   </div>

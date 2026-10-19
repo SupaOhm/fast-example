@@ -5,7 +5,7 @@ export const metadata = { title: "404 — SupaOhm" };
 
 export default function GlobalNotFound() {
   return (
-    <html lang="th">
+    <html lang="th" data-scroll-behavior="smooth">
       <body className="bg-paper font-sans text-ink antialiased">
         <main className="grid min-h-dvh place-items-center p-6 text-center">
           <div>

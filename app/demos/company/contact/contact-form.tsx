@@ -6,10 +6,11 @@ import { SERVICES } from "@/lib/demos/company/content";
 import { validateContact, type ContactErrors, type ContactInput } from "@/lib/demos/company/validate-contact";
 
 const empty: ContactInput = { name: "", company: "", email: "", phone: "", service: "", message: "" };
+const requiredFields: (keyof ContactInput)[] = ["name", "email", "service", "message"];
 const fieldOrder: (keyof ContactInput)[] = ["name", "company", "email", "phone", "service", "message"];
 
 const inputClass =
-  "mt-2 block w-full rounded-[2px] border bg-white px-3.5 py-3 text-base leading-[1.5] text-(--ink) outline-none transition-colors placeholder:text-[#8a94a3] focus:border-(--navy) focus:ring-2 focus:ring-(--navy)/20";
+  "mt-2 block w-full rounded-[2px] border bg-white px-3.5 py-3 text-base leading-[1.5] text-(--ink) outline-none transition-colors placeholder:text-[#6b7585] focus:border-(--navy) focus:ring-2 focus:ring-(--navy)/20";
 
 function Field({
   id,
@@ -95,6 +96,7 @@ export function ContactForm() {
   const a11y = (key: keyof ContactInput) => ({
     id: `contact-${key}`,
     name: key,
+    "aria-required": requiredFields.includes(key) ? ("true" as const) : undefined,
     "aria-invalid": errors[key] ? true : undefined,
     "aria-describedby": errors[key] ? `contact-${key}-error` : undefined,
   });

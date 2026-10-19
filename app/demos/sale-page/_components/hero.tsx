@@ -42,7 +42,7 @@ export function Hero() {
                 </s>
               </span>
             </p>
-            <span className="mb-1.5 rounded-full border border-(--gold) px-3 py-1 text-sm text-(--gold)">
+            <span className="mb-1.5 rounded-full border border-(--gold) px-3 py-1 text-sm text-(--gold-ink)">
               ราคาโปรเปิดตัว
             </span>
           </div>

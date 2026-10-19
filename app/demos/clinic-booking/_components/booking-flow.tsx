@@ -94,6 +94,9 @@ export function BookingFlow() {
     lastStep.current = step;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     activeRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    // Move keyboard / screen-reader focus to the new step (never on first render: the
+    // early return above skips the initial step).
+    activeRef.current?.focus({ preventScroll: true });
   }, [step]);
 
   const service = data.services.find((s) => s.id === picks.serviceId);
@@ -161,7 +164,7 @@ export function BookingFlow() {
       >
         <p className="mx-auto mb-4 w-fit rounded-full bg-(--chat-ink)/15 px-3 py-0.5 text-xs text-(--chat-ink)">วันนี้</p>
 
-        <Turn active={step === 1} ref={step === 1 ? activeRef : undefined}>
+        <Turn active={step === 1} label="ขั้นที่ 1: เลือกบริการ" ref={step === 1 ? activeRef : undefined}>
           <BotSay first time={greetedAt}>สวัสดีค่ะ ยินดีต้อนรับสู่ลูมิ คลินิก</BotSay>
           <BotSay time={greetedAt}>วันนี้อยากทำทรีตเมนต์อะไรดีคะ เลือกได้เลยค่ะ</BotSay>
           {step === 1 ? (
@@ -172,7 +175,7 @@ export function BookingFlow() {
         </Turn>
 
         {step >= 2 && service && (
-          <Turn active={step === 2} ref={step === 2 ? activeRef : undefined}>
+          <Turn active={step === 2} label="ขั้นที่ 2: เลือกผู้ดูแล" ref={step === 2 ? activeRef : undefined}>
             <BotSay first time={at(0)}>
               {service.name} {service.durationMin} นาทีนะคะ อยากให้ใครดูแลดีคะ
             </BotSay>
@@ -185,7 +188,7 @@ export function BookingFlow() {
         )}
 
         {step >= 3 && service && staff && (
-          <Turn active={step === 3} ref={step === 3 ? activeRef : undefined}>
+          <Turn active={step === 3} label="ขั้นที่ 3: เลือกวัน" ref={step === 3 ? activeRef : undefined}>
             <BotSay first time={at(1)}>สะดวกมาวันไหนคะ จองล่วงหน้าได้ 7 วันค่ะ</BotSay>
             {step === 3 ? (
               <DateCard data={data} service={service} staff={staff} onPick={(date) => pick({ date })} />
@@ -196,7 +199,7 @@ export function BookingFlow() {
         )}
 
         {step >= 4 && service && staff && picks.date && (
-          <Turn active={step === 4} ref={step === 4 ? activeRef : undefined}>
+          <Turn active={step === 4} label="ขั้นที่ 4: เลือกเวลา" ref={step === 4 ? activeRef : undefined}>
             <BotSay first time={at(2)}>
               {step === 4 && slots.length === 0
                 ? `${longDay(picks.date)} ${staff.name}ไม่มีเวลาว่างแล้วค่ะ`
@@ -215,7 +218,7 @@ export function BookingFlow() {
         )}
 
         {step >= 5 && service && staff && picks.date && picks.time && (
-          <Turn active={step === 5} ref={step === 5 ? activeRef : undefined}>
+          <Turn active={step === 5} label="ขั้นที่ 5: กรอกชื่อและเบอร์โทร" ref={step === 5 ? activeRef : undefined}>
             <BotSay first time={at(3)}>ขอชื่อและเบอร์โทรสำหรับยืนยันคิวด้วยค่ะ</BotSay>
             {step === 5 ? (
               <FlexCard>
@@ -277,7 +280,7 @@ export function BookingFlow() {
         )}
 
         {step === 6 && picks.booking && service && staff && (
-          <Turn active ref={activeRef}>
+          <Turn active label="จองสำเร็จ: ใบยืนยันการจอง" ref={activeRef}>
             <BotSay first time={at(4)}>จองเรียบร้อยแล้วค่ะ แล้วพบกันที่คลินิกนะคะ</BotSay>
             <Receipt
               booking={picks.booking}
@@ -459,17 +462,22 @@ function ChatHeader() {
 
 function Turn({
   active,
+  label,
   ref,
   children,
 }: {
   active: boolean;
+  label: string;
   ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
 }) {
   return (
     <div
       ref={ref}
-      className={`scroll-mt-20 space-y-2 pb-4 sm:scroll-mt-4 ${active ? "motion-safe:animate-[lumi-pop_.28s_ease-out]" : ""}`}
+      role="group"
+      aria-label={label}
+      tabIndex={active ? -1 : undefined}
+      className={`scroll-mt-20 space-y-2 pb-4 outline-none sm:scroll-mt-4 ${active ? "motion-safe:animate-[lumi-pop_.28s_ease-out]" : ""}`}
     >
       {children}
     </div>

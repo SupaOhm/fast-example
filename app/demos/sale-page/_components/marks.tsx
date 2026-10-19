@@ -48,7 +48,7 @@ export function PromoSeal({ percent, className }: { percent: number; className?:
           strokeDasharray="1.5 2.5"
         />
       </svg>
-      <p className="relative text-center leading-[1.15] text-(--cream)">
+      <p className="relative text-center leading-[1.15] text-(--ink)">
         <span className="block text-[0.8em] font-light">ลด</span>
         <span className="block text-[1.9em] font-semibold">{percent}%</span>
       </p>

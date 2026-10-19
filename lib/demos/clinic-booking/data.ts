@@ -45,7 +45,7 @@ export const OPEN = "10:00";
 export const CLOSE = "19:00";
 export const SLOT_STEP_MIN = 30;
 
-const SERVICES: Service[] = [
+export const SERVICES: Service[] = [
   { id: "s-consult", name: "ปรึกษาแพทย์", durationMin: 30, price: 0 },
   { id: "s-facial", name: "ทรีตเมนต์หน้าใส", durationMin: 60, price: 1500 },
   { id: "s-hydra", name: "ไฮดราเฟเชียล", durationMin: 60, price: 2500 },

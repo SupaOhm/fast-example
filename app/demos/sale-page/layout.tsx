@@ -16,6 +16,8 @@ const palette = {
   "--leaf-soft": "#dfe7d4",
   "--ink": "#2a2620",
   "--gold": "#b8893b",
+  // Darker gold for TEXT (and small-text backgrounds): 5.0:1 on cream; --gold is 2.8:1.
+  "--gold-ink": "#86602a",
   "--muted": "#6a6257",
   "--line": "#e4dac8",
 } as React.CSSProperties;
