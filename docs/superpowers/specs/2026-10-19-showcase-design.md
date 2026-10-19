@@ -73,7 +73,7 @@ components/
 lib/
   packages.ts                   # single source of truth for the 6 packages
   i18n/{th,en}.json, index.ts   # dictionary + getDictionary(locale)
-  mock/<demo>.ts                # seeded data per demo
+  demos/<slug>/*.ts             # content, seeded data and pure logic per demo
   demo-store.ts                 # localStorage-backed store with reset, used by app demos
 tests/
   smoke.spec.ts                 # Playwright
