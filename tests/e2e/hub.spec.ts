@@ -25,3 +25,12 @@ test("no off-platform contact details on the hub", async ({ page }) => {
   const html = await page.content();
   expect(html).not.toMatch(/mailto:|tel:|line\.me/);
 });
+
+test("package cards show real demo thumbnails", async ({ page }) => {
+  await page.goto("/th");
+  for (const pkg of packages) {
+    const img = page.getByTestId(`package-${pkg.id}`).locator("img");
+    await expect(img).toHaveAttribute("src", new RegExp(`/thumbs/${pkg.id}\\.jpg`));
+    expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+  }
+});
