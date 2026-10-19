@@ -6,4 +6,9 @@ export const routes: string[] = [
   "/demos/company",
   "/demos/company/services",
   "/demos/company/contact",
+  "/demos/resort",
+  "/demos/resort/rooms",
+  "/demos/resort/gallery",
+  "/demos/resort/about",
+  "/demos/resort/booking",
 ];
