@@ -33,7 +33,7 @@ pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 node scripts/capture-thumbs.mjs http://localhost:3100
 lsof -ti tcp:3100 | xargs kill
 ```
-Screenshots land in `public/thumbs/` and can be uploaded as Fastwork listing covers.
+Screenshots land in `public/thumbs/` (hero wall, Fastwork covers) and `public/thumbs/pages/` (one per page of each plan, used by the hub lineup). Re-run after changing a demo's look.
 
 ## Deploy
 
