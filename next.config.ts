@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Fully static site, served from Cloudflare Workers static assets (wrangler.jsonc).
-  // `/` -> `/en` lives in public/_redirects, since export mode has no redirects().
+  // `/` is a language chooser (app/(choose)); returning visitors skip it client-side.
   output: "export",
   turbopack: {
     rules: {
