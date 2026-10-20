@@ -1,11 +1,11 @@
-import type { Dictionary } from "@/lib/i18n";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import { formatTHB, packages } from "@/lib/packages";
 import { HeroWall } from "./hero-wall";
 import { Scribble } from "./scribble";
 
 const fromPrice = formatTHB(Math.min(...packages.map((p) => p.priceTHB)));
 
-export function Hero({ t }: { t: Dictionary }) {
+export function Hero({ locale, t }: { locale: Locale; t: Dictionary }) {
   // Title format: "before *accent* after\nsecond line" (checked by tests/unit/i18n.test.ts).
   const [line1, line2] = t.hero.title.split("\n");
   const [before, accent, after] = line1.split("*");
@@ -28,7 +28,7 @@ export function Hero({ t }: { t: Dictionary }) {
               {t.hero.ctaWork}
             </a>
             <a
-              href="#work"
+              href={`/${locale}/compare`}
               className="rounded-md border border-cream/40 px-5 py-3 text-sm font-semibold transition hover:border-cream"
             >
               {t.hero.ctaPrice.replace("{price}", fromPrice)}

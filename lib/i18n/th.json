@@ -5,6 +5,7 @@
   },
   "nav": {
     "work": "ผลงาน",
+    "compare": "เปรียบเทียบ",
     "process": "ขั้นตอน",
     "about": "เกี่ยวกับ",
     "hire": "จ้างงานบน Fastwork",
@@ -35,6 +36,12 @@
       "standard": "Standard",
       "premium": "Premium"
     }
+  },
+  "compare": {
+    "heading": "เปรียบเทียบแพ็กเกจ",
+    "intro": "เลือกบริการ เพื่อดูทั้ง 3 แพ็กเกจเทียบกันทีละหัวข้อ",
+    "metaTitle": "เปรียบเทียบแพ็กเกจ — SupaOhm",
+    "metaDescription": "เปรียบเทียบแพ็กเกจ Basic, Standard และ Premium ของงานเว็บไซต์และเว็บแอป ทีละหัวข้อ"
   },
   "process": {
     "heading": "ขั้นตอนการทำงาน",

@@ -31,7 +31,7 @@ export default async function HubPage({ params }: Props) {
       <RememberLocale locale={locale} />
       <SiteHeader locale={locale} t={t} />
       <main>
-        <Hero t={t} />
+        <Hero locale={locale} t={t} />
         <WorkSection locale={locale} t={t} />
         <ProcessSection t={t} />
         <AboutSection t={t} />

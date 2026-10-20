@@ -5,6 +5,7 @@
   },
   "nav": {
     "work": "Work",
+    "compare": "Compare",
     "process": "Process",
     "about": "About",
     "hire": "Hire on Fastwork",
@@ -35,6 +36,12 @@
       "standard": "Standard",
       "premium": "Premium"
     }
+  },
+  "compare": {
+    "heading": "Compare plans",
+    "intro": "Pick a service to see its three plans side by side.",
+    "metaTitle": "Compare plans — SupaOhm",
+    "metaDescription": "Compare the Basic, Standard and Premium plans for websites and web apps, row by row."
   },
   "process": {
     "heading": "How I work",

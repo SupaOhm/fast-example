@@ -2,6 +2,8 @@
 export const routes: string[] = [
   "/th",
   "/en",
+  "/en/compare",
+  "/th/compare",
   "/demos/sale-page",
   "/demos/company",
   "/demos/company/services",
