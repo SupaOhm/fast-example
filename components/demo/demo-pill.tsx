@@ -40,7 +40,7 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
   const locale = useSyncExternalStore(noopSubscribe, readLocale, () => defaultLocale);
   const [open, setOpen] = useState(true);
   const c = copy[locale];
-  const font = { fontFamily: "ui-sans-serif, system-ui, sans-serif" };
+  const font = { fontFamily: "var(--font-demo-pill), ui-sans-serif, system-ui, sans-serif" };
 
   if (!open) {
     return (

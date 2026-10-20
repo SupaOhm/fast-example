@@ -40,7 +40,7 @@ export default function ResortHome() {
             <MapPin className="size-4 text-(--sun)" aria-hidden />
             <T value={resort.location} />
           </p>
-          <h1 className="mt-4 max-w-4xl font-(family-name:--font-display) text-[2.6rem] leading-[1.2] font-normal text-balance sm:text-6xl lg:text-[5.25rem] lg:leading-[1.15]">
+          <h1 className="mt-4 max-w-4xl font-(family-name:--font-display) text-[2.6rem] leading-[1.2] text-balance sm:text-6xl lg:text-[5.25rem] lg:leading-[1.15]">
             <T value={resort.tagline} />
           </h1>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
