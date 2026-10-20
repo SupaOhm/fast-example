@@ -7,7 +7,6 @@ import { RememberLocale } from "@/components/hub/remember-locale";
 import { WorkSection } from "@/components/hub/work-section";
 import { SiteFooter } from "@/components/hub/site-footer";
 import { SiteHeader } from "@/components/hub/site-header";
-import { StackSection } from "@/components/hub/stack-section";
 import { getDictionary, isLocale } from "@/lib/i18n";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -35,7 +34,6 @@ export default async function HubPage({ params }: Props) {
         <Hero t={t} />
         <WorkSection locale={locale} t={t} />
         <ProcessSection t={t} />
-        <StackSection t={t} />
         <AboutSection t={t} />
       </main>
       <SiteFooter t={t} />

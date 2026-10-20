@@ -73,4 +73,10 @@ describe("i18n", () => {
     expect(en.hero.ctaPrice).toContain("{price}");
     expect(th.hero.ctaPrice).toContain("{price}");
   });
+
+  it("about section carries the tech stack copy", () => {
+    expect(en.about.stackHeading).toBe("Stack");
+    expect(th.about.stackHeading).toBe("เครื่องมือที่ใช้");
+    expect("stack" in en).toBe(false);
+  });
 });

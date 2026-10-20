@@ -94,14 +94,12 @@
       }
     ]
   },
-  "stack": {
-    "heading": "Stack",
-    "body": "Every demo on this page is built with the same tools I use for client work."
-  },
   "about": {
-    "heading": "About SupaOhm",
+    "heading": "Who's building it",
     "body": "I'm Supakorn (Ohm), a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces, including as an AI Developer intern at Mizuhada Group and a UX/UI Researcher intern at BAKA Group.",
-    "portfolio": "View personal portfolio"
+    "portfolio": "View personal portfolio",
+    "stackHeading": "Stack",
+    "stackBody": "Every demo on this page is built with the same tools I use for client work."
   },
   "cta": {
     "heading": "Have a project in mind?",

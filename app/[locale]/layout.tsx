@@ -30,7 +30,7 @@ export default async function HubLayout({
       data-scroll-behavior="smooth"
       className={`${anuphan.variable} ${bricolage.variable} ${kalam.variable} ${itim.variable}`}
     >
-      <body className="bg-paper font-sans text-ink antialiased">{children}</body>
+      <body className="bg-forest font-sans text-cream antialiased">{children}</body>
     </html>
   );
 }
