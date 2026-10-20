@@ -237,7 +237,7 @@ values: Record<string, RowValue>;    // one entry per row key of its service
 | app-standard | `/demos/shop-admin`, `/orders`, `/stock` |
 | app-premium | `/demos/clinic-booking/book`, `/admin`, `/admin/customers`, `/admin/services`, `/admin/reports` |
 
-- **Existing thumbnails:** `public/thumbs/<id>.jpg` (used by the hero wall) is unchanged.
+- **Existing thumbnails:** `public/thumbs/<id>.jpg` (used by the hero wall) is **re-captured** in the same run. PR #3 changed the resort (Mitr headings) and shop-admin (Noto Sans Thai) fonts, so the old thumbnails no longer match the live demos.
 - **Image tags:** `next/image` with `unoptimized` and `sizes`. Fan images use `alt=""`, because each plan's name and demo are already in text.
 
 ## Code changes
