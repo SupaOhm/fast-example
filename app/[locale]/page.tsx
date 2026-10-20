@@ -4,7 +4,7 @@ import { AboutSection } from "@/components/hub/about-section";
 import { Hero } from "@/components/hub/hero";
 import { ProcessSection } from "@/components/hub/process-section";
 import { RememberLocale } from "@/components/hub/remember-locale";
-import { ServicesSection } from "@/components/hub/services-section";
+import { WorkSection } from "@/components/hub/work-section";
 import { SiteFooter } from "@/components/hub/site-footer";
 import { SiteHeader } from "@/components/hub/site-header";
 import { StackSection } from "@/components/hub/stack-section";
@@ -33,7 +33,7 @@ export default async function HubPage({ params }: Props) {
       <SiteHeader locale={locale} t={t} />
       <main>
         <Hero t={t} />
-        <ServicesSection locale={locale} t={t} />
+        <WorkSection locale={locale} t={t} />
         <ProcessSection t={t} />
         <StackSection t={t} />
         <AboutSection t={t} />

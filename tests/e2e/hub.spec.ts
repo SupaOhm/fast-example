@@ -1,14 +1,15 @@
 import { expect, test } from "@playwright/test";
 import { packages } from "../../lib/packages";
 
-test("every package card links to its demo and Fastwork listing", async ({ page }) => {
-  await page.goto("/th");
+test("every project row shows price and links to its demo and Fastwork listing", async ({ page }) => {
+  await page.goto("/en");
   for (const pkg of packages) {
-    const card = page.getByTestId(`package-${pkg.id}`);
-    await expect(card).toContainText(`฿${pkg.priceTHB.toLocaleString("en-US")}`);
-    await expect(card.getByRole("link", { name: "ดูตัวอย่าง" })).toHaveAttribute("href", pkg.demoPath);
-    await expect(card.getByRole("link", { name: /สั่งซื้อบน Fastwork/ })).toHaveAttribute("href", pkg.fastworkUrl);
+    const row = page.getByTestId(`package-${pkg.id}`);
+    await expect(row).toContainText(`฿${pkg.priceTHB.toLocaleString("en-US")}`);
+    await expect(row.getByRole("link", { name: "Try it live" })).toHaveAttribute("href", pkg.demoPath);
+    await expect(row.getByRole("link", { name: "Order on Fastwork" })).toHaveAttribute("href", pkg.fastworkUrl);
   }
+  await expect(page.getByTestId("package-app-premium")).toContainText("Book a slot in the LINE-style flow");
 });
 
 test("locale switch goes to Thai and back", async ({ page }) => {
@@ -44,11 +45,18 @@ test("header hire button goes to the Fastwork profile", async ({ page }) => {
   );
 });
 
-test("package cards show real demo thumbnails", async ({ page }) => {
-  await page.goto("/th");
+test("project rows show real demo thumbnails", async ({ page }) => {
+  await page.goto("/en");
   for (const pkg of packages) {
     const img = page.getByTestId(`package-${pkg.id}`).locator("img");
     await expect(img).toHaveAttribute("src", new RegExp(`/thumbs/${pkg.id}\\.jpg`));
     expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
   }
+});
+
+test("Thai project rows use Thai labels", async ({ page }) => {
+  await page.goto("/th");
+  const row = page.getByTestId("package-web-basic");
+  await expect(row.getByRole("link", { name: "ลองใช้งานจริง" })).toHaveAttribute("href", "/demos/sale-page");
+  await expect(row.getByRole("link", { name: "สั่งซื้อบน Fastwork" })).toBeVisible();
 });

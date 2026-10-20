@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import en from "@/lib/i18n/en.json";
 import th from "@/lib/i18n/th.json";
+import { packages } from "@/lib/packages";
 import { defaultLocale, getDictionary, isLocale } from "@/lib/i18n";
 
 function shape(value: unknown): unknown {
@@ -35,8 +36,18 @@ describe("i18n", () => {
   });
 
   it("returns the dictionary per locale", () => {
-    expect(getDictionary("en").services.viewDemo).toBe("View demo");
-    expect(getDictionary("th").services.viewDemo).toBe("ดูตัวอย่าง");
+    expect(getDictionary("en").work.tryLive).toBe("Try it live");
+    expect(getDictionary("th").work.tryLive).toBe("ลองใช้งานจริง");
+  });
+
+  it("has 2–3 'try this' prompts for every package", () => {
+    for (const dict of [en, th]) {
+      for (const pkg of packages) {
+        const prompts = dict.work.try[pkg.id];
+        expect(prompts.length).toBeGreaterThanOrEqual(2);
+        expect(prompts.length).toBeLessThanOrEqual(3);
+      }
+    }
   });
 
   it("defaults to English", () => {
