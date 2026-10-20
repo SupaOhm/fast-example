@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Anuphan, Noto_Serif_Thai } from "next/font/google";
+import { Anuphan, Mitr } from "next/font/google";
 import { DemoPill } from "@/components/demo/demo-pill";
 import { ResortFooter } from "./_components/resort-footer";
 import { ResortHeader } from "./_components/resort-header";
 import { LangScope } from "./_components/t";
 
-const display = Noto_Serif_Thai({
-  weight: ["400", "600"],
+// Display face ships one weight, so every --font-display heading renders Medium.
+const display = Mitr({
+  weight: "500",
   subsets: ["thai", "latin"],
   variable: "--font-display",
 });

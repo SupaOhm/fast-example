@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Bai_Jamjuree } from "next/font/google";
+import { Noto_Sans_Thai } from "next/font/google";
 import { DemoPill } from "@/components/demo/demo-pill";
 
-const font = Bai_Jamjuree({ weight: ["400", "500", "600"], subsets: ["thai", "latin"] });
+const font = Noto_Sans_Thai({ weight: ["400", "500", "600"], subsets: ["thai", "latin"] });
 
 export const metadata: Metadata = {
   title: {
