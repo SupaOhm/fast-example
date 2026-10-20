@@ -12,7 +12,7 @@ export function PlanStack({ pages, className = "" }: { pages: string[]; classNam
             key={src}
             className="absolute bottom-0 left-1/2 aspect-[16/10] w-[58%] origin-bottom overflow-hidden rounded-md bg-white shadow-[0_18px_40px_#0009,0_0_0_1px_#ffffff1a]"
             style={{
-              transform: `translateX(calc(-50% + ${o * 34}px)) translateY(${Math.abs(o) * 10}px) rotate(${o * 7}deg)`,
+              transform: `translateX(calc(-50% + ${o * 14}%)) translateY(${Math.abs(o) * 10}px) rotate(${o * 7}deg)`,
               zIndex: 10 - Math.abs(o),
             }}
           >

@@ -61,7 +61,10 @@ describe("packages", () => {
 describe("services", () => {
   it("has the two Fastwork services in order, each with three plans", () => {
     expect(services.map((s) => s.id)).toEqual(["web", "app"]);
-    for (const s of services) expect(packagesByService(s.id)).toHaveLength(3);
+    for (const s of services) {
+      expect(packagesByService(s.id)).toHaveLength(3);
+      expect(packagesByService(s.id).map((p) => p.tier)).toEqual(["basic", "standard", "premium"]);
+    }
   });
 
   it("getService finds by id and throws on unknown ids", () => {

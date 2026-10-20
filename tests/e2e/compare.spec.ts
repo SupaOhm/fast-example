@@ -10,7 +10,7 @@ test("compare page defaults to websites and shows every website row for every pl
       await expect(page.getByTestId(`cell-${row.key}-${pkg.id}`)).toBeVisible();
     }
   }
-  await expect(page.getByTestId("cell-form-web-basic")).toContainText("Not included: Contact form");
+  await expect(page.getByTestId("cell-form-web-basic")).toContainText("Basic: Not included: Contact form");
   await expect(page.getByTestId("cell-form-web-standard")).toContainText("Included: Contact form");
   await expect(page.getByTestId("cell-pages-web-premium")).toContainText("5");
 });

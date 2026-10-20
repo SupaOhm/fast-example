@@ -29,6 +29,19 @@ for (const route of routes) {
   });
 }
 
+for (const path of ["/en", "/th"]) {
+  for (const [width, height] of [[768, 1024], [1024, 768]]) {
+    test(`hub does not scroll sideways at ${width}x${height} ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.goto(path, { waitUntil: "networkidle" });
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
+}
+
 test("root redirects to /en", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/\/en$/);

@@ -13,6 +13,7 @@ export function ServiceTiles({
   label,
   plansFrom,
   compact = false,
+  panelId,
 }: {
   idPrefix: string;
   tiles: ServiceTile[];
@@ -21,6 +22,7 @@ export function ServiceTiles({
   label: string;
   plansFrom: string;
   compact?: boolean;
+  panelId?: string;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -57,7 +59,7 @@ export function ServiceTiles({
             role="tab"
             id={`tab-${idPrefix}-${tile.id}`}
             aria-selected={on}
-            aria-controls={`panel-${idPrefix}-${tile.id}`}
+            aria-controls={panelId ?? `panel-${idPrefix}-${tile.id}`}
             tabIndex={on ? 0 : -1}
             onClick={() => onSelect(tile.id)}
             onKeyDown={(e) => onKeyDown(e, i)}

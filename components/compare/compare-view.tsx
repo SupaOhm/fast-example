@@ -50,6 +50,7 @@ export function CompareView({ locale, tiles, labels }: { locale: Locale; tiles: 
     <>
       <ServiceTiles
         idPrefix="compare"
+        panelId="panel-compare"
         compact
         tiles={tiles}
         selected={selected}
@@ -59,7 +60,7 @@ export function CompareView({ locale, tiles, labels }: { locale: Locale; tiles: 
       />
       <div
         role="tabpanel"
-        id={`panel-compare-${selected}`}
+        id="panel-compare"
         aria-labelledby={`tab-compare-${selected}`}
         className={`acc-${service.accent} mt-10`}
       >
@@ -80,6 +81,7 @@ export function CompareView({ locale, tiles, labels }: { locale: Locale; tiles: 
                   className="mt-2.5 inline-block rounded-full bg-(--acc) px-3 py-1.5 text-xs font-bold whitespace-nowrap text-forest transition hover:bg-cream sm:text-[13px]"
                 >
                   {labels.tryDemo}
+                  <span className="sr-only"> {labels.tiers[p.tier]}</span>
                 </Link>
               </div>
             ))}
@@ -93,6 +95,7 @@ export function CompareView({ locale, tiles, labels }: { locale: Locale; tiles: 
               )}
               {plans.map((p) => (
                 <div key={p.id} data-testid={`cell-${row.key}-${p.id}`} className="px-1 pt-4 text-center">
+                  <span className="sr-only">{labels.tiers[p.tier]}: </span>
                   <SpecCell
                     row={row}
                     value={p.values[row.key]}

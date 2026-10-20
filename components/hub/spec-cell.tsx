@@ -31,7 +31,7 @@ export function SpecCell({
       {included ? (
         <Check aria-hidden strokeWidth={2.4} className="mx-auto size-[22px] text-(--acc)" />
       ) : (
-        <Minus aria-hidden strokeWidth={2.2} className="mx-auto size-[22px] text-cream/25" />
+        <Minus aria-hidden strokeWidth={2.2} className="mx-auto size-[22px] text-cream/40" />
       )}
       <span className="sr-only">{included ? yes : no}: </span>
       <span className="mt-1 block text-sm leading-snug text-cream-muted">{text}</span>
