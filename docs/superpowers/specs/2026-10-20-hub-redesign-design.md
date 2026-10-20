@@ -42,7 +42,7 @@ Tokens in `app/globals.css` `@theme` replace the paper/ink set:
 | `--color-lime` | `#d7ff5c` | accent, primary buttons, CTA band |
 | `--color-rule` | `#efeadb1f` | hairlines and borders |
 
-- **Type:** keep the loaded fonts, and add no serif or accent font. Bricolage Grotesque handles Latin display at weight 800 with tight tracking (`-0.04em`): leading 1.1 for the hero H1 (room for the underline) and 1.0 for section headings. Anuphan handles Thai and body text.
+- **Type:** keep the loaded fonts and add two handwritten accent fonts via `next/font/google`, used *only* for the hero's accent word: **Kalam 700** (Latin) and **Itim 400** (Thai, because Kalam has no Thai glyphs). No serifs anywhere. Bricolage Grotesque handles Latin display at weight 800 with tight tracking (`-0.04em`): leading 1.1 for the hero H1 (room for the underline) and 1.0 for section headings. Anuphan handles Thai and body text.
   - Thai headings use leading ≥ 1.2 with no negative tracking. Apply this via `:lang(th)` or the locale-aware classes.
 - **Buttons:** 6px radius, not pills.
   - Primary: lime fill with forest text.
@@ -63,14 +63,14 @@ Section order and anchor ids:
 
 ### 1. Hero
 - **Copy (left, desktop):**
-  - H1 (EN): "See exactly what you're paying for." All of it is in Bricolage Grotesque 800 and cream. There is no second font, and no lime text in the headline.
-    - The one accent is a **hand-drawn lime underline under "exactly"**, from a `Scribble` component in `components/hub/scribble.tsx`.
+  - H1 (EN): "See exactly what you're paying for." The headline is in Bricolage Grotesque 800, cream.
+    - The accent word **"exactly"** is set in **Kalam 700, lime `#d7ff5c`, about 1.05em**, with a **hand-drawn lime underline** beneath it. Both come from a `Scribble` component in `components/hub/scribble.tsx`, which wraps the word and draws the underline.
     - **Width:** the SVG spans exactly the word's width (`left:0; width:100%` of an inline-block wrapper).
     - **Position:** it sits just below the baseline (`top: calc(100% - .1em)`), behind the glyphs (`z-index:-1` inside an `isolation:isolate` wrapper), so descenders like the "y" overlap it cleanly. Headline leading is 1.1 to leave room.
     - **Stroke:** a single slightly rising curve, round caps, about 0.07em thick, `aria-hidden`.
     - **Animation:** it draws itself in once on load (`stroke-dashoffset`, about 0.7s, starting at 0.3s). Under `prefers-reduced-motion: reduce` it is static and fully drawn.
     - **Line breaks:** at 1440px it breaks after "what". At 375px it wraps naturally, and "exactly" is never split (`white-space:nowrap` on the wrapper).
-  - H1 (TH): "เห็นชัดๆ ว่าจ่ายแล้วได้อะไร", with the same underline under "ชัดๆ". In Anuphan 700 the underline sits at `top: calc(100% - .16em)`, and Thai leading stays ≥ 1.2.
+  - H1 (TH): "เห็นชัดๆ ว่าจ่ายแล้วได้อะไร", with the same treatment on "ชัดๆ": Itim, lime, underlined. The rest of the line is in Anuphan 700. The Thai underline sits at `top: calc(100% - .16em)`, and Thai leading stays ≥ 1.2. Check the vertical alignment of the Itim word against Anuphan in the visual pass.
   - Body (EN): "Each package I offer on Fastwork has a working example you can open and use, so the scope and quality are clear before you order."
   - Body (TH): "ทุกแพ็กเกจบน Fastwork มีเว็บตัวอย่างที่เปิดใช้งานได้จริง เห็นขอบเขตและคุณภาพงานชัดเจนก่อนสั่งซื้อ"
   - Buttons: **Browse the work ↓** (`#work`) and **Packages from ฿4,900** (`#work`). The price comes from `Math.min` over `packages` via `formatTHB`.
