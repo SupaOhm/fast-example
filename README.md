@@ -34,3 +34,7 @@ node scripts/capture-thumbs.mjs http://localhost:3100
 lsof -ti tcp:3100 | xargs kill
 ```
 Screenshots land in `public/thumbs/` and can be uploaded as Fastwork listing covers.
+
+## Deploy
+
+The site is a static export (`out/`) served by Cloudflare Workers static assets; config is in `wrangler.jsonc`, and the `/` → `/en` redirect is in `public/_redirects`. Cloudflare's build runs `pnpm run build`, then `npx wrangler deploy`. To preview the production server locally, run `pnpm build && pnpm start`.
