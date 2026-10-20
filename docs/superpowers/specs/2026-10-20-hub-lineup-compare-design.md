@@ -244,7 +244,7 @@ values: Record<string, RowValue>;    // one entry per row key of its service
 
 | Change | Files |
 |---|---|
-| **New** | `components/hub/service-tiles.tsx` (client, tabs logically), `lineup.tsx`, `plan-stack.tsx` (the fan), `spec-cell.tsx` (count/bool/text rendering shared with compare) |
+| **New** | `components/hub/service-tiles.tsx` (client, tabs pattern), `lineup.tsx`, `plan-stack.tsx` (the fan), `spec-cell.tsx` (count/bool/text rendering shared with compare) |
 | **New** | `app/[locale]/compare/page.tsx`; `components/compare/compare-view.tsx` (client: tiles, the `?service=` sync and the table) |
 | **Rewrite** | `work-section.tsx`, `process-section.tsx`, `about-section.tsx` |
 | **Edit** | `site-header.tsx` (Compare link), `hero.tsx` (CTA href), `globals.css` (`--color-sky`, fan and stage styles, reduced-motion rules) |
