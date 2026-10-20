@@ -15,7 +15,7 @@ export function LocaleSwitch({ locale, label, ariaLabel }: { locale: Locale; lab
         // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.assign(`/${target}${window.location.hash}`);
       }}
-      className="rounded-full border border-ink/15 px-3.5 py-1.5 text-sm font-semibold transition hover:border-ink"
+      className="rounded-md border border-cream/40 px-3 py-1.5 text-sm font-semibold transition hover:border-cream"
     >
       {label}
     </a>

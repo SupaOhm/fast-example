@@ -29,9 +29,9 @@ for (const route of routes) {
   });
 }
 
-test("root redirects to /th", async ({ page }) => {
+test("root redirects to /en", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveURL(/\/th$/);
+  await expect(page).toHaveURL(/\/en$/);
 });
 
 test("unknown locale returns 404", async ({ page }) => {

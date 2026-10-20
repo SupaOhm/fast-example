@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import en from "@/lib/i18n/en.json";
 import th from "@/lib/i18n/th.json";
-import { getDictionary, isLocale } from "@/lib/i18n";
+import { packages } from "@/lib/packages";
+import { defaultLocale, getDictionary, isLocale } from "@/lib/i18n";
 
 function shape(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(shape);
@@ -35,12 +36,47 @@ describe("i18n", () => {
   });
 
   it("returns the dictionary per locale", () => {
-    expect(getDictionary("en").services.viewDemo).toBe("View demo");
-    expect(getDictionary("th").services.viewDemo).toBe("ดูตัวอย่าง");
+    expect(getDictionary("en").work.tryLive).toBe("Try it live");
+    expect(getDictionary("th").work.tryLive).toBe("ลองใช้งานจริง");
+  });
+
+  it("has 2–3 'try this' prompts for every package", () => {
+    for (const dict of [en, th]) {
+      for (const pkg of packages) {
+        const prompts = dict.work.try[pkg.id];
+        expect(prompts.length).toBeGreaterThanOrEqual(2);
+        expect(prompts.length).toBeLessThanOrEqual(3);
+      }
+    }
+  });
+
+  it("defaults to English", () => {
+    expect(defaultLocale).toBe("en");
   });
 
   it("validates locales", () => {
     expect(isLocale("th")).toBe(true);
     expect(isLocale("fr")).toBe(false);
+  });
+
+  it("hero title marks exactly one accent word and one line break", () => {
+    for (const dict of [en, th]) {
+      const [line1, line2, ...rest] = dict.hero.title.split("\n");
+      expect(rest).toEqual([]);
+      expect(line2.trim()).not.toBe("");
+      expect(line1.split("*")).toHaveLength(3);
+      expect(line1.split("*")[1].trim()).not.toBe("");
+    }
+  });
+
+  it("price CTA has a {price} placeholder", () => {
+    expect(en.hero.ctaPrice).toContain("{price}");
+    expect(th.hero.ctaPrice).toContain("{price}");
+  });
+
+  it("about section carries the tech stack copy", () => {
+    expect(en.about.stackHeading).toBe("Stack");
+    expect(th.about.stackHeading).toBe("เครื่องมือที่ใช้");
+    expect("stack" in en).toBe(false);
   });
 });

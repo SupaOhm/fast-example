@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     },
   },
   async redirects() {
-    return [{ source: "/", destination: "/th", permanent: false }];
+    return [{ source: "/", destination: "/en", permanent: false }];
   },
   images: {
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],

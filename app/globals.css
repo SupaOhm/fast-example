@@ -1,17 +1,105 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f4eee6;
-  --color-ink: #161412;
-  --color-muted: #6b6259;
-  --color-line: #ddd2c4;
-  --color-accent: #e0542a;
-  --font-sans: var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-anuphan), ui-sans-serif, sans-serif;
+  --color-forest: #0e1a14;
+  --color-forest-2: #16261d;
+  --color-cream: #efeadb;
+  --color-cream-muted: #b4b3a6;
+  --color-lime: #d7ff5c;
+  --color-rule: #efeadb1f;
+  --font-sans: var(--font-anuphan, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage, ui-sans-serif), var(--font-anuphan, ui-sans-serif), ui-sans-serif, sans-serif;
+  /* var() fallbacks keep these valid on pages that don't load next/font (the global 404), so no serif default. */
+  --font-hand: var(--font-kalam, ui-sans-serif), var(--font-itim, ui-sans-serif), cursive;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+}
+
+/* Thai display headings: roomier leading, no negative tracking (unlayered, so it beats utilities). */
+:lang(th) .display-heading {
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+/* Hero accent word with a hand-drawn underline (components/hub/scribble.tsx). */
+.scribble {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  white-space: nowrap;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-synthesis: none;
+  font-size: 1.05em;
+  letter-spacing: -0.01em;
+  color: var(--color-lime);
+}
+.scribble:lang(th) {
+  /* Kalam has no Thai glyphs; name Itim explicitly instead of relying on glyph fall-through. */
+  font-family: var(--font-itim, ui-sans-serif), cursive;
+}
+
+.scribble svg {
+  position: absolute;
+  left: 0;
+  top: calc(100% - 0.1em);
+  z-index: -1;
+  width: 100%;
+  height: 0.24em;
+  overflow: visible;
+  pointer-events: none;
+}
+.scribble:lang(th) svg {
+  top: calc(100% - 0.16em);
+}
+.scribble path {
+  fill: none;
+  stroke: var(--color-lime);
+  stroke-width: 4.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* Hero screenshot wall (components/hub/hero-wall.tsx). Tracks hold their items twice, so -50% loops seamlessly. */
+@media (prefers-reduced-motion: no-preference) {
+  .scribble path {
+    stroke-dashoffset: 1;
+    animation: scribble-draw 0.7s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+  .hero-wall-up {
+    animation: hero-wall-up 40s linear infinite;
+  }
+  .hero-wall-down {
+    animation: hero-wall-down 40s linear infinite;
+  }
+  .hero-wall[data-paused] :is(.hero-wall-up, .hero-wall-down) {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes scribble-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hero-wall-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes hero-wall-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
   }
 }

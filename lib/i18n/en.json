@@ -4,58 +4,110 @@
     "description": "Try a live demo of every package: sale page, company site, resort site, API, dashboard and booking system, built with Next.js."
   },
   "nav": {
-    "services": "Services",
+    "work": "Work",
     "process": "Process",
-    "stack": "Stack",
     "about": "About",
+    "hire": "Hire on Fastwork",
+    "newTab": "(opens in a new tab)",
     "switchLocale": "ไทย",
     "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย"
   },
   "hero": {
-    "eyebrow": "Full-stack web developer · Bangkok",
-    "title": "Websites and web apps your business can actually use",
-    "subtitle": "Every package on Fastwork has a live demo you can click through before you hire, so you see exactly what your budget gets.",
-    "ctaDemos": "See the demos",
-    "ctaFastwork": "Fastwork profile"
+    "title": "See *exactly* what\nyou're paying for.",
+    "body": "Each package I offer on Fastwork has a working example you can open and use, so the scope and quality are clear before you order.",
+    "ctaWork": "Browse the work ↓",
+    "ctaPrice": "Packages from {price}",
+    "pauseMotion": "Pause motion",
+    "playMotion": "Play motion"
   },
-  "services": {
-    "heading": "Pick a package, then try its demo",
-    "web": {
-      "title": "Website / landing page",
-      "description": "Responsive websites built with Next.js: fast, on-brand, and never a prebuilt template."
+  "work": {
+    "heading": "The work",
+    "intro": "Six live projects. Each one is a package you can order on Fastwork, shown at the scope and quality you would receive.",
+    "groups": {
+      "web": {
+        "label": "Websites",
+        "description": "Landing pages and multi-page sites, designed for your brand and built with Next.js."
+      },
+      "app": {
+        "label": "Systems",
+        "description": "Back offices, dashboards and APIs that handle the day-to-day work of a business."
+      }
     },
-    "app": {
-      "title": "Web app / dashboard / API",
-      "description": "Back-office systems, dashboards and APIs that manage your data and day-to-day operations."
-    },
-    "viewDemo": "View demo",
+    "tryHeading": "Try this",
+    "tryLive": "Try it live",
     "order": "Order on Fastwork",
-    "perProject": "/ project",
-    "tiers": { "basic": "Basic", "standard": "Standard", "premium": "Premium" }
+    "tiers": {
+      "basic": "Basic",
+      "standard": "Standard",
+      "premium": "Premium"
+    },
+    "try": {
+      "web-basic": [
+        "Scroll the full sale page on your phone",
+        "Pick a bundle and press the LINE order button"
+      ],
+      "web-standard": [
+        "Switch between Home, Services and Contact",
+        "Send the contact form empty to see the validation"
+      ],
+      "web-premium": [
+        "Switch the site between Thai and English",
+        "Filter rooms by number of guests",
+        "Open the photo gallery"
+      ],
+      "app-basic": [
+        "Send a POST /orders request and get a 201 back",
+        "Change an order's status and see the LINE notification preview"
+      ],
+      "app-standard": [
+        "Log in with the prefilled demo account",
+        "Search the orders table",
+        "Edit a stock count and watch the low-stock flag"
+      ],
+      "app-premium": [
+        "Book a slot in the LINE-style flow",
+        "Open the staff side and find your booking in today's queue"
+      ]
+    }
   },
   "process": {
     "heading": "How I work",
     "steps": [
-      { "title": "Brief", "body": "Share your goals, references and deadline. I confirm scope and price before you order." },
-      { "title": "Design", "body": "I sketch the layout and look first. Code starts once you approve." },
-      { "title": "Build", "body": "Next.js + TypeScript + Tailwind, tested on mobile, tablet and desktop." },
-      { "title": "Revise", "body": "Revision rounds are included in your package." },
-      { "title": "Deliver", "body": "Source code, help going live, and a short handover." }
+      {
+        "title": "Brief",
+        "body": "Share your goals, references and deadline. I confirm scope and price before you order."
+      },
+      {
+        "title": "Design",
+        "body": "I sketch the layout and look first. Code starts once you approve."
+      },
+      {
+        "title": "Build",
+        "body": "Next.js + TypeScript + Tailwind, tested on mobile, tablet and desktop."
+      },
+      {
+        "title": "Revise",
+        "body": "Revision rounds are included in your package."
+      },
+      {
+        "title": "Deliver",
+        "body": "Source code, help going live, and a short handover."
+      }
     ]
   },
-  "stack": {
-    "heading": "Stack",
-    "body": "Every demo on this page is built with the same tools I use for client work."
-  },
   "about": {
-    "heading": "About SupaOhm",
+    "heading": "Who's building it",
     "body": "I'm Supakorn (Ohm), a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces, including as an AI Developer intern at Mizuhada Group and a UX/UI Researcher intern at BAKA Group.",
-    "portfolio": "View personal portfolio"
+    "portfolio": "View personal portfolio",
+    "stackHeading": "Stack",
+    "stackBody": "Every demo on this page is built with the same tools I use for client work."
+  },
+  "cta": {
+    "heading": "Have a project in mind?",
+    "body": "Send your brief on Fastwork and I'll confirm scope and price before we start.",
+    "button": "Hire me on Fastwork"
   },
   "footer": {
-    "heading": "Have a project in mind?",
-    "body": "Send your details, references and deadline on Fastwork, and I'll confirm scope and price before starting.",
-    "button": "Talk on Fastwork",
     "note": "All businesses, people and reviews in the demos are fictional."
   }
 }
