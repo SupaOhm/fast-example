@@ -1,6 +1,7 @@
 import type { Dictionary, Locale } from "@/lib/i18n";
-import { packages, packagesByService } from "@/lib/packages";
-import { ProjectRow } from "./project-row";
+import { serviceTiles, services } from "@/lib/packages";
+import { Lineup } from "./lineup";
+import { WorkTabs } from "./work-tabs";
 
 export function WorkSection({ locale, t }: { locale: Locale; t: Dictionary }) {
   return (
@@ -9,20 +10,16 @@ export function WorkSection({ locale, t }: { locale: Locale; t: Dictionary }) {
         <h2 className="display-heading font-display text-5xl leading-none font-extrabold tracking-[-0.04em] sm:text-7xl">
           {t.work.heading}
         </h2>
-        <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream-muted">{t.work.intro}</p>
-        {(["web", "app"] as const).map((service) => (
-          <div key={service} className="mt-16">
-            <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-              <h3 className="display-heading font-display text-2xl font-extrabold text-lime">
-                {t.work.groups[service].label}
-              </h3>
-              <p className="max-w-md text-sm leading-relaxed text-cream-muted">{t.work.groups[service].description}</p>
-            </div>
-            {packagesByService(service).map((pkg) => (
-              <ProjectRow key={pkg.id} pkg={pkg} index={packages.indexOf(pkg)} locale={locale} t={t} />
+        <div className="mt-8">
+          <WorkTabs
+            tiles={serviceTiles(locale)}
+            label={t.work.servicesLabel}
+            plansFrom={t.work.plansFrom}
+            panels={services.map((s) => (
+              <Lineup key={s.id} service={s} locale={locale} t={t} />
             ))}
-          </div>
-        ))}
+          />
+        </div>
       </div>
     </section>
   );

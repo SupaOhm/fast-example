@@ -6,6 +6,7 @@
   --color-cream: #efeadb;
   --color-cream-muted: #b4b3a6;
   --color-lime: #d7ff5c;
+  --color-sky: #9fd8ff;
   --color-rule: #efeadb1f;
   --font-sans: var(--font-anuphan, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage, ui-sans-serif), var(--font-anuphan, ui-sans-serif), ui-sans-serif, sans-serif;
@@ -102,4 +103,12 @@
   to {
     transform: translateY(0);
   }
+}
+
+/* Service accent: lime for websites, sky for web apps. Read by bg-(--acc), text-(--acc), border-(--acc). */
+.acc-lime {
+  --acc: var(--color-lime);
+}
+.acc-sky {
+  --acc: var(--color-sky);
 }

@@ -22,52 +22,18 @@
   },
   "work": {
     "heading": "The work",
-    "intro": "Six live projects. Each one is a package you can order on Fastwork, shown at the scope and quality you would receive.",
-    "groups": {
-      "web": {
-        "label": "Websites",
-        "description": "Landing pages and multi-page sites, designed for your brand and built with Next.js."
-      },
-      "app": {
-        "label": "Systems",
-        "description": "Back offices, dashboards and APIs that handle the day-to-day work of a business."
-      }
-    },
-    "tryHeading": "Try this",
-    "tryLive": "Try it live",
+    "servicesLabel": "Services",
+    "plansFrom": "{count} plans, from {price}",
+    "tryDemo": "Try the demo",
     "order": "Order on Fastwork",
+    "demo": "Demo: {name}",
+    "compare": "Compare plans",
+    "included": "Included",
+    "notIncluded": "Not included",
     "tiers": {
       "basic": "Basic",
       "standard": "Standard",
       "premium": "Premium"
-    },
-    "try": {
-      "web-basic": [
-        "Scroll the full sale page on your phone",
-        "Pick a bundle and press the LINE order button"
-      ],
-      "web-standard": [
-        "Switch between Home, Services and Contact",
-        "Send the contact form empty to see the validation"
-      ],
-      "web-premium": [
-        "Switch the site between Thai and English",
-        "Filter rooms by number of guests",
-        "Open the photo gallery"
-      ],
-      "app-basic": [
-        "Send a POST /orders request and get a 201 back",
-        "Change an order's status and see the LINE notification preview"
-      ],
-      "app-standard": [
-        "Log in with the prefilled demo account",
-        "Search the orders table",
-        "Edit a stock count and watch the low-stock flag"
-      ],
-      "app-premium": [
-        "Book a slot in the LINE-style flow",
-        "Open the staff side and find your booking in today's queue"
-      ]
     }
   },
   "process": {

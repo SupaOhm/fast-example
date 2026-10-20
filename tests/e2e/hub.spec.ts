@@ -1,15 +1,77 @@
 import { expect, test } from "@playwright/test";
-import { packages } from "../../lib/packages";
+import { packagesByService } from "../../lib/packages";
 
-test("every project row shows price and links to its demo and Fastwork listing", async ({ page }) => {
+const price = (n: number) => `฿${n.toLocaleString("en-US")}`;
+
+test("service tiles switch between the website and web app lineups", async ({ page }) => {
   await page.goto("/en");
-  for (const pkg of packages) {
-    const row = page.getByTestId(`package-${pkg.id}`);
-    await expect(row).toContainText(`฿${pkg.priceTHB.toLocaleString("en-US")}`);
-    await expect(row.getByRole("link", { name: "Try it live" })).toHaveAttribute("href", pkg.demoPath);
-    await expect(row.getByRole("link", { name: "Order on Fastwork" })).toHaveAttribute("href", pkg.fastworkUrl);
+  const web = page.getByRole("tab", { name: /Websites/ });
+  const app = page.getByRole("tab", { name: /Web apps/ });
+  await expect(web).toHaveAttribute("aria-selected", "true");
+  for (const pkg of packagesByService("web")) await expect(page.getByTestId(`plan-${pkg.id}`)).toBeVisible();
+  for (const pkg of packagesByService("app")) await expect(page.getByTestId(`plan-${pkg.id}`)).toBeHidden();
+  await app.click();
+  await expect(app).toHaveAttribute("aria-selected", "true");
+  for (const pkg of packagesByService("app")) await expect(page.getByTestId(`plan-${pkg.id}`)).toBeVisible();
+  for (const pkg of packagesByService("web")) await expect(page.getByTestId(`plan-${pkg.id}`)).toBeHidden();
+});
+
+test("every plan shows its price, demo link and Fastwork link", async ({ page }) => {
+  await page.goto("/en");
+  for (const [service, tab] of [["web", /Websites/], ["app", /Web apps/]] as const) {
+    await page.getByRole("tab", { name: tab }).click();
+    for (const pkg of packagesByService(service)) {
+      const plan = page.getByTestId(`plan-${pkg.id}`);
+      await expect(plan).toContainText(price(pkg.priceTHB));
+      await expect(plan.getByRole("link", { name: "Try the demo" })).toHaveAttribute("href", pkg.demoPath);
+      await expect(plan.getByRole("link", { name: /Order on Fastwork/ })).toHaveAttribute("href", pkg.fastworkUrl);
+    }
   }
-  await expect(page.getByTestId("package-app-premium")).toContainText("Book a slot in the LINE-style flow");
+});
+
+test("each plan fans out one real screenshot per page it includes", async ({ page }) => {
+  await page.goto("/en");
+  for (const pkg of packagesByService("web")) {
+    const imgs = page.getByTestId(`plan-${pkg.id}`).locator("img");
+    await expect(imgs).toHaveCount(pkg.pages.length);
+    for (const img of await imgs.all()) {
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+    }
+  }
+});
+
+test("arrow keys move between service tiles", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("tab", { name: /Websites/ }).focus();
+  await page.keyboard.press("ArrowRight");
+  const app = page.getByRole("tab", { name: /Web apps/ });
+  await expect(app).toHaveAttribute("aria-selected", "true");
+  await expect(app).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(page.getByRole("tab", { name: /Websites/ })).toBeFocused();
+});
+
+test("compare button links to the compare page for the shown service", async ({ page }) => {
+  await page.goto("/en");
+  await expect(page.getByRole("tabpanel").getByRole("link", { name: "Compare plans" })).toHaveAttribute(
+    "href",
+    "/en/compare?service=web",
+  );
+  await page.getByRole("tab", { name: /Web apps/ }).click();
+  await expect(page.getByRole("tabpanel").getByRole("link", { name: "Compare plans" })).toHaveAttribute(
+    "href",
+    "/en/compare?service=app",
+  );
+});
+
+test("Thai lineup uses Thai labels", async ({ page }) => {
+  await page.goto("/th");
+  await expect(page.getByRole("tab", { name: /เว็บไซต์/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByTestId("plan-web-basic").getByRole("link", { name: "ลองเดโม่" })).toHaveAttribute(
+    "href",
+    "/demos/sale-page",
+  );
 });
 
 test("locale switch goes to Thai and back", async ({ page }) => {
@@ -55,22 +117,6 @@ test("header hire button goes to the Fastwork profile", async ({ page }) => {
     "href",
     "https://fastwork.com/user/devohm",
   );
-});
-
-test("project rows show real demo thumbnails", async ({ page }) => {
-  await page.goto("/en");
-  for (const pkg of packages) {
-    const img = page.getByTestId(`package-${pkg.id}`).locator("img");
-    await expect(img).toHaveAttribute("src", new RegExp(`/thumbs/${pkg.id}\\.jpg`));
-    expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
-  }
-});
-
-test("Thai project rows use Thai labels", async ({ page }) => {
-  await page.goto("/th");
-  const row = page.getByTestId("package-web-basic");
-  await expect(row.getByRole("link", { name: "ลองใช้งานจริง" })).toHaveAttribute("href", "/demos/sale-page");
-  await expect(row.getByRole("link", { name: "สั่งซื้อบน Fastwork" })).toBeVisible();
 });
 
 test("hero wall has no empty bands at any point of the loop", async ({ page }) => {
