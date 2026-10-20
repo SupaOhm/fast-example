@@ -7,10 +7,10 @@
   --color-cream-muted: #b4b3a6;
   --color-lime: #d7ff5c;
   --color-rule: #efeadb1f;
-  --font-sans: var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-anuphan), ui-sans-serif, sans-serif;
-  /* Kalam has no Thai glyphs, so Thai characters fall through to Itim. */
-  --font-hand: var(--font-kalam), var(--font-itim), cursive;
+  --font-sans: var(--font-anuphan, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage, ui-sans-serif), var(--font-anuphan, ui-sans-serif), ui-sans-serif, sans-serif;
+  /* var() fallbacks keep these valid on pages that don't load next/font (the global 404), so no serif default. */
+  --font-hand: var(--font-kalam, ui-sans-serif), var(--font-itim, ui-sans-serif), cursive;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -38,6 +38,11 @@
   letter-spacing: -0.01em;
   color: var(--color-lime);
 }
+.scribble:lang(th) {
+  /* Kalam has no Thai glyphs; name Itim explicitly instead of relying on glyph fall-through. */
+  font-family: var(--font-itim, ui-sans-serif), cursive;
+}
+
 .scribble svg {
   position: absolute;
   left: 0;

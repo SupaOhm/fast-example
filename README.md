@@ -24,7 +24,7 @@ pnpm test:e2e       # builds, then runs Playwright at 375px and 1440px
 
 ## Update prices or scope
 
-Edit `lib/packages.ts`. The hub cards and demo pills read from it.
+Edit `lib/packages.ts`. The hub project rows and demo pills read from it.
 
 ## Refresh hub thumbnails / Fastwork cover images
 

@@ -67,9 +67,10 @@ export function ProjectRow({ pkg, index, locale, t }: { pkg: Package; index: num
             href={pkg.fastworkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-md border border-cream/25 px-5 py-3 text-sm font-semibold transition hover:border-cream"
+            className="rounded-md border border-cream/40 px-5 py-3 text-sm font-semibold transition hover:border-cream"
           >
             {t.work.order}
+            <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
       </div>

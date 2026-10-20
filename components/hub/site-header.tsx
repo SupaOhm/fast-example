@@ -30,6 +30,7 @@ export function SiteHeader({ locale, t }: { locale: Locale; t: Dictionary }) {
             className="rounded-md bg-lime px-3 py-2 text-sm font-bold whitespace-nowrap text-forest transition hover:bg-cream"
           >
             {t.nav.hire}
+            <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
       </div>

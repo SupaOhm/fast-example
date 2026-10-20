@@ -17,6 +17,7 @@ export function SiteFooter({ t }: { t: Dictionary }) {
             className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-sm font-bold text-lime transition hover:bg-forest-2"
           >
             {t.cta.button}
+            <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
       </div>

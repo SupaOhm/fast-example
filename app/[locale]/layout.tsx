@@ -5,8 +5,8 @@ import { isLocale, locales } from "@/lib/i18n/config";
 
 const anuphan = Anuphan({ subsets: ["thai", "latin"], variable: "--font-anuphan" });
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-bricolage" });
-// Hero accent word only. No metric-adjusted fallback for Kalam, so Thai glyphs fall through to Itim.
-const kalam = Kalam({ weight: "700", subsets: ["latin"], variable: "--font-kalam", adjustFontFallback: false });
+// Hero accent word only. Kalam has no Thai glyphs; .scribble:lang(th) in globals.css switches to Itim.
+const kalam = Kalam({ weight: "700", subsets: ["latin"], variable: "--font-kalam" });
 const itim = Itim({ weight: "400", subsets: ["thai"], variable: "--font-itim", preload: false });
 
 export const dynamicParams = false;

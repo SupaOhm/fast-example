@@ -18,6 +18,7 @@ export function AboutSection({ t }: { t: Dictionary }) {
             className="mt-6 inline-block text-sm font-semibold underline decoration-lime decoration-2 underline-offset-4 transition hover:text-lime"
           >
             {t.about.portfolio} ↗
+            <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
         <div>

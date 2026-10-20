@@ -17,25 +17,30 @@ export function HeroWall({ pauseLabel, playLabel }: { pauseLabel: string; playLa
   return (
     <div className="relative h-72 sm:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[52%]">
       <div aria-hidden className="hero-wall absolute inset-0 overflow-hidden" data-paused={paused || undefined}>
-        <div className="absolute -inset-x-[12%] -inset-y-1/2 flex rotate-[-8deg] gap-3 sm:gap-4">
-          {COLUMNS.map((col, i) => (
-            <div key={i} className="min-w-0 flex-1">
-              <div className={`hero-wall-${col.direction}`}>
-                {[...col.ids, ...col.ids].map((id, j) => (
-                  <div key={j} className="mb-3 overflow-hidden rounded-lg shadow-2xl shadow-black/50 sm:mb-4">
-                    <Image
-                      src={`/thumbs/${id}.jpg`}
-                      alt=""
-                      width={1440}
-                      height={900}
-                      sizes="(min-width: 1024px) 18vw, 33vw"
-                      className="aspect-[16/10] w-full object-cover object-top"
-                    />
-                  </div>
-                ))}
+        <div className="absolute -inset-x-[12%] -inset-y-[15%] flex rotate-[-8deg] gap-3 sm:gap-4">
+          {COLUMNS.map((col, i) => {
+            // Each half of the track must be taller than the tilted box (wall height + overscan) so no loop point leaves a gap.
+            const half = [...col.ids, ...col.ids];
+            return (
+              <div key={i} className="min-w-0 flex-1">
+                <div className={`hero-wall-${col.direction}`}>
+                  {[...half, ...half].map((id, j) => (
+                    <div key={j} className="mb-3 overflow-hidden rounded-lg shadow-2xl shadow-black/50 sm:mb-4">
+                      <Image
+                        src={`/thumbs/${id}.jpg`}
+                        alt=""
+                        width={1440}
+                        height={900}
+                        loading="eager"
+                        sizes="(min-width: 1024px) 18vw, 33vw"
+                        className="aspect-[16/10] w-full object-cover object-top"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="absolute inset-0 bg-linear-to-b from-forest via-transparent to-forest lg:hidden" />
         <div className="absolute inset-0 hidden bg-linear-to-r from-forest via-forest/30 to-transparent lg:block" />

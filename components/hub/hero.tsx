@@ -29,7 +29,7 @@ export function Hero({ t }: { t: Dictionary }) {
             </a>
             <a
               href="#work"
-              className="rounded-md border border-cream/25 px-5 py-3 text-sm font-semibold transition hover:border-cream"
+              className="rounded-md border border-cream/40 px-5 py-3 text-sm font-semibold transition hover:border-cream"
             >
               {t.hero.ctaPrice.replace("{price}", fromPrice)}
             </a>
