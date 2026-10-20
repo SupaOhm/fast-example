@@ -71,9 +71,11 @@ describe("i18n", () => {
     expect(th.hero.ctaPrice).toContain("{price}");
   });
 
-  it("about section carries the tech stack copy", () => {
-    expect(en.about.stackHeading).toBe("Stack");
-    expect(th.about.stackHeading).toBe("เครื่องมือที่ใช้");
-    expect("stack" in en).toBe(false);
+  it("about bio names the developer and lists four facts", () => {
+    for (const dict of [en, th]) {
+      expect(dict.about.body).toContain("{name}");
+      expect(dict.about.facts).toHaveLength(4);
+    }
+    expect("stackHeading" in en.about).toBe(false);
   });
 });

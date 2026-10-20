@@ -1,35 +1,42 @@
 import type { Dictionary } from "@/lib/i18n";
 
-const STACK = ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Python", "PostgreSQL", "Supabase", "Vercel"];
-
 export function AboutSection({ t }: { t: Dictionary }) {
+  const [before, after] = t.about.body.split("{name}");
   return (
     <section id="about" className="scroll-mt-16 border-t border-rule bg-forest text-cream">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 md:grid-cols-[3fr_2fr] lg:py-24">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 md:grid-cols-[1.3fr_1fr] lg:py-24">
         <div>
           <h2 className="display-heading font-display text-4xl leading-none font-extrabold tracking-[-0.04em] sm:text-5xl">
             {t.about.heading}
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-cream-muted">{t.about.body}</p>
+          <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-cream-muted">
+            {before}
+            <strong className="font-semibold text-cream">{t.about.name}</strong>
+            {after}
+          </p>
           <a
             href="https://supakornohm.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-block text-sm font-semibold underline decoration-lime decoration-2 underline-offset-4 transition hover:text-lime"
           >
-            {t.about.portfolio} ↗
-            <span className="sr-only"> {t.nav.newTab}</span>
+            {t.about.portfolio} ↗<span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
-        <div>
-          <h3 className="text-sm font-semibold text-cream-muted">{t.about.stackHeading}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-cream-muted">{t.about.stackBody}</p>
-          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 font-display text-2xl font-extrabold tracking-[-0.02em]">
-            {STACK.map((tool) => (
-              <li key={tool}>{tool}</li>
-            ))}
-          </ul>
-        </div>
+        <dl className="grid content-start gap-3 md:pt-3">
+          {t.about.facts.map((fact) => (
+            <div key={fact.label} className="grid grid-cols-[7rem_1fr] gap-3 border-b border-rule pb-3 text-sm">
+              <dt className="text-cream-muted">{fact.label}</dt>
+              <dd>
+                {fact.value.split("\n").map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

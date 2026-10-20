@@ -152,3 +152,20 @@ test("hero wall has no empty bands at any point of the loop", async ({ page }) =
     expect(misses, `uncovered points at t=${time}ms`).toEqual([]);
   }
 });
+
+test("process shows five steps with a picture each, and about lists the facts", async ({ page }) => {
+  await page.goto("/en");
+  const steps = page.locator("#process ol > li");
+  await expect(steps).toHaveCount(5);
+  await expect(steps.nth(3)).toContainText("bigger logo?");
+  await expect(steps.nth(4)).toContainText("Handover notes");
+  await expect(page.locator("#about")).toContainText("Supakorn (Ohm)");
+  await expect(page.locator("#about dl")).toContainText("Mizuhada Group");
+  await expect(page.locator("#about dl")).toContainText("FastAPI");
+});
+
+test("Thai process and about read in Thai", async ({ page }) => {
+  await page.goto("/th");
+  await expect(page.locator("#process ol > li").nth(3)).toContainText("โลโก้ใหญ่ขึ้นอีกนิด?");
+  await expect(page.locator("#about dl")).toContainText("ประสบการณ์");
+});

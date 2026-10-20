@@ -112,3 +112,13 @@
 .acc-sky {
   --acc: var(--color-sky);
 }
+
+/* Handwritten revision note in the process section. Kalam has no Thai glyphs, so Thai uses Itim. */
+.hand-note {
+  font-family: var(--font-hand);
+  font-weight: 700;
+}
+.hand-note:lang(th) {
+  font-family: var(--font-itim, ui-sans-serif), cursive;
+  font-weight: 400;
+}

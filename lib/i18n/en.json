@@ -45,6 +45,15 @@
   },
   "process": {
     "heading": "How I work",
+    "artefacts": {
+      "ask": "Need a 3-page site for our factory by the end of the month",
+      "reply": "Sure. Here's the scope and price before you order.",
+      "note": "bigger logo?",
+      "source": "Source code",
+      "live": "Live site",
+      "handover": "Handover notes",
+      "online": "online"
+    },
     "steps": [
       {
         "title": "Brief",
@@ -70,10 +79,15 @@
   },
   "about": {
     "heading": "Who's building it",
-    "body": "I'm Supakorn (Ohm), a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces, including as an AI Developer intern at Mizuhada Group and a UX/UI Researcher intern at BAKA Group.",
+    "name": "Supakorn (Ohm)",
+    "body": "I'm {name}, a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces.",
     "portfolio": "View personal portfolio",
-    "stackHeading": "Stack",
-    "stackBody": "Every demo on this page is built with the same tools I use for client work."
+    "facts": [
+      { "label": "Studying", "value": "Computer Engineering, SIIT, Thammasat University" },
+      { "label": "Experience", "value": "AI Developer intern, Mizuhada Group\nUX/UI Researcher intern, BAKA Group" },
+      { "label": "Websites", "value": "Next.js, React, TypeScript, Tailwind CSS" },
+      { "label": "Web apps", "value": "Python, FastAPI, Node.js, PostgreSQL, Supabase" }
+    ]
   },
   "cta": {
     "heading": "Have a project in mind?",
