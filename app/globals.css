@@ -122,3 +122,35 @@
   font-family: var(--font-itim, ui-sans-serif), cursive;
   font-weight: 400;
 }
+
+/* Plan screenshot fan (components/hub/plan-stack.tsx). --o is each frame's offset from the centre.
+   Offsets are a share of the frame's width, so the fan scales with its column; hover or focus spreads it. */
+.plan-stack {
+  --dx: 11%;
+  --rot: 5deg;
+}
+.plan-stack > * {
+  transform: translateX(calc(-50% + var(--o) * var(--dx))) translateY(calc(var(--ao) * 8px)) rotate(calc(var(--o) * var(--rot)));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .plan-stack > * {
+    transition:
+      transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1),
+      translate 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
+  }
+  .group:is(:hover, :focus-within) .plan-stack {
+    --dx: 15%;
+    --rot: 7deg;
+  }
+  .group:is(:hover, :focus-within) .plan-stack > * {
+    translate: 0 -8px;
+  }
+}
+
+/* Desktop hero wall: fade the left edge (under the copy) and the bottom edge instead of cutting them. */
+@media (min-width: 1024px) {
+  .hero-wall {
+    mask-image: linear-gradient(to right, transparent, #000 40%), linear-gradient(to bottom, #000 78%, transparent);
+    mask-composite: intersect;
+  }
+}

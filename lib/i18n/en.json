@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "SupaOhm — Website & web app demos",
+    "title": "SupaOhm | Websites & web apps with live demos",
     "description": "Try a live demo of every package: sale page, company site, resort site, API, dashboard and booking system, built with Next.js."
   },
   "nav": {
@@ -40,7 +40,7 @@
   "compare": {
     "heading": "Compare plans",
     "intro": "Pick a service to see its three plans side by side.",
-    "metaTitle": "Compare plans — SupaOhm",
+    "metaTitle": "Compare plans | SupaOhm",
     "metaDescription": "Compare the Basic, Standard and Premium plans for websites and web apps, row by row."
   },
   "process": {

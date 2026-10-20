@@ -5,7 +5,7 @@ import { WorkTabs } from "./work-tabs";
 
 export function WorkSection({ locale, t }: { locale: Locale; t: Dictionary }) {
   return (
-    <section id="work" className="scroll-mt-16 bg-forest text-cream">
+    <section id="work" className="scroll-mt-16 overflow-x-clip bg-forest text-cream">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
         <h2 className="display-heading font-display text-5xl leading-none font-extrabold tracking-[-0.04em] sm:text-7xl">
           {t.work.heading}
