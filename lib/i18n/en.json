@@ -5,6 +5,7 @@
   },
   "nav": {
     "work": "Work",
+    "compare": "Compare",
     "process": "Process",
     "about": "About",
     "hire": "Hire on Fastwork",
@@ -22,56 +23,37 @@
   },
   "work": {
     "heading": "The work",
-    "intro": "Six live projects. Each one is a package you can order on Fastwork, shown at the scope and quality you would receive.",
-    "groups": {
-      "web": {
-        "label": "Websites",
-        "description": "Landing pages and multi-page sites, designed for your brand and built with Next.js."
-      },
-      "app": {
-        "label": "Systems",
-        "description": "Back offices, dashboards and APIs that handle the day-to-day work of a business."
-      }
-    },
-    "tryHeading": "Try this",
-    "tryLive": "Try it live",
+    "servicesLabel": "Services",
+    "plansFrom": "{count} plans, from {price}",
+    "tryDemo": "Try the demo",
     "order": "Order on Fastwork",
+    "demo": "Demo: {name}",
+    "compare": "Compare plans",
+    "included": "Included",
+    "notIncluded": "Not included",
     "tiers": {
       "basic": "Basic",
       "standard": "Standard",
       "premium": "Premium"
-    },
-    "try": {
-      "web-basic": [
-        "Scroll the full sale page on your phone",
-        "Pick a bundle and press the LINE order button"
-      ],
-      "web-standard": [
-        "Switch between Home, Services and Contact",
-        "Send the contact form empty to see the validation"
-      ],
-      "web-premium": [
-        "Switch the site between Thai and English",
-        "Filter rooms by number of guests",
-        "Open the photo gallery"
-      ],
-      "app-basic": [
-        "Send a POST /orders request and get a 201 back",
-        "Change an order's status and see the LINE notification preview"
-      ],
-      "app-standard": [
-        "Log in with the prefilled demo account",
-        "Search the orders table",
-        "Edit a stock count and watch the low-stock flag"
-      ],
-      "app-premium": [
-        "Book a slot in the LINE-style flow",
-        "Open the staff side and find your booking in today's queue"
-      ]
     }
+  },
+  "compare": {
+    "heading": "Compare plans",
+    "intro": "Pick a service to see its three plans side by side.",
+    "metaTitle": "Compare plans — SupaOhm",
+    "metaDescription": "Compare the Basic, Standard and Premium plans for websites and web apps, row by row."
   },
   "process": {
     "heading": "How I work",
+    "artefacts": {
+      "ask": "Need a 3-page site for our factory by the end of the month",
+      "reply": "Sure. Here's the scope and price before you order.",
+      "note": "bigger logo?",
+      "source": "Source code",
+      "live": "Live site",
+      "handover": "Handover notes",
+      "online": "online"
+    },
     "steps": [
       {
         "title": "Brief",
@@ -97,10 +79,15 @@
   },
   "about": {
     "heading": "Who's building it",
-    "body": "I'm Supakorn (Ohm), a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces, including as an AI Developer intern at Mizuhada Group and a UX/UI Researcher intern at BAKA Group.",
+    "name": "Supakorn (Ohm)",
+    "body": "I'm {name}, a Computer Engineering student at SIIT, Thammasat University, and a full-stack developer in Bangkok. I've built internal business tools, AI systems and modern web interfaces.",
     "portfolio": "View personal portfolio",
-    "stackHeading": "Stack",
-    "stackBody": "Every demo on this page is built with the same tools I use for client work."
+    "facts": [
+      { "label": "Studying", "value": "Computer Engineering, SIIT, Thammasat University" },
+      { "label": "Experience", "value": "AI Developer intern, Mizuhada Group\nUX/UI Researcher intern, BAKA Group" },
+      { "label": "Websites", "value": "Next.js, React, TypeScript, Tailwind CSS" },
+      { "label": "Web apps", "value": "Python, FastAPI, Node.js, PostgreSQL, Supabase" }
+    ]
   },
   "cta": {
     "heading": "Have a project in mind?",

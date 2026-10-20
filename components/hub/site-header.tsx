@@ -2,11 +2,12 @@ import type { Dictionary, Locale } from "@/lib/i18n";
 import { FASTWORK_PROFILE_URL } from "@/lib/packages";
 import { LocaleSwitch } from "./locale-switch";
 
-export function SiteHeader({ locale, t }: { locale: Locale; t: Dictionary }) {
+export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictionary; path?: string }) {
   const links = [
-    ["#work", t.nav.work],
-    ["#process", t.nav.process],
-    ["#about", t.nav.about],
+    [`/${locale}#work`, t.nav.work],
+    [`/${locale}/compare`, t.nav.compare],
+    [`/${locale}#process`, t.nav.process],
+    [`/${locale}#about`, t.nav.about],
   ] as const;
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-forest/85 text-cream backdrop-blur">
@@ -22,7 +23,7 @@ export function SiteHeader({ locale, t }: { locale: Locale; t: Dictionary }) {
               </a>
             ))}
           </nav>
-          <LocaleSwitch locale={locale} label={t.nav.switchLocale} ariaLabel={t.nav.switchLocaleLabel} />
+          <LocaleSwitch locale={locale} path={path} label={t.nav.switchLocale} ariaLabel={t.nav.switchLocaleLabel} />
           <a
             href={FASTWORK_PROFILE_URL}
             target="_blank"

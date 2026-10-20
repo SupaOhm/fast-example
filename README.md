@@ -24,7 +24,7 @@ pnpm test:e2e       # builds, then runs Playwright at 375px and 1440px
 
 ## Update prices or scope
 
-Edit `lib/packages.ts`. The hub project rows and demo pills read from it.
+Edit `lib/packages.ts`. The hub lineup, the compare page (`/en/compare`) and the demo pills all read from it, including each plan's feature values. A new service is a new entry in `services` plus its packages.
 
 ## Refresh hub thumbnails / Fastwork cover images
 
@@ -33,7 +33,7 @@ pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 node scripts/capture-thumbs.mjs http://localhost:3100
 lsof -ti tcp:3100 | xargs kill
 ```
-Screenshots land in `public/thumbs/` and can be uploaded as Fastwork listing covers.
+Screenshots land in `public/thumbs/` (hero wall, Fastwork covers) and `public/thumbs/pages/` (one per page of each plan, used by the hub lineup). Re-run after changing a demo's look.
 
 ## Deploy
 
