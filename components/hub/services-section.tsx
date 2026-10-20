@@ -4,7 +4,7 @@ import { PackageCard } from "./package-card";
 
 export function ServicesSection({ locale, t }: { locale: Locale; t: Dictionary }) {
   return (
-    <section id="services" className="scroll-mt-20 border-t border-line">
+    <section id="work" className="scroll-mt-20 border-t border-line">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <h2 className="max-w-2xl font-display text-3xl font-bold leading-[1.2] sm:text-4xl">{t.services.heading}</h2>
         {(["web", "app"] as const).map((service) => (

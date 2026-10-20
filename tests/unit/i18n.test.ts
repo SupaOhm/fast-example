@@ -47,4 +47,19 @@ describe("i18n", () => {
     expect(isLocale("th")).toBe(true);
     expect(isLocale("fr")).toBe(false);
   });
+
+  it("hero title marks exactly one accent word and one line break", () => {
+    for (const dict of [en, th]) {
+      const [line1, line2, ...rest] = dict.hero.title.split("\n");
+      expect(rest).toEqual([]);
+      expect(line2.trim()).not.toBe("");
+      expect(line1.split("*")).toHaveLength(3);
+      expect(line1.split("*")[1].trim()).not.toBe("");
+    }
+  });
+
+  it("price CTA has a {price} placeholder", () => {
+    expect(en.hero.ctaPrice).toContain("{price}");
+    expect(th.hero.ctaPrice).toContain("{price}");
+  });
 });

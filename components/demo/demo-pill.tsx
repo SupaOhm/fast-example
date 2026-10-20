@@ -64,7 +64,7 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
       className="fixed inset-x-3 bottom-3 z-[100] mx-auto flex max-w-xl items-center gap-1 rounded-full bg-neutral-950/95 p-1.5 text-white shadow-2xl backdrop-blur"
     >
       <Link
-        href={`/${locale}#services`}
+        href={`/${locale}#work`}
         aria-label={c.back}
         className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm hover:bg-white/10"
       >

@@ -3,20 +3,24 @@ import { FASTWORK_PROFILE_URL } from "@/lib/packages";
 
 export function SiteFooter({ t }: { t: Dictionary }) {
   return (
-    <footer className="px-4 pb-8 sm:px-6">
-      <div className="mx-auto max-w-6xl rounded-[2rem] bg-ink px-6 py-14 text-paper sm:px-12">
-        <h2 className="font-display text-3xl font-bold leading-[1.2] sm:text-5xl">{t.footer.heading}</h2>
-        <p className="mt-4 max-w-xl leading-relaxed text-paper/70">{t.footer.body}</p>
-        <a
-          href={FASTWORK_PROFILE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-8 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-paper hover:text-ink"
-        >
-          {t.footer.button}
-        </a>
+    <footer className="bg-forest text-cream">
+      <div className="bg-lime text-forest">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+          <h2 className="display-heading max-w-3xl font-display text-4xl leading-none font-extrabold tracking-[-0.04em] sm:text-6xl">
+            {t.cta.heading}
+          </h2>
+          <p className="mt-5 max-w-xl text-base leading-relaxed sm:text-lg">{t.cta.body}</p>
+          <a
+            href={FASTWORK_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-sm font-bold text-lime transition hover:bg-forest-2"
+          >
+            {t.cta.button}
+          </a>
+        </div>
       </div>
-      <p className="mx-auto mt-6 max-w-6xl text-xs text-muted">
+      <p className="mx-auto max-w-6xl px-4 py-6 text-xs text-cream-muted sm:px-6">
         {t.footer.note} · © {new Date().getFullYear()} SupaOhm
       </p>
     </footer>
