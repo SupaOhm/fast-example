@@ -23,7 +23,7 @@ export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictio
               </a>
             ))}
           </nav>
-          <LocaleSwitch locale={locale} path={path} label={t.nav.switchLocale} ariaLabel={t.nav.switchLocaleLabel} />
+          <LocaleSwitch locale={locale} path={path} ariaLabel={t.nav.switchLocaleLabel} />
           <a
             href={FASTWORK_PROFILE_URL}
             target="_blank"

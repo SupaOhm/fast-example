@@ -43,12 +43,12 @@ export function HeroWall({ pauseLabel, playLabel }: { pauseLabel: string; playLa
           })}
         </div>
         <div className="absolute inset-0 bg-linear-to-b from-forest via-transparent to-forest lg:hidden" />
-        <div className="absolute inset-0 hidden bg-linear-to-r from-forest via-forest/30 to-transparent lg:block" />
       </div>
+      {/* Hidden until keyboard focus: keeps the WCAG 2.2.2 pause control without a visible button on the wall. */}
       <button
         type="button"
         onClick={() => setPaused((p) => !p)}
-        className="absolute right-4 bottom-4 z-10 flex items-center gap-1.5 rounded-md border border-rule bg-forest/80 px-3 py-1.5 text-xs font-semibold text-cream backdrop-blur transition hover:border-cream motion-reduce:hidden"
+        className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:right-4 focus-visible:bottom-4 focus-visible:z-10 focus-visible:flex focus-visible:items-center focus-visible:gap-1.5 focus-visible:rounded-md focus-visible:border focus-visible:border-cream focus-visible:bg-forest/90 focus-visible:px-3 focus-visible:py-1.5 focus-visible:text-xs focus-visible:font-semibold focus-visible:text-cream motion-reduce:hidden"
       >
         {paused ? <Play className="size-3.5" aria-hidden /> : <Pause className="size-3.5" aria-hidden />}
         {paused ? playLabel : pauseLabel}

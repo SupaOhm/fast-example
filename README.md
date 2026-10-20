@@ -37,4 +37,4 @@ Screenshots land in `public/thumbs/` (hero wall, Fastwork covers) and `public/th
 
 ## Deploy
 
-The site is a static export (`out/`) served by Cloudflare Workers static assets; config is in `wrangler.jsonc`, and the `/` → `/en` redirect is in `public/_redirects`. Cloudflare's build runs `pnpm run build`, then `npx wrangler deploy`. To preview the production server locally, run `pnpm build && pnpm start`.
+The site is a static export (`out/`) served by Cloudflare Workers static assets; config is in `wrangler.jsonc`. `/` is a language chooser (`app/(choose)`); visitors who already picked a language go straight to `/en` or `/th`. Cloudflare's build runs `pnpm run build`, then `npx wrangler deploy`. To preview the production server locally, run `pnpm build && pnpm start`.

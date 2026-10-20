@@ -92,10 +92,14 @@ test("no off-platform contact details on the hub", async ({ page }) => {
   }
 });
 
-test("hero wall motion can be paused and resumed", async ({ page }) => {
+test("hero wall pause control is hidden until keyboard focus, then pauses and resumes", async ({ page }) => {
   await page.goto("/en");
   const wall = page.locator(".hero-wall");
-  await page.getByRole("button", { name: "Pause motion" }).click();
+  const pause = page.getByRole("button", { name: "Pause motion" });
+  expect((await pause.boundingBox())!.width).toBeLessThanOrEqual(1);
+  await pause.focus();
+  expect((await pause.boundingBox())!.width).toBeGreaterThan(40);
+  await page.keyboard.press("Enter");
   await expect(wall).toHaveAttribute("data-paused", "true");
   const states = () =>
     page.evaluate(() =>
@@ -105,10 +109,10 @@ test("hero wall motion can be paused and resumed", async ({ page }) => {
         .map((a) => a.playState),
     );
   expect(await states()).toEqual(["paused", "paused", "paused"]);
-  await page.getByRole("button", { name: "Play motion" }).click();
+  await page.keyboard.press("Enter");
   await expect(wall).not.toHaveAttribute("data-paused");
   expect(await states()).toEqual(["running", "running", "running"]);
-  await expect(page.getByRole("button", { name: "Pause motion" })).toBeVisible();
+  await expect(pause).toBeFocused();
 });
 
 test("header hire button goes to the Fastwork profile", async ({ page }) => {

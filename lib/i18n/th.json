@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "SupaOhm — ตัวอย่างงานเว็บไซต์และระบบ",
+    "title": "SupaOhm | รับทำเว็บไซต์และเว็บแอป พร้อมเดโม่ให้ลอง",
     "description": "ลองใช้เว็บตัวอย่างของทุกแพ็กเกจ: เซลเพจ เว็บบริษัท เว็บรีสอร์ท API แดชบอร์ด และระบบจองคิว สร้างด้วย Next.js"
   },
   "nav": {
@@ -10,7 +10,6 @@
     "about": "เกี่ยวกับ",
     "hire": "จ้างงานบน Fastwork",
     "newTab": "(เปิดในแท็บใหม่)",
-    "switchLocale": "EN",
     "switchLocaleLabel": "Switch to English"
   },
   "hero": {
@@ -40,7 +39,7 @@
   "compare": {
     "heading": "เปรียบเทียบแพ็กเกจ",
     "intro": "เลือกบริการ เพื่อดูทั้ง 3 แพ็กเกจเทียบกันทีละหัวข้อ",
-    "metaTitle": "เปรียบเทียบแพ็กเกจ — SupaOhm",
+    "metaTitle": "เปรียบเทียบแพ็กเกจ | SupaOhm",
     "metaDescription": "เปรียบเทียบแพ็กเกจ Basic, Standard และ Premium ของงานเว็บไซต์และเว็บแอป ทีละหัวข้อ"
   },
   "process": {

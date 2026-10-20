@@ -42,9 +42,18 @@ for (const path of ["/en", "/th"]) {
   }
 }
 
-test("root redirects to /en", async ({ page }) => {
+test("root asks for a language and goes to the one picked", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveURL(/\/en$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Choose your language");
+  await page.getByRole("link", { name: /ภาษาไทย/ }).click();
+  await expect(page).toHaveURL(/\/th$/);
+});
+
+test("returning visitors skip the language chooser", async ({ page }) => {
+  await page.goto("/th");
+  await page.waitForFunction(() => localStorage.getItem("showcase:locale") === "th");
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/th$/);
 });
 
 test("unknown locale returns 404", async ({ page }) => {
