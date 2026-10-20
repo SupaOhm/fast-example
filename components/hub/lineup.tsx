@@ -36,7 +36,7 @@ function PlanCard({ pkg, service, locale, t }: { pkg: Package; service: Service;
     // 10 children = 10 subgrid rows: stack, name, tagline, price, buttons, demo line, 4 specs.
     <article
       data-testid={`plan-${pkg.id}`}
-      className="group flex w-[85%] shrink-0 snap-center flex-col text-center md:row-span-10 md:grid md:w-auto md:grid-rows-subgrid"
+      className="group relative flex w-[85%] hover:z-10 focus-within:z-10 shrink-0 snap-center flex-col text-center md:row-span-10 md:grid md:w-auto md:grid-rows-subgrid"
     >
       <PlanStack pages={pkg.pages} className="mb-10 aspect-[2/1] w-full" />
       <h4 className="font-display text-[32px] leading-none font-extrabold tracking-[-0.04em]">{t.work.tiers[pkg.tier]}</h4>

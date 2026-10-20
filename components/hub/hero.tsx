@@ -10,8 +10,8 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary }) {
   const [line1, line2] = t.hero.title.split("\n");
   const [before, accent, after] = line1.split("*");
   return (
-    <section className="relative overflow-hidden bg-forest text-cream">
-      <div className="relative z-10 mx-auto max-w-6xl px-4 pt-14 pb-10 sm:px-6 sm:pt-20 lg:pt-28 lg:pb-36">
+    <section className="relative overflow-hidden bg-forest text-cream lg:flex lg:min-h-[calc(100svh-4rem)] lg:items-center">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-14 pb-10 sm:px-6 sm:pt-20 lg:py-24">
         <div className="lg:max-w-[40rem]">
           <h1 className="display-heading font-display text-[2.75rem] leading-[1.1] font-extrabold tracking-[-0.04em] sm:text-6xl lg:text-[4.5rem]">
             {before}

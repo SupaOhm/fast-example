@@ -1,13 +1,13 @@
 import Image from "next/image";
 
 // A plan's pages fanned out: 1, 3 or 5 screenshots, so the bigger plan visibly holds more.
-// Geometry lives in globals.css (.plan-stack); hovering the plan card spreads the fan.
+// The first page (the demo's home) sits in front, in the middle; the rest alternate left, right, left, right.
+// Geometry lives in globals.css (.plan-stack); hovering the plan card spreads and enlarges the fan.
 export function PlanStack({ pages, className = "" }: { pages: string[]; className?: string }) {
-  const mid = (pages.length - 1) / 2;
   return (
     <div aria-hidden className={`plan-stack relative ${className}`}>
       {pages.map((src, i) => {
-        const o = i - mid;
+        const o = i === 0 ? 0 : i % 2 === 1 ? -Math.ceil(i / 2) : Math.ceil(i / 2);
         return (
           <div
             key={src}

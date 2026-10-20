@@ -133,24 +133,27 @@
   transform: translateX(calc(-50% + var(--o) * var(--dx))) translateY(calc(var(--ao) * 8px)) rotate(calc(var(--o) * var(--rot)));
 }
 @media (prefers-reduced-motion: no-preference) {
+  .plan-stack,
   .plan-stack > * {
     transition:
       transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1),
-      translate 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
+      translate 0.45s cubic-bezier(0.3, 0.7, 0.2, 1),
+      scale 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
   }
   .group:is(:hover, :focus-within) .plan-stack {
-    --dx: 15%;
-    --rot: 7deg;
+    --dx: 17%;
+    --rot: 8deg;
+    scale: 1.12;
   }
   .group:is(:hover, :focus-within) .plan-stack > * {
-    translate: 0 -8px;
+    translate: 0 -10px;
   }
 }
 
 /* Desktop hero wall: fade the left edge (under the copy) and the bottom edge instead of cutting them. */
 @media (min-width: 1024px) {
   .hero-wall {
-    mask-image: linear-gradient(to right, transparent, #000 40%), linear-gradient(to bottom, #000 78%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 40%), linear-gradient(to bottom, #000 88%, transparent);
     mask-composite: intersect;
   }
 }
