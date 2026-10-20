@@ -15,6 +15,8 @@ The goal: in the first second, a Fastwork buyer sees that there is a lot of real
 
 Direction chosen in brainstorming: **V2 "Moving wall"**, a dark studio hero whose right side is a tilted, streaming wall of the six demo screenshots.
 
+**Tone:** professional and client-focused. Copy talks about what the buyer gets, never boasts, and makes no claims about other sellers. No "go break it", "no Dribbble shots" or similar.
+
 ## Success criteria
 
 - The first viewport at 1440×900 and at 375×812 shows the headline, a primary CTA and demo screenshots.
@@ -40,7 +42,7 @@ Tokens in `app/globals.css` `@theme` replace the paper/ink set:
 | `--color-lime` | `#d7ff5c` | accent, primary buttons, CTA band |
 | `--color-rule` | `#efeadb1f` | hairlines and borders |
 
-- **Type:** keep the loaded fonts. Bricolage Grotesque handles Latin display at weight 800 with tight tracking (`-0.04em`) and leading 0.95. Anuphan handles Thai and body text.
+- **Type:** keep the loaded fonts, and add no serif or accent font. Bricolage Grotesque handles Latin display at weight 800 with tight tracking (`-0.04em`): leading 1.1 for the hero H1 (room for the underline) and 1.0 for section headings. Anuphan handles Thai and body text.
   - Thai headings use leading ≥ 1.2 with no negative tracking. Apply this via `:lang(th)` or the locale-aware classes.
 - **Buttons:** 6px radius, not pills.
   - Primary: lime fill with forest text.
@@ -61,8 +63,16 @@ Section order and anchor ids:
 
 ### 1. Hero
 - **Copy (left, desktop):**
-  - H1: "Six businesses. Six live builds." then a line break and "Go poke around." in lime.
-  - Body: "Every package I sell on Fastwork comes with a working demo. No mockups, no Dribbble shots. Real pages you can click."
+  - H1 (EN): "See exactly what you're paying for." All of it is in Bricolage Grotesque 800 and cream. There is no second font, and no lime text in the headline.
+    - The one accent is a **hand-drawn lime underline under "exactly"**, from a `Scribble` component in `components/hub/scribble.tsx`.
+    - **Width:** the SVG spans exactly the word's width (`left:0; width:100%` of an inline-block wrapper).
+    - **Position:** it sits just below the baseline (`top: calc(100% - .1em)`), behind the glyphs (`z-index:-1` inside an `isolation:isolate` wrapper), so descenders like the "y" overlap it cleanly. Headline leading is 1.1 to leave room.
+    - **Stroke:** a single slightly rising curve, round caps, about 0.07em thick, `aria-hidden`.
+    - **Animation:** it draws itself in once on load (`stroke-dashoffset`, about 0.7s, starting at 0.3s). Under `prefers-reduced-motion: reduce` it is static and fully drawn.
+    - **Line breaks:** at 1440px it breaks after "what". At 375px it wraps naturally, and "exactly" is never split (`white-space:nowrap` on the wrapper).
+  - H1 (TH): "เห็นชัดๆ ว่าจ่ายแล้วได้อะไร", with the same underline under "ชัดๆ". In Anuphan 700 the underline sits at `top: calc(100% - .16em)`, and Thai leading stays ≥ 1.2.
+  - Body (EN): "Each package I offer on Fastwork has a working example you can open and use, so the scope and quality are clear before you order."
+  - Body (TH): "ทุกแพ็กเกจบน Fastwork มีเว็บตัวอย่างที่เปิดใช้งานได้จริง เห็นขอบเขตและคุณภาพงานชัดเจนก่อนสั่งซื้อ"
   - Buttons: **Browse the work ↓** (`#work`) and **Packages from ฿4,900** (`#work`). The price comes from `Math.min` over `packages` via `formatTHB`.
 - **The wall (right, desktop):**
   - Three columns of the six `/thumbs/<id>.jpg` screenshots, rotated −8°.
@@ -75,7 +85,7 @@ Section order and anchor ids:
 - **Mobile (375px):**
   - Copy first, then the wall below it at about 260px tall, cropped by the section edge.
   - No horizontal overflow (the wall is clipped by `overflow-hidden` on the hero).
-- **Thai copy:** written fresh in the same casual, confident tone, not translated literally. Example H1: "6 ธุรกิจ 6 เว็บที่ใช้งานได้จริง / ลองกดเล่นได้เลย". Use the neutral pronoun "เรา" for SupaOhm.
+- **Thai copy:** written fresh in the same professional tone, not translated literally. Use the neutral pronoun "เรา" for SupaOhm.
 
 ### 2. The work (`#work`)
 - **Heading:** "The work" plus a one-line intro saying each project is one Fastwork package.
@@ -113,7 +123,7 @@ Section order and anchor ids:
 
 ### 5. CTA band + footer
 
-- **Band:** full-width lime with forest text. Big "Your business next." (TH: "ต่อไปคือธุรกิจของคุณ"), one sentence, and a forest-filled **Hire me on Fastwork** button linking to `FASTWORK_PROFILE_URL`.
+- **Band:** full-width lime with forest text. Big "Have a project in mind?" (TH: "มีโปรเจกต์ในใจแล้ว?"), one sentence ("Send your brief on Fastwork and I'll confirm scope and price before we start."), and a forest-filled **Hire me on Fastwork** button linking to `FASTWORK_PROFILE_URL`.
 - **Footer line:** the fictional-content note and © year, on forest.
 
 ## Language default
@@ -126,7 +136,7 @@ Section order and anchor ids:
 ## Code changes
 
 - **Rewrite in `components/hub/`:** `hero.tsx` (with a client child `hero-wall.tsx` for the pause toggle), `site-header.tsx` and `site-footer.tsx`.
-- **New files:** `work-section.tsx` and `project-row.tsx`, replacing `services-section.tsx` and `package-card.tsx`.
+- **New files:** `work-section.tsx` and `project-row.tsx`, plus `scribble.tsx` (the hand-drawn underline, server component, pure CSS animation), replacing `services-section.tsx` and `package-card.tsx`.
 - **Restyle:** `process-section.tsx`.
 - **Merge:** `about-section.tsx` absorbs `stack-section.tsx`, which is then deleted. Delete the other replaced files too.
 - **`lib/i18n/{en,th}.json`:** a new copy structure (hero, work incl. `try`, process, about, cta, footer, nav). `Dictionary` stays inferred from `en.json`, and `tests/unit/i18n.test.ts` keeps checking that both dictionaries have identical keys.
