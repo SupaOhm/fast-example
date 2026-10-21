@@ -70,7 +70,7 @@ The mockups set **direction only**. The final visual design of each page is done
 - **Where they live:** `components/demo/lang.tsx` takes over resort's `useLang`, `T`, `LangScope` and `TImage` from `app/demos/resort/_components/t.tsx`. That file is deleted, and resort imports the shared versions.
 - **`LangScope`:** wraps each demo layout and sets `lang` on the wrapper.
 - **`<DemoLangSwitch className labels>`:** a button that toggles `demoLang`. It shows the *other* language ("EN" when Thai is showing, "TH" when English is showing) and has an `aria-label` in the current language. Each demo places it in its own header and styles it through `className`. Resort's `LangToggle` becomes a styled use of it.
-- **Demo bar:** `components/demo/demo-pill.tsx` reads `demoLang` instead of `showcase:locale`.
+- **Demo bar:** `components/demo/demo-pill.tsx` reads `demoLang` instead of `showcase:locale`. Its "Back to showcase" link goes to the hub language the visitor saved (`showcase:locale`), and only falls back to the demo language when there is none. This way a switch inside a demo never changes the hub's language, not even through Back. Decided 2026-10-22.
 - **Formatting:** `lib/demos/format.ts` holds `formatDate(date, lang, style)` and `formatTHB(n)` (the same in both languages).
   - Thai dates use the Buddhist year (`21 ต.ค. 2569`); English dates use the Gregorian year (`21 Oct 2026`).
   - `app/demos/shop-admin/_components/format.ts` and `app/demos/clinic-booking/_components/admin-format.ts` call it.
