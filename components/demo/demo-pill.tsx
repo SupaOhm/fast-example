@@ -2,11 +2,12 @@
 
 import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
-import { LOCALE_STORAGE_KEY, defaultLocale, isLocale, type Locale } from "@/lib/i18n/config";
+import { useState } from "react";
+import { useLang } from "@/components/demo/lang";
+import type { Lang } from "@/lib/demos/lang";
 import { formatTHB, getPackage, type PackageId } from "@/lib/packages";
 
-const copy: Record<Locale, Record<"back" | "order" | "note" | "collapse" | "expand", string>> = {
+const copy: Record<Lang, Record<"back" | "order" | "note" | "collapse" | "expand", string>> = {
   th: {
     back: "กลับหน้าผลงาน",
     order: "สั่งแพ็กเกจนี้",
@@ -23,21 +24,10 @@ const copy: Record<Locale, Record<"back" | "order" | "note" | "collapse" | "expa
   },
 };
 
-const noopSubscribe = () => () => {};
-
-function readLocale(): Locale {
-  try {
-    const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (stored && isLocale(stored)) return stored;
-  } catch {
-    // ignore
-  }
-  return defaultLocale;
-}
-
 export function DemoPill({ packageId }: { packageId: PackageId }) {
   const pkg = getPackage(packageId);
-  const locale = useSyncExternalStore(noopSubscribe, readLocale, () => defaultLocale);
+  // The bar speaks the demo's language, so one screen never mixes two. Hub and demo locales share the same codes.
+  const locale = useLang();
   const [open, setOpen] = useState(true);
   const c = copy[locale];
   const font = { fontFamily: "var(--font-demo-pill), ui-sans-serif, system-ui, sans-serif" };
