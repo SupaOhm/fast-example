@@ -10,7 +10,7 @@ import { toISODate } from "@/lib/dates";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { ui } from "./copy";
-import { useLang } from "./t";
+import { useLang } from "@/components/demo/lang";
 
 type Field = keyof InquiryInput;
 const FIELD_ORDER: Field[] = ["checkIn", "checkOut", "guests", "roomId", "name", "email"];

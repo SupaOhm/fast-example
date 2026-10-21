@@ -1,8 +1,7 @@
 import { parseISODate } from "@/lib/dates";
 import { isEmail } from "@/lib/validation";
+import type { L, Lang } from "@/lib/demos/lang";
 
-export type Lang = "th" | "en";
-export type L = Record<Lang, string>;
 export type RoomType = "deluxe" | "suite" | "villa";
 
 export interface Room {

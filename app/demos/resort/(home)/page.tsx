@@ -7,7 +7,7 @@ import { formatTHB } from "@/lib/packages";
 import { ui } from "../_components/copy";
 import { Moonrise } from "../_components/moonrise";
 import { Reveal } from "../_components/reveal";
-import { T, TImage } from "../_components/t";
+import { T, TImage } from "@/components/demo/lang";
 
 export const metadata: Metadata = { title: "Boutique resort in Ao Nang" };
 

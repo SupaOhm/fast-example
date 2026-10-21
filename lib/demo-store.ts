@@ -8,21 +8,40 @@ export interface DemoStore<T> {
 
 const PREFIX = "demo:";
 
+export interface DemoStoreOptions<T> {
+  /**
+   * Value to use while nothing is stored, worked out on the client when first read.
+   * It is never written to storage, and the server snapshot stays `seed`.
+   */
+  initial?: () => T;
+}
+
 // A tiny observable store backed by localStorage. Every storage access is
 // guarded, so the demos still work in private windows or with storage blocked.
-export function createDemoStore<T>(key: string, seed: T): DemoStore<T> {
+export function createDemoStore<T>(key: string, seed: T, options: DemoStoreOptions<T> = {}): DemoStore<T> {
   const storageKey = PREFIX + key;
   const listeners = new Set<() => void>();
   let current: T | undefined;
+
+  function fallback(): T {
+    if (options.initial) {
+      try {
+        return options.initial();
+      } catch {
+        // fall through to seed
+      }
+    }
+    return structuredClone(seed);
+  }
 
   function read(): T {
     try {
       const raw = globalThis.localStorage?.getItem(storageKey);
       if (raw) return JSON.parse(raw) as T;
     } catch {
-      // fall through to seed
+      // fall through to the fallback
     }
-    return structuredClone(seed);
+    return fallback();
   }
 
   function emit() {
@@ -47,7 +66,7 @@ export function createDemoStore<T>(key: string, seed: T): DemoStore<T> {
   }
 
   function reset(): T {
-    current = structuredClone(seed);
+    current = fallback();
     try {
       globalThis.localStorage?.removeItem(storageKey);
     } catch {

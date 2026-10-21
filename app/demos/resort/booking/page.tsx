@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { ui } from "../_components/copy";
 import { InquiryForm } from "../_components/inquiry-form";
 import { PageIntro } from "../_components/page-intro";
-import { T } from "../_components/t";
+import { T } from "@/components/demo/lang";
 
 export const metadata: Metadata = { title: "Book a stay" };
 

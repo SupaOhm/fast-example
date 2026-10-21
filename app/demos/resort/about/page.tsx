@@ -4,7 +4,7 @@ import { about, highlights, resort } from "@/lib/demos/resort/content";
 import { unsplash } from "@/lib/images";
 import { ui } from "../_components/copy";
 import { Reveal } from "../_components/reveal";
-import { T, TImage } from "../_components/t";
+import { T, TImage } from "@/components/demo/lang";
 
 export const metadata: Metadata = { title: "About" };
 

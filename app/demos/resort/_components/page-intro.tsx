@@ -1,5 +1,5 @@
-import type { L } from "@/lib/demos/resort/logic";
-import { T } from "./t";
+import type { L } from "@/lib/demos/lang";
+import { T } from "@/components/demo/lang";
 
 /** Title block for inner pages: a large serif title and an optional lede. */
 export function PageIntro({ title, lede }: { title: L; lede?: L }) {

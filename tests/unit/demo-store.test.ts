@@ -97,3 +97,33 @@ describe("createDemoStore", () => {
     off();
   });
 });
+
+describe("createDemoStore initial option", () => {
+  it("uses initial() while nothing is stored, without storing it", () => {
+    const store = createDemoStore("i1", "seed", { initial: () => "start" });
+    expect(store.get()).toBe("start");
+    expect(store.getSeed()).toBe("seed");
+    expect(localStorage.getItem("demo:i1")).toBeNull();
+  });
+
+  it("prefers a stored value over initial()", () => {
+    localStorage.setItem("demo:i2", '"saved"');
+    expect(createDemoStore("i2", "seed", { initial: () => "start" }).get()).toBe("saved");
+  });
+
+  it("reset goes back to initial()", () => {
+    const store = createDemoStore("i3", "seed", { initial: () => "start" });
+    store.set("saved");
+    expect(store.reset()).toBe("start");
+    expect(localStorage.getItem("demo:i3")).toBeNull();
+  });
+
+  it("falls back to the seed when initial() throws", () => {
+    const store = createDemoStore("i4", "seed", {
+      initial: () => {
+        throw new Error("no browser");
+      },
+    });
+    expect(store.get()).toBe("seed");
+  });
+});

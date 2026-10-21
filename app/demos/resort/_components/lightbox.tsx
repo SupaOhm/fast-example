@@ -3,10 +3,10 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { L } from "@/lib/demos/resort/logic";
+import type { L } from "@/lib/demos/lang";
 import { unsplash } from "@/lib/images";
 import { ui } from "./copy";
-import { useLang } from "./t";
+import { useLang } from "@/components/demo/lang";
 
 // Row spans on a 3-column grid give a masonry rhythm while keeping row-by-row reading order,
 // so ArrowRight in the lightbox moves the way the eye does. All three columns end on row 7.

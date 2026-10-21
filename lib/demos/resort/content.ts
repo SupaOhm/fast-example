@@ -1,5 +1,6 @@
 import { PHOTOS } from "@/lib/images";
-import type { L, Room } from "./logic";
+import type { L } from "@/lib/demos/lang";
+import type { Room } from "./logic";
 
 export const resort = {
   name: { th: "แสงจันทร์ รีสอร์ท", en: "Saeng Chan Resort" } satisfies L,
