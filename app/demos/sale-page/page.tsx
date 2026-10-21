@@ -46,10 +46,10 @@ export default function SalePage() {
             {benefits.map((b, i) => {
               const Icon = benefitIcons[i];
               return (
-                <li key={b.title} className="lg:border-l lg:border-(--cream)/20 lg:px-8 lg:first:border-l-0 lg:first:pl-0">
+                <li key={b.title.th} className="lg:border-l lg:border-(--cream)/20 lg:px-8 lg:first:border-l-0 lg:first:pl-0">
                   <Icon className="size-7 text-(--gold)" strokeWidth={1.5} aria-hidden />
-                  <h3 className="mt-4 text-lg leading-[1.3] font-semibold sm:text-xl">{b.title}</h3>
-                  <p className="mt-2 text-[15px] leading-[1.7] font-light text-(--leaf-soft) sm:text-base">{b.body}</p>
+                  <h3 className="mt-4 text-lg leading-[1.3] font-semibold sm:text-xl">{b.title.th}</h3>
+                  <p className="mt-2 text-[15px] leading-[1.7] font-light text-(--leaf-soft) sm:text-base">{b.body.th}</p>
                 </li>
               );
             })}
@@ -70,19 +70,19 @@ export default function SalePage() {
           </div>
           <ul className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-3 sm:gap-6 lg:gap-10">
             {ingredients.map((ing) => (
-              <li key={ing.name} className="flex items-center gap-4 sm:block">
+              <li key={ing.name.th} className="flex items-center gap-4 sm:block">
                 <div className="relative aspect-[3/4] w-24 shrink-0 overflow-hidden rounded-t-full bg-(--leaf-soft) sm:w-auto sm:aspect-[4/5]">
                   <Image
                     src={unsplash(ing.image, 700)}
-                    alt={ing.name}
+                    alt={ing.name.th}
                     fill
                     sizes="(min-width: 1024px) 340px, (min-width: 640px) 30vw, 96px"
                     className="object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl leading-[1.3] font-semibold text-(--leaf) sm:mt-5">{ing.name}</h3>
-                  <p className="mt-1.5 text-[15px] leading-[1.7] font-light text-(--muted) sm:mt-2 sm:text-base">{ing.body}</p>
+                  <h3 className="text-xl leading-[1.3] font-semibold text-(--leaf) sm:mt-5">{ing.name.th}</h3>
+                  <p className="mt-1.5 text-[15px] leading-[1.7] font-light text-(--muted) sm:mt-2 sm:text-base">{ing.body.th}</p>
                 </div>
               </li>
             ))}
@@ -96,10 +96,10 @@ export default function SalePage() {
           <h2 className="text-3xl leading-[1.3] font-semibold sm:text-4xl">เสียงจากคนที่ใช้จริง</h2>
           <ul className="mt-10 grid gap-5 md:grid-cols-3">
             {reviews.map((r) => (
-              <li key={r.name} className="flex flex-col rounded-3xl bg-(--cream) p-6 sm:p-7">
+              <li key={r.name.th} className="flex flex-col rounded-3xl bg-(--cream) p-6 sm:p-7">
                 <Stars count={r.stars} />
-                <blockquote className="mt-4 flex-1 text-[17px] leading-[1.65] font-light sm:text-lg">“{r.text}”</blockquote>
-                <p className="mt-6 text-sm leading-[1.5] font-semibold text-(--leaf)">{r.name}</p>
+                <blockquote className="mt-4 flex-1 text-[17px] leading-[1.65] font-light sm:text-lg">“{r.text.th}”</blockquote>
+                <p className="mt-6 text-sm leading-[1.5] font-semibold text-(--leaf)">{r.name.th}</p>
               </li>
             ))}
           </ul>
@@ -120,14 +120,14 @@ export default function SalePage() {
           </div>
           <div className="border-t border-(--line)">
             {faqs.map((f) => (
-              <details key={f.q} data-testid="faq-item" className="group border-b border-(--line)">
+              <details key={f.q.th} data-testid="faq-item" className="group border-b border-(--line)">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg leading-[1.4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--leaf) [&::-webkit-details-marker]:hidden">
-                  {f.q}
+                  {f.q.th}
                   <span className="grid size-8 shrink-0 place-items-center rounded-full bg-(--leaf-soft) text-(--leaf) transition-transform duration-200 group-open:rotate-45 motion-reduce:transition-none">
                     <Plus className="size-4" aria-hidden />
                   </span>
                 </summary>
-                <p className="-mt-1 max-w-prose pb-6 pr-12 leading-[1.75] font-light text-(--muted)">{f.a}</p>
+                <p className="-mt-1 max-w-prose pb-6 pr-12 leading-[1.75] font-light text-(--muted)">{f.a.th}</p>
               </details>
             ))}
           </div>
@@ -141,7 +141,7 @@ export default function SalePage() {
               <JasmineMark className="size-7" />
               <span className="text-xl leading-[1.3] font-semibold">{brand.name}</span>
             </p>
-            <p className="mt-2 text-sm leading-[1.5] font-light text-(--cream)/70">{brand.tagline}</p>
+            <p className="mt-2 text-sm leading-[1.5] font-light text-(--cream)/70">{brand.tagline.th}</p>
           </div>
           <p className="text-sm leading-[1.5] text-(--cream)/60">© Mali Botanics (ธุรกิจสมมติ)</p>
         </div>

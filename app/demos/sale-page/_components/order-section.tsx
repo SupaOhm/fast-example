@@ -17,7 +17,7 @@ export function OrderSection() {
 
         <ul className="mt-12 grid items-center gap-9 md:grid-cols-3 md:gap-6">
           {bundles.map((b) => {
-            const qty = Number.parseInt(b.label, 10);
+            const qty = b.qty;
             const perBottle = Math.round(b.price / qty);
             const hi = b.highlight;
             return (
@@ -37,9 +37,9 @@ export function OrderSection() {
                 )}
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-2xl leading-[1.3] font-semibold">{b.label}</h3>
+                    <h3 className="text-2xl leading-[1.3] font-semibold">{b.label.th}</h3>
                     <p className={`mt-1 text-sm leading-[1.5] ${hi ? "text-(--leaf-soft)" : "text-(--gold-ink)"}`}>
-                      {b.note}
+                      {b.note.th}
                     </p>
                   </div>
                   <div className={`flex items-end gap-1 ${hi ? "text-(--leaf-soft)" : "text-(--leaf)"}`}>

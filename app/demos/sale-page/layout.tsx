@@ -7,7 +7,7 @@ const prompt = Prompt({ weight: ["300", "400", "600"], subsets: ["thai", "latin"
 
 export const metadata: Metadata = {
   title: "Mali Botanics — เซรั่มน้ำนมข้าวมะลิ",
-  description: product.sub,
+  description: product.sub.th,
 };
 
 const palette = {

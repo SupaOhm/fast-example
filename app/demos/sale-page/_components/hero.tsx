@@ -21,19 +21,19 @@ export function Hero() {
         <div>
           <p className="flex items-center gap-2 text-sm text-(--leaf)">
             <span className="h-px w-8 bg-(--gold)" aria-hidden />
-            {brand.tagline}
+            {brand.tagline.th}
           </p>
           <h1 className="mt-5 text-[2.5rem] leading-[1.2] font-semibold text-balance text-(--ink) sm:text-6xl lg:text-[4.1rem]">
-            <Phrases text={product.headline} />
+            <Phrases text={`${product.headline.before.th}${product.headline.accent.th} ${product.headline.after.th}`} />
           </h1>
           <p className="mt-5 max-w-md text-base leading-[1.75] font-light text-(--muted) sm:text-lg">
-            {product.sub}
+            {product.sub.th}
           </p>
 
           <div className="mt-8 flex flex-wrap items-end gap-x-4 gap-y-1">
             <p className="leading-[1.2]">
               <span className="block text-sm text-(--muted)">
-                {product.name} {product.size}
+                {product.name.th} {product.size}
               </span>
               <span className="mt-1 flex items-baseline gap-3">
                 <span className="text-5xl font-semibold text-(--leaf)">{formatTHB(product.promoPrice)}</span>
@@ -68,7 +68,7 @@ export function Hero() {
         <div className="relative mx-auto w-full max-w-[25rem] lg:max-w-[27rem]">
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-full border-[10px] border-(--cream) bg-(--leaf-soft) shadow-[0_30px_60px_-30px_rgba(42,38,32,0.45)]">
             <Image
-              src={unsplash(product.image, 900)}
+              src={unsplash(product.photo, 900)}
               alt="ขวดเซรั่มน้ำนมข้าวมะลิ ขวดแก้วสีอำพันพร้อมหลอดหยด วางบนหิน"
               fill
               preload
