@@ -4,7 +4,6 @@ export function unsplash(id: string, width: number): string {
 
 // Every id below was verified with `curl -sI` to return 200 (Unsplash License).
 export const PHOTOS = {
-  saleHero: "1781344116880-029945a42b75",
   saleIngredient1: "1781707538246-61b5e9e18642",
   saleIngredient2: "1723475158232-819e29803f4d",
   saleIngredient3: "1775204059233-c59e8599ebe3",
