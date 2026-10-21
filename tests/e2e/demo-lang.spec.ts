@@ -39,6 +39,23 @@ for (const d of DEMOS) {
       await expect(bar(page)).toContainText(BAR.en);
       expect(await page.evaluate(() => localStorage.getItem("showcase:locale"))).toBeNull();
     });
+
+    test("Back returns to the hub language, not the demo's", async ({ page }) => {
+      // Seed the hub choice once, so a later write by the hub would show up.
+      await page.addInitScript(() => {
+        if (!sessionStorage.getItem("seeded")) {
+          localStorage.setItem("showcase:locale", "th");
+          sessionStorage.setItem("seeded", "1");
+        }
+      });
+      await page.goto(d.home);
+      await page.waitForLoadState("networkidle");
+      await page.getByTestId("lang-switch").click();
+      await expect(bar(page)).toContainText(BAR.en);
+      await bar(page).getByRole("link", { name: "Back to showcase" }).click();
+      await expect(page).toHaveURL(/\/th#work$/);
+      expect(await page.evaluate(() => localStorage.getItem("showcase:locale"))).toBe("th");
+    });
   });
 
   test.describe(`${d.name} with an English browser`, () => {

@@ -2,9 +2,9 @@
 
 import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useLang } from "@/components/demo/lang";
-import type { Lang } from "@/lib/demos/lang";
+import { type Lang, savedHubLang } from "@/lib/demos/lang";
 import { formatTHB, getPackage, type PackageId } from "@/lib/packages";
 
 const copy: Record<Lang, Record<"back" | "order" | "note" | "collapse" | "expand", string>> = {
@@ -24,10 +24,15 @@ const copy: Record<Lang, Record<"back" | "order" | "note" | "collapse" | "expand
   },
 };
 
+const noopSubscribe = () => () => {};
+
 export function DemoPill({ packageId }: { packageId: PackageId }) {
   const pkg = getPackage(packageId);
   // The bar speaks the demo's language, so one screen never mixes two. Hub and demo locales share the same codes.
   const locale = useLang();
+  // Back returns to the hub in the language the visitor chose there, so switching inside a demo never changes the hub.
+  // The server has no saved choice, so it renders the demo-language link and the client corrects it after hydration.
+  const hubLang = useSyncExternalStore(noopSubscribe, savedHubLang, () => null);
   const [open, setOpen] = useState(true);
   const c = copy[locale];
   const font = { fontFamily: "var(--font-demo-pill), ui-sans-serif, system-ui, sans-serif" };
@@ -37,6 +42,7 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
       <button
         type="button"
         data-testid="demo-pill"
+        lang={locale}
         aria-label={c.expand}
         onClick={() => setOpen(true)}
         style={font}
@@ -50,11 +56,12 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
   return (
     <div
       data-testid="demo-pill"
+      lang={locale}
       style={font}
       className="fixed inset-x-3 bottom-3 z-[100] mx-auto flex max-w-xl items-center gap-1 rounded-full bg-neutral-950/95 p-1.5 text-white shadow-2xl backdrop-blur"
     >
       <Link
-        href={`/${locale}#work`}
+        href={`/${hubLang ?? locale}#work`}
         aria-label={c.back}
         className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm hover:bg-white/10"
       >

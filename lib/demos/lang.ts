@@ -25,6 +25,12 @@ function readHubLocale(): string | null {
   }
 }
 
+/** The language the visitor saved on the hub, or null if they never picked one there. */
+export function savedHubLang(): Lang | null {
+  const saved = readHubLocale();
+  return saved && isLocale(saved) ? saved : null;
+}
+
 // One choice shared by every demo. The server renders Thai; on the client an unset
 // choice follows the hub, then the browser. Switching never touches the hub's own choice.
 export const demoLang = createDemoStore<Lang>("lang", "th", {

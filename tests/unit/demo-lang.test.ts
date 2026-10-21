@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { initialDemoLang, otherLang } from "@/lib/demos/lang";
+import { initialDemoLang, otherLang, savedHubLang } from "@/lib/demos/lang";
 
 describe("initialDemoLang", () => {
   it.each([
@@ -59,5 +59,20 @@ describe("demoLang", () => {
     expect(localStorage.getItem("demo:lang")).toBe('"th"');
     expect(localStorage.getItem("showcase:locale")).toBe("en");
     expect((await freshStore()).get()).toBe("th");
+  });
+});
+
+describe("savedHubLang", () => {
+  afterEach(() => localStorage.clear());
+
+  it("returns the hub choice when it is a valid language", () => {
+    localStorage.setItem("showcase:locale", "th");
+    expect(savedHubLang()).toBe("th");
+  });
+
+  it("returns null when there is no hub choice or it is invalid", () => {
+    expect(savedHubLang()).toBeNull();
+    localStorage.setItem("showcase:locale", "fr");
+    expect(savedHubLang()).toBeNull();
   });
 });

@@ -6,7 +6,7 @@ function iso(offsetDays: number) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-// These tests start from Thai; with no hub choice, a Thai browser opens the demo in Thai.
+// The whole file runs with a Thai browser. With no hub choice, the demo then opens in Thai, which the language test starts from.
 test.use({ locale: "th-TH" });
 
 test("language toggle switches copy and persists", async ({ page }) => {
