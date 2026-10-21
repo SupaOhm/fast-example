@@ -29,3 +29,10 @@ describe("fill", () => {
     expect(content.fill("{other} stays", { price: "x" })).toBe("{other} stays");
   });
 });
+
+describe("derived numbers", () => {
+  it("rounds the launch discount and averages the sample reviews", () => {
+    expect(content.discountPercent).toBe(34);
+    expect(content.avgRating).toBeCloseTo(14 / 3);
+  });
+});

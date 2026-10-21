@@ -14,7 +14,7 @@ export const ui = {
   benefitsHeading: { th: "สิ่งที่ผิวจะได้รับ ตั้งแต่ขวดแรก", en: "What your skin gets from the first bottle" },
   ingredientsHeading: { th: "สารสกัดจากพืชไทย ที่ผิวคุ้นเคย", en: "Thai botanicals your skin already knows" },
   ingredientsSub: { th: "คัดเฉพาะส่วนผสมหลักสามชนิด ที่อ่อนโยนพอสำหรับใช้ทุกวัน", en: "Three key ingredients, gentle enough for every day." },
-  reviewsHeading: { th: "เสียงจากคนที่ใช้จริง", en: "From people who use it" },
+  reviewsHeading: { th: "เสียงจาก คนที่ใช้จริง", en: "From people who use it" },
   reviewsNote: { th: "รีวิวตัวอย่างสำหรับเว็บสาธิต", en: "Sample reviews for a demo site" },
   ratingSuffix: { th: "จากรีวิวตัวอย่าง", en: "from sample reviews" },
   starsLabel: { th: "{count} จาก 5 ดาว", en: "{count} out of 5 stars" },

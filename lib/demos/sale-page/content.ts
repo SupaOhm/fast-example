@@ -141,3 +141,6 @@ export const faqs = [
     } satisfies L,
   },
 ];
+
+export const discountPercent = Math.round((1 - product.promoPrice / product.fullPrice) * 100);
+export const avgRating = reviews.reduce((sum, r) => sum + r.stars, 0) / reviews.length;

@@ -3,10 +3,9 @@
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useLang } from "@/components/demo/lang";
-import { benefits, brand, faqs, fill, ingredients, reviews } from "@/lib/demos/sale-page/content";
+import { avgRating, benefits, brand, faqs, fill, ingredients, reviews } from "@/lib/demos/sale-page/content";
 import { unsplash } from "@/lib/images";
 import { ui } from "./copy";
-import { avgRating } from "./hero";
 import { JasmineMark, Stars } from "./marks";
 import { Phrased } from "./phrases";
 
@@ -111,12 +110,12 @@ export function Reviews() {
           </h2>
           <div className="mt-8 flex items-end gap-5 lg:mt-12">
             <p className="text-[104px] leading-[0.8] font-extrabold tracking-[-0.04em] text-(--gold) lg:text-[128px]">
-              {avgRating}
+              {avgRating.toFixed(1)}
             </p>
             <div className="pb-1">
               <Stars
-                count={Math.round(Number(avgRating))}
-                label={fill(ui.starsLabel[lang], { count: avgRating })}
+                count={Math.round(avgRating)}
+                label={fill(ui.starsLabel[lang], { count: avgRating.toFixed(1) })}
                 starClassName="size-6"
               />
               <p className="mt-2 text-base leading-[1.4] text-(--mint)">{ui.ratingSuffix[lang]}</p>

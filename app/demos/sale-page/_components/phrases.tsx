@@ -5,11 +5,11 @@ import type { Lang } from "@/lib/demos/lang";
  * two words that belong together ("ชุ่ม|ชื้น"). Split on the spaces the copy
  * already uses as phrase breaks and keep each phrase on one line. Short tokens
  * and numbers ride along with the next token, so "ใน 14 วัน" stays whole, and
- * the repeat mark ๆ stays with the word before it. A phrase longer than
- * `MAX_WHOLE` is left to the browser's own word breaking so it can never
- * push past a phone screen.
+ * the repeat mark ๆ stays with the word before it. Each phrase is an
+ * inline-block capped at its container's width: it moves to the next line as a
+ * unit, and only if it is wider than the container itself does the browser
+ * break inside it, so a heading can never push past its column.
  */
-const MAX_WHOLE = 24;
 
 export function Phrases({ text }: { text: string }) {
   const phrases: string[] = [];
@@ -31,7 +31,7 @@ export function Phrases({ text }: { text: string }) {
   return phrases.map((p, i) => (
     <span key={i}>
       {i > 0 && " "}
-      {p.length > MAX_WHOLE ? p : <span className="whitespace-nowrap">{p}</span>}
+      <span className="inline-block max-w-full">{p}</span>
     </span>
   ));
 }

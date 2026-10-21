@@ -3,7 +3,7 @@
 import { Truck } from "lucide-react";
 import Image from "next/image";
 import { useLang } from "@/components/demo/lang";
-import { brand, fill, product, reviews } from "@/lib/demos/sale-page/content";
+import { avgRating, brand, discountPercent, fill, product } from "@/lib/demos/sale-page/content";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { ui } from "./copy";
@@ -11,8 +11,7 @@ import { MaliBottle } from "./mali-bottle";
 import { LineBubble, Stars, lineButtonClass } from "./marks";
 import { Phrased } from "./phrases";
 
-export const discount = Math.round((1 - product.promoPrice / product.fullPrice) * 100);
-export const avgRating = (reviews.reduce((sum, r) => sum + r.stars, 0) / reviews.length).toFixed(1);
+const rating = avgRating.toFixed(1);
 
 // The one piece of unprompted motion on the page: the price sticker is slapped on once.
 const stamp = `@keyframes mali-stamp{from{opacity:0;scale:1.8;rotate:-34deg}60%{opacity:1}to{opacity:1;scale:1;rotate:-10deg}}`;
@@ -86,12 +85,12 @@ export function Hero() {
                 </p>
                 <p className="flex flex-wrap items-center gap-x-2">
                   <Stars
-                    count={Math.round(Number(avgRating))}
-                    label={fill(ui.starsLabel[lang], { count: avgRating })}
+                    count={Math.round(avgRating)}
+                    label={fill(ui.starsLabel[lang], { count: rating })}
                     empty="var(--mint)"
                   />
                   <span>
-                    <span className="font-semibold text-white">{avgRating}</span> {ui.ratingSuffix[lang]}
+                    <span className="font-semibold text-white">{rating}</span> {ui.ratingSuffix[lang]}
                   </span>
                 </p>
               </div>
@@ -121,7 +120,7 @@ export function Hero() {
           <span aria-hidden className="absolute inset-[6px] rounded-full border border-dashed border-white/45" />
           <p className="relative">
             <span className="block text-[36px] leading-none font-extrabold tracking-[-0.03em] lg:text-[44px]">
-              −{discount}%
+              −{discountPercent}%
             </span>
             <span className="mt-1 block text-base leading-[1.2] font-semibold">{ui.todayOnly[lang]}</span>
           </p>

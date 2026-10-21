@@ -21,8 +21,7 @@ const palette = {
   "--mint": "#dfe9d6",
   "--line-green": "#04913e",
   // Supporting surfaces, all checked for AA with the text set on them:
-  // gold on --green-2 7.36, mint on --green-2 8.74, gold-ink on --paper 6.08, muted on --paper 7.13.
-  "--green-2": "#1f4429",
+  // gold-ink on --paper 6.08, muted on --paper 7.13.
   "--paper": "#fffcf3",
   // The LINE buttons' solid offset shadow.
   "--line-deep": "#03602a",
