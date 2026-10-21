@@ -3,7 +3,7 @@ import { Anuphan, Mitr } from "next/font/google";
 import { DemoPill } from "@/components/demo/demo-pill";
 import { ResortFooter } from "./_components/resort-footer";
 import { ResortHeader } from "./_components/resort-header";
-import { LangScope } from "./_components/t";
+import { LangScope } from "@/components/demo/lang";
 
 // Display face ships one weight, so every --font-display heading renders Medium.
 const display = Mitr({

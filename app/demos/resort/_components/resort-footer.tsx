@@ -4,7 +4,7 @@ import Link from "next/link";
 import { nav, resort } from "@/lib/demos/resort/content";
 import { ui } from "./copy";
 import { MoonMark } from "./moon-mark";
-import { useLang } from "./t";
+import { useLang } from "@/components/demo/lang";
 
 export function ResortFooter() {
   const lang = useLang();

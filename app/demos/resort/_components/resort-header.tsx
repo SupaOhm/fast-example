@@ -6,9 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav, resort } from "@/lib/demos/resort/content";
 import { ui } from "./copy";
-import { LangToggle } from "./lang-toggle";
 import { MoonMark } from "./moon-mark";
-import { T, useLang } from "./t";
+import { DemoLangSwitch, T, useLang } from "@/components/demo/lang";
 
 const HOME = "/demos/resort";
 const BOOK = "/demos/resort/booking";
@@ -57,7 +56,7 @@ export function ResortHeader() {
           </span>
         </Link>
 
-        <LangToggle className="md:order-2" />
+        <DemoLangSwitch className="grid h-10 min-w-10 place-items-center rounded-full border border-current/35 px-3 text-[13px] font-semibold tracking-wide transition-colors hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:order-2" />
 
         {/* The nav stays in the DOM at every width; on mobile only its list collapses behind the menu button. */}
         <nav aria-label={ui.mainNav[lang]} className="md:order-1">

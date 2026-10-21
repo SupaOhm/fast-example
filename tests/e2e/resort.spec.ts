@@ -6,9 +6,13 @@ function iso(offsetDays: number) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+// These tests start from Thai; with no hub choice, a Thai browser opens the demo in Thai.
+test.use({ locale: "th-TH" });
+
 test("language toggle switches copy and persists", async ({ page }) => {
   await page.goto("/demos/resort");
-  await page.getByTestId("lang-toggle").click();
+  await page.waitForLoadState("networkidle");
+  await page.getByTestId("lang-switch").click();
   await expect(page.getByRole("navigation").first()).toContainText("Rooms");
   await page.reload();
   await expect(page.getByRole("navigation").first()).toContainText("Rooms");

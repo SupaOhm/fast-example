@@ -9,7 +9,7 @@ import { filterRooms, type RoomType } from "@/lib/demos/resort/logic";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { roomTypeLabel, ui } from "./copy";
-import { useLang } from "./t";
+import { useLang } from "@/components/demo/lang";
 
 const TYPES = ["all", "deluxe", "suite", "villa"] as const;
 const GUEST_OPTIONS = [1, 2, 4, 6, 10];

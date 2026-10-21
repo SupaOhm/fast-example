@@ -1,4 +1,4 @@
-import type { L } from "@/lib/demos/resort/logic";
+import type { L } from "@/lib/demos/lang";
 
 /** Interface copy that is not business content. Business content lives in lib/demos/resort/content.ts. */
 export const ui = {
@@ -6,8 +6,6 @@ export const ui = {
   closeMenu: { th: "ปิดเมนู", en: "Close menu" },
   mainNav: { th: "เมนูหลัก", en: "Main menu" },
   footerNav: { th: "ลิงก์ท้ายเว็บ", en: "Footer links" },
-  switchToEn: { th: "เปลี่ยนเป็นภาษาอังกฤษ", en: "Switch to English" },
-  switchToTh: { th: "เปลี่ยนเป็นภาษาไทย", en: "Switch to Thai" },
 
   checkAvailability: { th: "เช็กห้องว่าง", en: "Check availability" },
   viewRooms: { th: "ดูห้องพัก", en: "View rooms" },
