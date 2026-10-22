@@ -3,7 +3,7 @@
 import { Check, Copy, Loader2, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ResetDemoButton } from "@/components/demo/reset-demo-button";
-import { ORDER_STATUSES, handleRequest, type HttpMethod } from "@/lib/demos/orders-api/api";
+import { ORDER_STATUSES, handleRequest, type HttpMethod, type LineNotification } from "@/lib/demos/orders-api/api";
 import { ordersStore } from "@/lib/demos/orders-api/store";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { METHOD_STYLE, MethodBadge, statusLine, statusTone } from "./http";
@@ -39,6 +39,16 @@ function highlight(json: string): React.ReactNode[] {
   }
   if (last < json.length) out.push(json.slice(last));
   return out;
+}
+
+// temporary: Task 2 renders this per language
+function toMessage(n: LineNotification): Pick<LineMessage, "title" | "lines"> {
+  return n.kind === "new"
+    ? {
+        title: "🛒 ออเดอร์ใหม่",
+        lines: [`${n.orderId} · ${n.customer}`, `${n.itemCount} ชิ้น · ฿${n.total.toLocaleString("en-US")}`],
+      }
+    : { title: "📦 อัปเดตสถานะออเดอร์", lines: [`${n.orderId} · ${n.customer}`, `${n.from} → ${n.to}`] };
 }
 
 function curlFor(method: HttpMethod, path: string, body: string): string {
@@ -152,7 +162,7 @@ export function ApiConsole({
       if (notification) {
         const time = new Intl.DateTimeFormat("th-TH", { hour: "2-digit", minute: "2-digit" }).format(now);
         const id = ++msgId.current;
-        setMessages((prev) => [...prev, { id, ...notification, time }].slice(-3));
+        setMessages((prev) => [...prev, { id, ...toMessage(notification), time }].slice(-3));
       }
       setShown({ status: result.response.status, body: result.response.body, ms });
       setLoading(false);

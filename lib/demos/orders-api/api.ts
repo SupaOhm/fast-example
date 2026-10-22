@@ -25,10 +25,9 @@ export interface ApiRequest {
   body?: unknown;
 }
 
-export interface LineNotification {
-  title: string;
-  lines: string[];
-}
+export type LineNotification =
+  | { kind: "new"; orderId: string; customer: string; itemCount: number; total: number }
+  | { kind: "status"; orderId: string; customer: string; from: OrderStatus; to: OrderStatus };
 
 export interface ApiResponse {
   status: number;
@@ -63,8 +62,6 @@ export const ENDPOINTS: { method: HttpMethod; path: string; summary: string; exa
 
 const respond = (status: number, body: unknown, notification?: LineNotification): ApiResponse =>
   notification ? { status, body, notification } : { status, body };
-
-const baht = (n: number) => `฿${n.toLocaleString("en-US")}`;
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -129,12 +126,14 @@ export function handleRequest(orders: Order[], req: ApiRequest, now: Date = new 
         status: "pending",
         createdAt: now.toISOString(),
       };
-      const itemCount = order.items.reduce((sum, i) => sum + i.qty, 0);
       return {
         orders: [order, ...orders],
         response: respond(201, { data: order }, {
-          title: "🛒 New order",
-          lines: [`${order.id} · ${order.customer}`, `${itemCount} items · ${baht(order.total)}`],
+          kind: "new",
+          orderId: order.id,
+          customer: order.customer,
+          itemCount: order.items.reduce((sum, i) => sum + i.qty, 0),
+          total: order.total,
         }),
       };
     }
@@ -161,8 +160,11 @@ export function handleRequest(orders: Order[], req: ApiRequest, now: Date = new 
   return {
     orders: orders.map((o) => (o.id === id ? updated : o)),
     response: respond(200, { data: updated }, {
-      title: "📦 Order status updated",
-      lines: [`${updated.id} · ${updated.customer}`, `${order.status} → ${status}`],
+      kind: "status",
+      orderId: updated.id,
+      customer: updated.customer,
+      from: order.status,
+      to: status,
     }),
   };
 }
