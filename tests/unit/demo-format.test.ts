@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatTHB } from "@/lib/demos/format";
+import { fill, formatDate, formatTHB } from "@/lib/demos/format";
 
 const d = new Date(2026, 9, 21); // Wednesday 21 October 2026
 
@@ -27,5 +27,17 @@ describe("formatDate", () => {
 describe("formatTHB", () => {
   it("is the same in both languages", () => {
     expect(formatTHB(14500)).toBe("฿14,500");
+  });
+});
+
+describe("fill", () => {
+  it("replaces every named placeholder and leaves unknown ones alone", () => {
+    expect(fill("Usually {price} a bottle, {price} each", { price: "฿590" })).toBe(
+      "Usually ฿590 a bottle, ฿590 each",
+    );
+    expect(fill("{other} stays", { price: "x" })).toBe("{other} stays");
+  });
+  it("ignores placeholders that only exist on Object.prototype", () => {
+    expect(fill("{constructor}", {})).toBe("{constructor}");
   });
 });

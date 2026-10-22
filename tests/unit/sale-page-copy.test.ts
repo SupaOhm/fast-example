@@ -28,15 +28,6 @@ describe("sale page copy", () => {
   });
 });
 
-describe("fill", () => {
-  it("replaces every named placeholder and leaves unknown ones alone", () => {
-    expect(content.fill("Usually {price} a bottle, {price} each", { price: "฿590" })).toBe(
-      "Usually ฿590 a bottle, ฿590 each",
-    );
-    expect(content.fill("{other} stays", { price: "x" })).toBe("{other} stays");
-  });
-});
-
 describe("derived numbers", () => {
   it("rounds the launch discount and averages the sample reviews", () => {
     expect(content.discountPercent).toBe(34);
