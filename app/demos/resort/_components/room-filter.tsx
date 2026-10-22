@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ROOMS } from "@/lib/demos/resort/content";
+import { fill } from "@/lib/demos/format";
 import { filterRooms, type RoomType } from "@/lib/demos/resort/logic";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
@@ -35,7 +36,7 @@ export function RoomFilter() {
                   data-testid={`filter-type-${t}`}
                   aria-pressed={active}
                   onClick={() => setType(t)}
-                  className={`h-10 rounded-full border px-4 text-[15px] leading-[1.2] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) ${
+                  className={`h-10 rounded-full border px-4 text-base leading-[1.2] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) ${
                     active
                       ? "border-(--sea-deep) bg-(--sea-deep) text-(--sand)"
                       : "border-(--line) bg-transparent text-(--ink) hover:border-(--sea)"
@@ -56,11 +57,11 @@ export function RoomFilter() {
             data-testid="filter-guests"
             value={guests}
             onChange={(e) => setGuests(Number(e.target.value))}
-            className="h-10 w-full rounded-full border border-(--field) bg-(--paper) px-4 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) md:w-48"
+            className="h-10 w-full rounded-full border border-(--field) bg-(--paper) px-4 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) md:w-48"
           >
             {GUEST_OPTIONS.map((n) => (
               <option key={n} value={n}>
-                {lang === "th" ? `${n} คนขึ้นไป` : n === 1 ? "1 guest or more" : `${n} guests or more`}
+                {n === 1 ? ui.guestsAtLeastOne[lang] : fill(ui.guestsAtLeast[lang], { n: String(n) })}
               </option>
             ))}
           </select>
@@ -68,7 +69,7 @@ export function RoomFilter() {
       </div>
 
       <p className="sr-only" role="status">
-        {lang === "th" ? `พบ ${rooms.length} ห้อง` : `${rooms.length} rooms found`}
+        {rooms.length === 1 ? ui.roomsFoundOne[lang] : fill(ui.roomsFound[lang], { n: String(rooms.length) })}
       </p>
 
       {rooms.length === 0 ? (
@@ -107,7 +108,7 @@ export function RoomFilter() {
                 <h2 className="mt-1.5 font-(family-name:--font-display) text-3xl leading-[1.25] text-(--sea-deep) lg:text-4xl">
                   {room.name[lang]}
                 </h2>
-                <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-(--ink)">
+                <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-base text-(--ink)">
                   <div className="flex items-center gap-2">
                     <dt>
                       <Users className="size-4 text-(--sea)" aria-hidden />
@@ -120,7 +121,7 @@ export function RoomFilter() {
                   <div className="flex items-center gap-2">
                     <dt>
                       <Maximize2 className="size-4 text-(--sea)" aria-hidden />
-                      <span className="sr-only">{lang === "th" ? "ขนาด" : "Size"}</span>
+                      <span className="sr-only">{ui.size[lang]}</span>
                     </dt>
                     <dd>
                       {room.sizeSqm} {ui.sqm[lang]}

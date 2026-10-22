@@ -9,8 +9,6 @@ export const ui = {
 
   checkAvailability: { th: "เช็กห้องว่าง", en: "Check availability" },
   viewRooms: { th: "ดูห้องพัก", en: "View rooms" },
-  allRooms: { th: "ดูห้องพักทั้งหมด", en: "See all rooms" },
-  roomsHeading: { th: "ห้องพักที่แขกเลือกบ่อย", en: "Rooms guests ask for most" },
   galleryHeading: { th: "วันหนึ่งที่แสงจันทร์", en: "A day at Saeng Chan" },
   openGallery: { th: "เปิดแกลเลอรี", en: "Open the gallery" },
   ctaHeading: { th: "คืนนี้พระจันทร์ขึ้นเหนือทะเลตอนหนึ่งทุ่มครึ่ง", en: "Tonight the moon rises over the bay at 7:30 pm" },
@@ -38,6 +36,11 @@ export const ui = {
     en: "Try fewer guests or another room type, or send an inquiry and we'll arrange connecting rooms.",
   },
   clearFilters: { th: "ล้างตัวกรอง", en: "Clear filters" },
+  guestsAtLeastOne: { th: "1 คนขึ้นไป", en: "1 guest or more" },
+  guestsAtLeast: { th: "{n} คนขึ้นไป", en: "{n} guests or more" },
+  roomsFoundOne: { th: "พบ 1 ห้อง", en: "1 room found" },
+  roomsFound: { th: "พบ {n} ห้อง", en: "{n} rooms found" },
+  size: { th: "ขนาด", en: "Size" },
 
   galleryTitle: { th: "แกลเลอรี", en: "Gallery" },
   galleryLede: {

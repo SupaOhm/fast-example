@@ -11,7 +11,9 @@ export const resort = {
     en: "A 24-key boutique resort in a tropical garden, three minutes' walk from the beach.",
   } satisfies L,
   heroImage: PHOTOS.resortHero,
+  heroAlt: { th: "ชายหาดและทะเลอันดามันหน้ารีสอร์ท", en: "The beach and the Andaman Sea in front of the resort" } satisfies L,
   aboutImage: PHOTOS.resortAbout,
+  aboutAlt: { th: "บรรยากาศภายในแสงจันทร์ รีสอร์ท", en: "Inside Saeng Chan Resort" } satisfies L,
 };
 
 export const nav: { href: string; label: L }[] = [

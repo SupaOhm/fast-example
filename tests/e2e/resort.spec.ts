@@ -84,3 +84,38 @@ test("availability strip hands a stay to the booking form", async ({ page }) => 
   await expect(page.getByTestId("input-roomId")).toHaveValue("sea-deluxe");
   await expect(page.getByTestId("inquiry-nights")).toContainText("1");
 });
+
+test("room rail steps through all five rooms", async ({ page }) => {
+  await page.goto("/demos/resort");
+  const rail = page.getByTestId("room-rail");
+  await rail.scrollIntoViewIfNeeded();
+  await expect(rail.getByRole("link")).toHaveCount(5);
+  await expect(rail.getByTestId("rail-counter")).toHaveText("01 / 05");
+  await rail.getByTestId("rail-next").click();
+  await expect(rail.getByTestId("rail-counter")).toHaveText("02 / 05");
+  await expect(rail.getByRole("link").first()).toHaveAttribute("href", /\/demos\/resort\/booking\?room=/);
+});
+
+test("the moon rises as you scroll the hero", async ({ page }) => {
+  await page.goto("/demos/resort");
+  await page.waitForLoadState("networkidle");
+  const line = page.getByTestId("moonrise-line");
+  const opacity = () => line.evaluate((el) => Number(getComputedStyle(el).opacity));
+  expect(await opacity()).toBeLessThan(0.2);
+  const hero = page.getByTestId("moonrise-hero");
+  const height = await hero.evaluate((el) => el.getBoundingClientRect().height);
+  await page.mouse.wheel(0, height * 0.7);
+  await expect.poll(opacity).toBeGreaterThan(0.9);
+});
+
+test.describe("with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the hero is one screen tall and doesn't animate", async ({ page }) => {
+    await page.goto("/demos/resort");
+    const hero = page.getByTestId("moonrise-hero");
+    const [height, viewport] = await hero.evaluate((el) => [el.getBoundingClientRect().height, window.innerHeight]);
+    expect(height).toBeLessThanOrEqual(viewport + 1);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  });
+});
