@@ -18,6 +18,11 @@ describe("formatDate", () => {
     expect(formatDate(d, "en", "full")).toBe("Wednesday, 21 October 2026");
   });
 
+  it("writes a short weekday", () => {
+    expect(formatDate(d, "th", "weekday")).toBe("พุธ");
+    expect(formatDate(d, "en", "weekday")).toBe("Wed");
+  });
+
   it("accepts ISO date strings as local dates", () => {
     expect(formatDate("2026-10-21", "en", "dayMonthYear")).toBe("21 Oct 2026");
     expect(formatDate("2026-10-21", "th", "dayMonthYear")).toBe("21 ต.ค. 2569");

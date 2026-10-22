@@ -12,6 +12,7 @@ export const resort = {
   } satisfies L,
   heroImage: PHOTOS.resortHero,
   aboutImage: PHOTOS.resortAbout,
+  aboutAlt: { th: "บรรยากาศภายในแสงจันทร์ รีสอร์ท", en: "Inside Saeng Chan Resort" } satisfies L,
 };
 
 export const nav: { href: string; label: L }[] = [
@@ -91,6 +92,33 @@ export const highlights: { title: L; body: L }[] = [
   { title: { th: "ใกล้ชายหาด", en: "Steps from the beach" }, body: { th: "เดิน 3 นาทีถึงหาดอ่าวนาง", en: "Three minutes to Ao Nang beach" } },
   { title: { th: "อาหารใต้ต้นตำรับ", en: "Southern Thai kitchen" }, body: { th: "วัตถุดิบจากชาวประมงท้องถิ่น", en: "Sourced from local fishers" } },
   { title: { th: "ทริปเกาะ", en: "Island trips" }, body: { th: "จัดทริปเรือหางยาวส่วนตัว", en: "Private longtail boat tours" } },
+];
+
+/** The home page's three big facts. `unit` sits small beside the figure; the moonrise has none. */
+export const facts: { figure: string; unit?: L; title: L; body: L; photo: string; alt: L }[] = [
+  {
+    figure: "3",
+    unit: { th: "นาที", en: "min" },
+    title: { th: "เดินถึงหาดอ่าวนาง", en: "Walk to Ao Nang beach" },
+    body: { th: "ผ่านสวนเขตร้อนของรีสอร์ท ไม่ต้องข้ามถนน", en: "Through the resort's tropical garden, without crossing a road." },
+    photo: PHOTOS.resortGallery2,
+    alt: { th: "ชายหาดและรีสอร์ทจากมุมสูง", en: "The beach and resort from above" },
+  },
+  {
+    figure: "24",
+    unit: { th: "ห้อง", en: "rooms" },
+    title: { th: "เท่านั้น ไม่พลุกพล่าน", en: "That's all, so it never feels crowded" },
+    body: { th: "พนักงานจำชื่อแขกได้ตั้งแต่วันแรก", en: "Our team knows every guest by name from the first day." },
+    photo: PHOTOS.resortGallery4,
+    alt: { th: "สระว่ายน้ำในสวนเขตร้อน", en: "Pool in the tropical garden" },
+  },
+  {
+    figure: "19:30",
+    title: { th: "พระจันทร์ขึ้นเหนืออ่าว", en: "Moonrise over the bay" },
+    body: { th: "มื้อค่ำริมทะเลจัดตามเวลาพระจันทร์ขึ้นของแต่ละคืน", en: "Beachside dinner is timed to each night's moonrise." },
+    photo: PHOTOS.resortGallery6,
+    alt: { th: "พระอาทิตย์ตกเหนืออ่าว", en: "Sunset over the bay" },
+  },
 ];
 
 export const about: { heading: L; body: L } = {

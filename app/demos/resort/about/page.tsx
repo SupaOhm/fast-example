@@ -17,7 +17,7 @@ export default function AboutPage() {
         <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-md bg-(--sand-2)">
           <TImage
             src={unsplash(resort.aboutImage, 1000)}
-            alt={{ th: "บรรยากาศภายในแสงจันทร์ รีสอร์ท", en: "Inside Saeng Chan Resort" }}
+            alt={resort.aboutAlt}
             fill
             preload
             sizes="(min-width: 768px) 45vw, 100vw"

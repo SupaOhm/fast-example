@@ -21,10 +21,24 @@ export function ResortHeader() {
 
   useEffect(() => {
     if (!isHome) return;
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
+    // Clear over the hero: past 48px, or for as long as the moonrise stage is pinned, whichever is longer.
+    // The hero and its pinned length are read once and again on resize, never on each scroll event.
+    // The stage can be taller than the viewport on a short screen, so its own height sets the pinned length.
+    const hero = document.querySelector<HTMLElement>("[data-hero-pin]");
+    const stage = hero?.querySelector<HTMLElement>("[data-hero-stage]");
+    let pinned = 0;
+    const onScroll = () => setScrolled(window.scrollY > Math.max(48, pinned));
+    const measure = () => {
+      pinned = hero && stage ? hero.offsetHeight - stage.offsetHeight : 0;
+      onScroll();
+    };
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", measure, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
+    };
   }, [isHome]);
 
   useEffect(() => {
@@ -56,7 +70,7 @@ export function ResortHeader() {
           </span>
         </Link>
 
-        <DemoLangSwitch className="grid h-10 min-w-10 place-items-center rounded-full border border-current/35 px-3 text-[13px] font-semibold tracking-wide transition-colors hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:order-2" />
+        <DemoLangSwitch className="grid h-10 min-w-10 place-items-center rounded-full border border-current/35 px-3 text-sm font-semibold tracking-wide transition-colors hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:order-2" />
 
         {/* The nav stays in the DOM at every width; on mobile only its list collapses behind the menu button. */}
         <nav aria-label={ui.mainNav[lang]} className="md:order-1">
@@ -85,7 +99,7 @@ export function ResortHeader() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center border-b border-(--line) py-4 font-(family-name:--font-display) text-2xl leading-[1.3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:border-0 md:py-2 md:font-(family-name:--font-body) md:text-[15px] ${
+                    className={`flex items-center border-b border-(--line) py-4 font-(family-name:--font-display) text-2xl leading-[1.3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:border-0 md:py-2 md:font-(family-name:--font-body) md:text-base ${
                       isBook
                         ? `md:ml-3 md:rounded-full md:px-5 md:font-semibold ${
                             overHero ? "md:bg-white md:text-(--sea-deep)" : "md:bg-(--sea) md:text-white"

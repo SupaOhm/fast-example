@@ -9,8 +9,6 @@ export const ui = {
 
   checkAvailability: { th: "เช็กห้องว่าง", en: "Check availability" },
   viewRooms: { th: "ดูห้องพัก", en: "View rooms" },
-  allRooms: { th: "ดูห้องพักทั้งหมด", en: "See all rooms" },
-  roomsHeading: { th: "ห้องพักที่แขกเลือกบ่อย", en: "Rooms guests ask for most" },
   galleryHeading: { th: "วันหนึ่งที่แสงจันทร์", en: "A day at Saeng Chan" },
   openGallery: { th: "เปิดแกลเลอรี", en: "Open the gallery" },
   ctaHeading: { th: "คืนนี้พระจันทร์ขึ้นเหนือทะเลตอนหนึ่งทุ่มครึ่ง", en: "Tonight the moon rises over the bay at 7:30 pm" },
@@ -38,6 +36,11 @@ export const ui = {
     en: "Try fewer guests or another room type, or send an inquiry and we'll arrange connecting rooms.",
   },
   clearFilters: { th: "ล้างตัวกรอง", en: "Clear filters" },
+  guestsAtLeastOne: { th: "1 คนขึ้นไป", en: "1 guest or more" },
+  guestsAtLeast: { th: "{n} คนขึ้นไป", en: "{n} guests or more" },
+  roomsFoundOne: { th: "พบ 1 ห้อง", en: "1 room found" },
+  roomsFound: { th: "พบ {n} ห้อง", en: "{n} rooms found" },
+  size: { th: "ขนาด", en: "Size" },
 
   galleryTitle: { th: "แกลเลอรี", en: "Gallery" },
   galleryLede: {
@@ -69,7 +72,6 @@ export const ui = {
   submit: { th: "ส่งคำขอจอง", en: "Send inquiry" },
   sending: { th: "กำลังส่ง…", en: "Sending…" },
   yourStay: { th: "สรุปการเข้าพัก", en: "Your stay" },
-  nights: { th: "คืน", en: "nights" },
   estimate: { th: "ราคาประมาณ", en: "Estimated total" },
   pickDates: { th: "เลือกวันเช็กอินและเช็กเอาต์เพื่อดูจำนวนคืน", en: "Choose your dates to see the number of nights" },
   pickRoom: { th: "เลือกห้องเพื่อดูราคาประมาณ", en: "Choose a room to see an estimate" },
@@ -83,6 +85,37 @@ export const ui = {
   address: { th: "88 หมู่ 2 ต.อ่าวนาง อ.เมือง จ.กระบี่ 81180", en: "88 Moo 2, Ao Nang, Mueang Krabi 81180" },
   phone: { th: "โทร 080-000-0000 (ตัวอย่าง)", en: "Tel 080-000-0000 (sample)" },
   footerNote: { th: "ธุรกิจสมมติสำหรับเว็บตัวอย่าง", en: "A fictional business for a demo site" },
+  // moonrise hero
+  heroMoonrise: { th: "คืนนี้พระจันทร์ขึ้นเหนืออ่าว 19:30 น.", en: "Tonight the moon rises over the bay at 7:30 pm" },
+  // availability strip
+  availabilityHeading: { th: "ห้องว่าง 14 คืนข้างหน้า", en: "Availability for the next 14 nights" },
+  pickFirstNight: { th: "เลือกคืนแรกที่เข้าพัก", en: "Pick your first night" },
+  pickCheckOutDay: { th: "เลือกวันเช็กเอาต์", en: "Now pick your check-out day" },
+  crossesFull: {
+    th: "ช่วงนั้นมีคืนที่เต็ม เราเริ่มนับจากคืนที่เลือกใหม่ เลือกวันเช็กเอาต์ได้เลย",
+    en: "Those dates include a full night, so your stay now starts on the night you picked. Choose your check-out day.",
+  },
+  fullNight: { th: "เต็ม", en: "Full" },
+  checkOutOnly: { th: "เช็กเอาต์ได้", en: "Check-out only" },
+  nightOne: { th: "1 คืน", en: "1 night" },
+  nightsMany: { th: "{n} คืน", en: "{n} nights" },
+  bookTheseDates: { th: "จองช่วงนี้", en: "Book these dates" },
+  weekendNote: { th: "คืนวันศุกร์และเสาร์ราคาสูงกว่าวันธรรมดา", en: "Friday and Saturday nights cost more." },
+  nightLabel: { th: "{date} · {price}", en: "{date} · {price}" },
+  nightLabelFull: { th: "{date} · เต็ม", en: "{date} · full" },
+  nightLabelCheckOut: { th: "{date} · เต็ม เช็กเอาต์ได้", en: "{date} · full, check-out only" },
+  // room rail
+  railHeading: { th: "ห้องพักทั้ง 5 แบบ", en: "All five room types" },
+  railSub: { th: "ทุกห้องรวมอาหารเช้า เดินถึงหาด 3 นาที", en: "Breakfast included with every room, three minutes from the beach." },
+  seeRoomAndDates: { th: "ดูห้องและเช็กวันว่าง", en: "See the room and dates" },
+  previousRoom: { th: "ห้องก่อนหน้า", en: "Previous room" },
+  nextRoom: { th: "ห้องถัดไป", en: "Next room" },
+  // booking form
+  nightsLabel: { th: "จำนวนคืน", en: "Nights" },
+  inquirySent: {
+    th: "ได้รับคำขอจองแล้ว {nights} (เว็บตัวอย่าง: ไม่มีการส่งข้อมูลจริง)",
+    en: "Inquiry received for {nights}. (Demo — nothing was sent.)",
+  },
 } satisfies Record<string, L>;
 
 export const roomTypeLabel = {

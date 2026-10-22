@@ -114,6 +114,8 @@ The mockups set **direction only**. The final visual design of each page is done
   - Shows the next 14 nights with a room-type selector. Each night shows its price; Friday and Saturday cost 1.25× the base price, rounded to ฿100.
   - Fully booked nights are crossed out. Which nights are full is derived from the date, so the strip is the same for everyone on the same day.
   - Click a check-in night and then a check-out night to see the night count and total. A range that crosses a full night restarts the selection.
+  - A full night can't be a check-in and can't fall inside a stay, but it can be the check-out day, because the guest leaves that morning (Ohm, 2026-10-22). It is clickable only while it would be a valid check-out, and is labelled "เช็กเอาต์ได้ / Check-out only".
+  - The booking form accepts stays of 1–30 nights.
   - "จองช่วงนี้" opens the booking page with the room and dates filled in.
 - **Editorial middle:** replaces the three thin icons with three big Mitr figures, each with a photo and caption: **3 นาที** to the beach, **24 ห้อง**, **19:30** moonrise.
 - **Room rail:** all five rooms on every screen size.

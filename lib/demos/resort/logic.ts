@@ -35,11 +35,15 @@ export interface InquiryInput {
 
 export type InquiryErrors = Partial<Record<keyof InquiryInput, string>>;
 
+/** The longest stay one inquiry can cover. */
+export const MAX_NIGHTS = 30;
+
 const messages = {
   checkInRequired: { th: "กรุณาเลือกวันเช็กอิน", en: "Choose a check-in date" },
   checkInPast: { th: "วันเช็กอินต้องไม่เป็นวันที่ผ่านมาแล้ว", en: "Check-in can't be in the past" },
   checkOutRequired: { th: "กรุณาเลือกวันเช็กเอาต์", en: "Choose a check-out date" },
   checkOutOrder: { th: "วันเช็กเอาต์ต้องหลังวันเช็กอิน", en: "Check-out must be after check-in" },
+  stayTooLong: { th: "จองได้สูงสุด 30 คืนต่อครั้ง", en: "Stays can be up to 30 nights" },
   guests: { th: "จำนวนผู้เข้าพัก 1–8 คน", en: "Guests must be 1–8" },
   name: { th: "กรุณากรอกชื่อ", en: "Enter your name" },
   email: { th: "อีเมลไม่ถูกต้อง", en: "Enter a valid email" },
@@ -52,6 +56,7 @@ export function validateInquiry(input: InquiryInput, today: string, lang: Lang):
   else if (input.checkIn < today) errors.checkIn = messages.checkInPast[lang];
   if (!input.checkOut) errors.checkOut = messages.checkOutRequired[lang];
   else if (input.checkIn && input.checkOut <= input.checkIn) errors.checkOut = messages.checkOutOrder[lang];
+  else if (input.checkIn && nightsBetween(input.checkIn, input.checkOut) > MAX_NIGHTS) errors.checkOut = messages.stayTooLong[lang];
   if (!Number.isInteger(input.guests) || input.guests < 1 || input.guests > 8) errors.guests = messages.guests[lang];
   if (!input.name.trim()) errors.name = messages.name[lang];
   if (!isEmail(input.email)) errors.email = messages.email[lang];
