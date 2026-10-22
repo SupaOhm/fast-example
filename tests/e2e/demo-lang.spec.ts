@@ -1,12 +1,16 @@
 import { expect, test, type Page } from "@playwright/test";
 
 // Demos with the EN/TH switch. Each later step of the demo rework adds its demo here.
-const DEMOS = [{ name: "resort", home: "/demos/resort", next: "/demos/resort/rooms", en: "Rooms", th: "ห้องพัก" }];
+// `where` is the landmark whose text proves the language; `next` is another page of the same demo.
+const DEMOS = [
+  { name: "resort", home: "/demos/resort", next: "/demos/resort/rooms", where: "navigation", en: "Rooms", th: "ห้องพัก" },
+  { name: "sale page", home: "/demos/sale-page", next: "/demos/sale-page", where: "main", en: "Order on LINE", th: "สั่งซื้อทาง LINE" },
+] as const;
 
 // The demo bar's small print, which is always visible.
 const BAR = { en: "Demo · fictional business", th: "เว็บตัวอย่าง · ธุรกิจสมมติ" };
 
-const nav = (page: Page) => page.getByRole("navigation").first();
+const probe = (page: Page, d: (typeof DEMOS)[number]) => page.getByRole(d.where).first();
 const bar = (page: Page) => page.getByTestId("demo-pill");
 
 for (const d of DEMOS) {
@@ -16,14 +20,14 @@ for (const d of DEMOS) {
     test("opens in the hub language when the hub has a choice", async ({ page }) => {
       await page.addInitScript(() => localStorage.setItem("showcase:locale", "en"));
       await page.goto(d.home);
-      await expect(nav(page)).toContainText(d.en);
+      await expect(probe(page, d)).toContainText(d.en);
       await expect(bar(page)).toContainText(BAR.en);
     });
 
     test("opens in Thai when the hub has no choice", async ({ page }) => {
       await page.goto(d.home);
       await page.waitForLoadState("networkidle");
-      await expect(nav(page)).toContainText(d.th);
+      await expect(probe(page, d)).toContainText(d.th);
       await expect(bar(page)).toContainText(BAR.th);
     });
 
@@ -31,11 +35,11 @@ for (const d of DEMOS) {
       await page.goto(d.home);
       await page.waitForLoadState("networkidle");
       await page.getByTestId("lang-switch").click();
-      await expect(nav(page)).toContainText(d.en);
+      await expect(probe(page, d)).toContainText(d.en);
       await expect(bar(page)).toContainText(BAR.en);
 
       await page.goto(d.next);
-      await expect(nav(page)).toContainText(d.en);
+      await expect(probe(page, d)).toContainText(d.en);
       await expect(bar(page)).toContainText(BAR.en);
       expect(await page.evaluate(() => localStorage.getItem("showcase:locale"))).toBeNull();
     });
@@ -63,7 +67,7 @@ for (const d of DEMOS) {
 
     test("opens in English when the hub has no choice", async ({ page }) => {
       await page.goto(d.home);
-      await expect(nav(page)).toContainText(d.en);
+      await expect(probe(page, d)).toContainText(d.en);
       await expect(bar(page)).toContainText(BAR.en);
     });
   });

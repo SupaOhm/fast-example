@@ -38,6 +38,8 @@ const browser = await chromium.launch();
 async function openPage(viewport, deviceScaleFactor) {
   const context = await browser.newContext({ viewport, deviceScaleFactor });
   await context.addInitScript(() => {
+    // The hub's screenshots show the demos in Thai, their main language.
+    localStorage.setItem("demo:lang", JSON.stringify("th"));
     localStorage.setItem("demo:shop-admin:session", "true");
     localStorage.setItem("demo:clinic:session", "true");
   });
