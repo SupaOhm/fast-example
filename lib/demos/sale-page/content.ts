@@ -64,7 +64,7 @@ export const ingredients = [
   {
     name: { th: "สารสกัดดอกมะลิ", en: "Jasmine flower extract" } satisfies L,
     body: {
-      th: "ช่วยปลอบประโลมผิวและให้กลิ่นหอมอ่อน ๆ ตามธรรมชาติ",
+      th: "ช่วยปลอบประโลมผิว และให้กลิ่นหอมอ่อน ๆ ตามธรรมชาติ",
       en: "Soothes skin and leaves a soft, natural scent.",
     } satisfies L,
     image: PHOTOS.saleIngredient1,

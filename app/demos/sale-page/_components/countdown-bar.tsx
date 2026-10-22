@@ -23,7 +23,7 @@ export function CountdownBar() {
   const time = hydrated ? formatCountdown(msUntilEndOfDay(now)) : "-- : -- : --";
 
   return (
-    <div className="bg-(--gold) text-(--green-deep)">
+    <aside aria-label={ui.promoRegion[lang]} className="bg-(--gold) text-(--green-deep)">
       <p className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-base leading-[1.4] font-semibold">
         <span>{fill(ui.promoBar[lang], { price: formatTHB(product.promoPrice) })}</span>
         <span
@@ -34,6 +34,6 @@ export function CountdownBar() {
           {time}
         </span>
       </p>
-    </div>
+    </aside>
   );
 }

@@ -15,6 +15,13 @@ describe("sale page copy", () => {
     }
   });
 
+  it("has now and was placeholders in the screen reader price", () => {
+    expect(ui.priceSr.th).toContain("{now}");
+    expect(ui.priceSr.th).toContain("{was}");
+    expect(ui.priceSr.en).toContain("{now}");
+    expect(ui.priceSr.en).toContain("{was}");
+  });
+
   it("has bundles of 1, 2 and 3 bottles with one highlighted", () => {
     expect(content.bundles.map((b) => b.qty)).toEqual([1, 2, 3]);
     expect(content.bundles.filter((b) => b.highlight)).toHaveLength(1);

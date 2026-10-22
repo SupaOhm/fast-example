@@ -9,7 +9,15 @@ import type { Lang } from "@/lib/demos/lang";
  * inline-block capped at its container's width: it moves to the next line as a
  * unit, and only if it is wider than the container itself does the browser
  * break inside it, so a heading can never push past its column.
+ *
+ * Only short phrases are kept whole. A long phrase as an inline-block would
+ * fill its column and push whatever follows onto a line of its own (stranding
+ * a word like "อ่อน ๆ"), so phrases over MAX_UNBREAKABLE render as plain
+ * inline text and wrap with the browser's normal Thai word breaking.
  */
+
+/** Longest phrase, in characters, that is kept as one unbreakable unit. */
+const MAX_UNBREAKABLE = 20;
 
 export function Phrases({ text }: { text: string }) {
   const phrases: string[] = [];
@@ -31,7 +39,7 @@ export function Phrases({ text }: { text: string }) {
   return phrases.map((p, i) => (
     <span key={i}>
       {i > 0 && " "}
-      <span className="inline-block max-w-full">{p}</span>
+      {p.length <= MAX_UNBREAKABLE ? <span className="inline-block max-w-full">{p}</span> : p}
     </span>
   ));
 }

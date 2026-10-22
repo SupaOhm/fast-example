@@ -34,7 +34,7 @@ export function DayTimeline() {
               <span aria-hidden className={`relative mt-1.5 block size-5 rounded-full md:mt-0 ${dots[i]}`} />
               <div className="md:mt-7">
                 <p className="flex items-baseline gap-3 leading-none">
-                  <span className="text-lg font-semibold text-(--gold-ink)">{ui.dayLabel[lang]}</span>
+                  <span className="text-lg font-semibold text-(--gold-ink)">{ui.dayLabel[lang]}</span>{" "}
                   <span className="text-[64px] font-extrabold tracking-[-0.03em] text-(--ink) lg:text-[88px]">
                     {d.day}
                   </span>

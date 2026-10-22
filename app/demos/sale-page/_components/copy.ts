@@ -10,6 +10,8 @@ export const ui = {
   size: { th: "ขนาด", en: "Size" },
   bottleLabel: { th: "ขวดเซรั่มน้ำนมข้าวมะลิ ฉลาก Mali", en: "A bottle of Mali jasmine rice milk serum" },
   daysHeading: { th: "ผิวเปลี่ยนไปอย่างไรใน 14 วัน", en: "What 14 days look like" },
+  priceSr: { th: "ราคาโปร {now} จากปกติ {was}", en: "Now {now}, was {was}" },
+  promoRegion: { th: "โปรโมชันวันนี้", en: "Today's promotion" },
   dayLabel: { th: "วันที่", en: "Day" },
   benefitsHeading: { th: "สิ่งที่ผิวจะได้รับ ตั้งแต่ขวดแรก", en: "What your skin gets from the first bottle" },
   ingredientsHeading: { th: "สารสกัดจากพืชไทย ที่ผิวคุ้นเคย", en: "Thai botanicals your skin already knows" },

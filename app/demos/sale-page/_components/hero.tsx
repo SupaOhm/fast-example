@@ -45,7 +45,7 @@ export function Hero() {
                   : "text-[44px] leading-[1.05] tracking-[-0.02em] sm:text-[64px] lg:text-[76px] lg:leading-[1.02]"
               }`}
             >
-              <span className="block">{h.before[lang]}</span>
+              <span className="block">{h.before[lang]}</span>{" "}
               <span className="text-(--gold)">{h.accent[lang]}</span>{" "}
               <span className="whitespace-nowrap">{h.after[lang]}</span>
             </h1>
@@ -55,12 +55,18 @@ export function Hero() {
             </p>
 
             <div className="mt-8 flex items-end gap-4 sm:gap-6 lg:mt-10">
-              <p className="text-[108px] leading-[0.8] font-extrabold tracking-[-0.04em] text-(--gold) sm:text-[148px] lg:text-[164px]">
+              <span className="sr-only">
+                {fill(ui.priceSr[lang], { now: formatTHB(product.promoPrice), was: formatTHB(product.fullPrice) })}
+              </span>
+              <p
+                aria-hidden="true"
+                className="text-[108px] leading-[0.8] font-extrabold tracking-[-0.04em] text-(--gold) sm:text-[148px] lg:text-[164px]"
+              >
                 {product.promoPrice}
                 <span className="ml-[0.04em] text-[0.34em] tracking-normal">.-</span>
               </p>
               <div className="pb-1 leading-[1.3]">
-                <s className="block text-2xl font-semibold text-(--mint)/80 decoration-(--mint)/80 decoration-2 sm:text-[28px]">
+                <s aria-hidden="true" className="block text-2xl font-semibold text-(--mint)/80 decoration-(--mint)/80 decoration-2 sm:text-[28px]">
                   {formatTHB(product.fullPrice)}
                 </s>
                 <p className="mt-1.5 text-base whitespace-nowrap text-(--mint)">
