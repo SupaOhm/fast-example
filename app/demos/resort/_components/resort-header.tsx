@@ -22,14 +22,21 @@ export function ResortHeader() {
   useEffect(() => {
     if (!isHome) return;
     // Clear over the hero: past 48px, or for as long as the moonrise stage is pinned, whichever is longer.
-    const onScroll = () => {
-      const hero = document.querySelector<HTMLElement>("[data-hero-pin]");
-      const pinned = hero ? hero.offsetHeight - window.innerHeight : 0;
-      setScrolled(window.scrollY > Math.max(48, pinned));
+    // The hero and its pinned length are read once and again on resize, never on each scroll event.
+    const hero = document.querySelector<HTMLElement>("[data-hero-pin]");
+    let pinned = 0;
+    const onScroll = () => setScrolled(window.scrollY > Math.max(48, pinned));
+    const measure = () => {
+      pinned = hero ? hero.offsetHeight - window.innerHeight : 0;
+      onScroll();
     };
-    onScroll();
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", measure, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
+    };
   }, [isHome]);
 
   useEffect(() => {

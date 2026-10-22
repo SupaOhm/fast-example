@@ -22,23 +22,38 @@ const DRAG_SLOP = 6;
 const EDGE =
   "pl-4 scroll-pl-4 sm:pl-6 sm:scroll-pl-6 lg:pl-[calc(max(0px,(100%_-_80rem)/2)_+_2.5rem)] lg:scroll-pl-[calc(max(0px,(100%_-_80rem)/2)_+_2.5rem)]";
 /*
- * Trailing space so the last room can snap to the start edge like every other room:
- * the rail's content width, minus the last card and one gap. Card and spacer % resolve against that content width.
+ * End padding, so the last card stops on the right-hand gutter: the gutter minus one gap.
+ * A spacer rather than padding-right, which some engines leave out of a flex scroller's scroll width.
+ * At lg, 100% is the rail's content width C (the screen minus EDGE's padding), and that padding equals max(2.5rem, C - 75rem).
  */
-const TAIL =
-  "w-[calc(30%_-_0.75rem)] sm:w-[calc(100%_-_300px_-_0.75rem)] md:w-[calc(100%_-_300px_-_1.25rem)] lg:w-[calc(100%_-_340px_-_1.25rem)]";
+const TAIL = "w-1 sm:w-3 md:w-1 lg:w-[calc(max(2.5rem,100%_-_75rem)_-_1.25rem)]";
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const cardsOf = (rail: HTMLElement) => Array.from(rail.querySelectorAll<HTMLElement>("[data-rail-card]"));
-/** The rail's scrollLeft for each card when that card is snapped to the start edge. */
+const maxScroll = (rail: HTMLElement) => Math.max(0, rail.scrollWidth - rail.clientWidth);
+// Within this many pixels of either end counts as being there (scroll positions can land on fractions).
+const END_SLOP = 2;
+const atEnd = (rail: HTMLElement) => rail.scrollLeft >= maxScroll(rail) - END_SLOP;
+/**
+ * The rail's scrollLeft for each card when that card is snapped to the start edge, capped at the scroll end.
+ * On wide screens the last few cards can't reach the start edge, so they share the end position.
+ */
 function positionsOf(rail: HTMLElement) {
   const list = cardsOf(rail);
   const first = list[0]?.offsetLeft ?? 0;
-  return list.map((c) => c.offsetLeft - first);
+  const max = maxScroll(rail);
+  return list.map((c) => Math.min(max, c.offsetLeft - first));
 }
 const nearest = (left: number, pos: number[]) =>
   pos.reduce((best, p, i) => (Math.abs(p - left) < Math.abs(pos[best] - left) ? i : best), 0);
+/** The next snap position after `left` in either direction, ending at the scroll end or the start. */
+function snapFrom(rail: HTMLElement, left: number, dir: 1 | -1) {
+  const pos = positionsOf(rail);
+  return dir === 1 ? (pos.find((p) => p > left + END_SLOP) ?? maxScroll(rail)) : (pos.findLast((p) => p < left - END_SLOP) ?? 0);
+}
+/** The room under the start edge, or the last room once the rail is scrolled to its end. */
+const activeOf = (rail: HTMLElement) => (atEnd(rail) && rail.scrollLeft > END_SLOP ? cardsOf(rail).length - 1 : nearest(rail.scrollLeft, positionsOf(rail)));
 
 /** All five rooms on one sideways rail: drag, swipe, or step through with the arrows. */
 export function RoomRail() {
@@ -46,33 +61,65 @@ export function RoomRail() {
   const sectionRef = useRef<HTMLElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const drag = useRef({ id: -1, x: 0, left: 0, moved: false, from: 0 });
+  const [edges, setEdges] = useState({ start: true, end: false });
+  const drag = useRef({ id: -1, x: 0, left: 0, moved: false });
   const swallowClick = useRef(false);
+  // The scroll in flight that still owes an onDone: its scrollend listener and fallback timer.
+  const pending = useRef<{ timer: number; finish: () => void } | null>(null);
 
-  const scrollToCard = useCallback((i: number, onDone?: () => void) => {
+  const scrollToLeft = useCallback((target: number, onDone?: () => void) => {
     const rail = railRef.current;
     if (!rail) return;
-    const pos = positionsOf(rail);
-    const target = pos[Math.max(0, Math.min(pos.length - 1, i))] ?? 0;
+    // A new scroll settles the previous one now instead of leaving its timer to fire mid-flight.
+    pending.current?.finish();
     const smooth = !reducedMotion() && Math.abs(rail.scrollLeft - target) > 1;
     if (onDone) {
       if (!smooth) {
         rail.scrollLeft = target;
         onDone();
       } else {
-        let done = false;
         const finish = () => {
-          if (done) return;
-          done = true;
+          if (pending.current?.finish !== finish) return;
+          window.clearTimeout(pending.current.timer);
+          pending.current = null;
           rail.removeEventListener("scrollend", finish);
           onDone();
         };
         rail.addEventListener("scrollend", finish);
-        window.setTimeout(finish, 900);
+        pending.current = { timer: window.setTimeout(finish, 900), finish };
       }
     }
     rail.scrollTo({ left: target, behavior: smooth ? "smooth" : "instant" });
   }, []);
+
+  const scrollToCard = useCallback(
+    (i: number, onDone?: () => void) => {
+      const rail = railRef.current;
+      if (!rail) return;
+      const pos = positionsOf(rail);
+      scrollToLeft(pos[Math.max(0, Math.min(pos.length - 1, i))] ?? 0, onDone);
+    },
+    [scrollToLeft],
+  );
+
+  // The arrows go to the next snap position either way. Near the end, "next" is the end itself,
+  // and "previous" from the end skips the cards that share the end position.
+  const step = (dir: 1 | -1) => {
+    const rail = railRef.current;
+    if (rail) scrollToLeft(snapFrom(rail, rail.scrollLeft, dir));
+  };
+
+  // Drop a pending scroll's timer and listener if the rail unmounts mid-scroll.
+  useEffect(
+    () => () => {
+      const p = pending.current;
+      if (!p) return;
+      window.clearTimeout(p.timer);
+      railRef.current?.removeEventListener("scrollend", p.finish);
+      pending.current = null;
+    },
+    [],
+  );
 
   // Counter and progress line follow the scroll position: one rAF per frame, a CSS variable, and
   // React state only when the room number actually changes.
@@ -83,10 +130,13 @@ export function RoomRail() {
     let frame = 0;
     const update = () => {
       frame = 0;
-      const pos = positionsOf(rail);
-      const last = pos[pos.length - 1] || 1;
-      section.style.setProperty("--rail", Math.min(1, Math.max(0, rail.scrollLeft / last)).toFixed(4));
-      setActive(nearest(rail.scrollLeft, pos));
+      const max = maxScroll(rail);
+      section.style.setProperty("--rail", (max > 0 ? Math.min(1, Math.max(0, rail.scrollLeft / max)) : 0).toFixed(4));
+      setActive(activeOf(rail));
+      // Both setters bail out when nothing changed, so React only renders when the room or an end changes.
+      const start = rail.scrollLeft <= END_SLOP;
+      const end = atEnd(rail);
+      setEdges((e) => (e.start === start && e.end === end ? e : { start, end }));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -106,7 +156,7 @@ export function RoomRail() {
     if (e.pointerType !== "mouse" || e.button !== 0) return;
     const rail = e.currentTarget;
     swallowClick.current = false;
-    drag.current = { id: e.pointerId, x: e.clientX, left: rail.scrollLeft, moved: false, from: active };
+    drag.current = { id: e.pointerId, x: e.clientX, left: rail.scrollLeft, moved: false };
   };
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
@@ -127,12 +177,16 @@ export function RoomRail() {
     drag.current.id = -1;
     if (!d.moved) return;
     swallowClick.current = true;
+    // The click that ends this drag fires before the next frame. If none comes (released outside the window),
+    // don't let the flag swallow the next keyboard Enter on a card.
+    requestAnimationFrame(() => (swallowClick.current = false));
     const rail = e.currentTarget;
     const dx = e.clientX - d.x;
-    // A deliberate flick moves at least one room in its direction; otherwise settle on the nearest.
-    const near = nearest(rail.scrollLeft, positionsOf(rail));
-    const target = Math.abs(dx) > 48 && near === d.from ? d.from + (dx < 0 ? 1 : -1) : near;
-    scrollToCard(target, () => delete rail.dataset.dragging);
+    // A deliberate flick moves at least one snap in its direction; otherwise settle on the nearest.
+    const pos = positionsOf(rail);
+    const near = pos[nearest(rail.scrollLeft, pos)];
+    const flick = Math.abs(dx) > 48 && near === pos[nearest(d.left, pos)];
+    scrollToLeft(flick ? snapFrom(rail, d.left, dx < 0 ? 1 : -1) : near, () => delete rail.dataset.dragging);
   };
 
   const onClickCapture = (e: React.MouseEvent) => {
@@ -169,15 +223,16 @@ export function RoomRail() {
           <p className="mt-3 text-lg leading-[1.6] text-(--muted)">{ui.railSub[lang]}</p>
         </div>
         <div className="flex items-center gap-3">
-          <p data-testid="rail-counter" className="mr-2 text-base text-(--muted) tabular-nums">
+          <p data-testid="rail-counter" aria-live="polite" className="mr-2 text-base text-(--muted) tabular-nums">
             <span className="font-semibold text-(--sea-deep)">{pad(active + 1)}</span> / {TOTAL}
           </p>
           <button
             type="button"
             data-testid="rail-prev"
             aria-label={ui.previousRoom[lang]}
-            aria-disabled={active === 0 || undefined}
-            onClick={() => scrollToCard(active - 1)}
+            disabled={edges.start}
+            aria-disabled={edges.start || undefined}
+            onClick={() => step(-1)}
             className={arrow}
           >
             <ArrowLeft className="size-5" strokeWidth={1.75} aria-hidden />
@@ -186,8 +241,9 @@ export function RoomRail() {
             type="button"
             data-testid="rail-next"
             aria-label={ui.nextRoom[lang]}
-            aria-disabled={active === ROOMS.length - 1 || undefined}
-            onClick={() => scrollToCard(active + 1)}
+            disabled={edges.end}
+            aria-disabled={edges.end || undefined}
+            onClick={() => step(1)}
             className={arrow}
           >
             <ArrowRight className="size-5" strokeWidth={1.75} aria-hidden />
@@ -197,6 +253,9 @@ export function RoomRail() {
 
       <div
         ref={railRef}
+        data-rail-scroller
+        role="group"
+        aria-label={ui.railHeading[lang]}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}

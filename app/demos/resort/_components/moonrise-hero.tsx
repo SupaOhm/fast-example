@@ -1,12 +1,13 @@
 "use client";
 
 import { MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { resort } from "@/lib/demos/resort/content";
 import { unsplash } from "@/lib/images";
 import { ui } from "./copy";
-import { T, TImage } from "@/components/demo/lang";
+import { T } from "@/components/demo/lang";
 
 const btn =
   "inline-flex h-12 items-center justify-center rounded-full px-7 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
@@ -84,14 +85,8 @@ export function MoonriseHero() {
     >
       <div className="sticky top-0 isolate flex h-[100svh] min-h-[620px] items-end overflow-hidden text-white [container-type:size]">
         <div aria-hidden className="absolute inset-0 -z-10 will-change-transform" style={STYLE.photo}>
-          <TImage
-            src={unsplash(resort.heroImage, 2000)}
-            alt={resort.heroAlt}
-            fill
-            preload
-            sizes="100vw"
-            className="object-cover"
-          />
+          {/* Decorative: the h1 and the moonrise line already describe the scene. */}
+          <Image src={unsplash(resort.heroImage, 2000)} alt="" fill preload sizes="100vw" className="object-cover" />
         </div>
         {/* The day scene's own shading, kept from the original hero so the first frame is unchanged. */}
         <div

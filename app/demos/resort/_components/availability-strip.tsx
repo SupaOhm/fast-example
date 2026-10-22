@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useLang } from "@/components/demo/lang";
 import type { Lang } from "@/lib/demos/lang";
 import { ROOMS } from "@/lib/demos/resort/content";
@@ -16,9 +16,10 @@ const DEFAULT_ROOM = "sea-deluxe";
 const CELLS = 14;
 const NO_PICK: Pick = { checkIn: null, checkOut: null };
 
-// One column per night. 4rem keeps each cell above 56px, so phones scroll sideways instead of squeezing.
+// One column per night. 4.75rem leaves 68px inside a cell, room for "Check-out" on one line at 14px,
+// so phones scroll sideways instead of squeezing. Desktop columns are wider than this anyway.
 // The side padding sits on the grid, not the scroller, so the last cell keeps its gutter when scrolled to the end.
-const row = "grid w-max min-w-full grid-cols-[repeat(14,minmax(4rem,1fr))] px-4 sm:px-6 lg:px-0";
+const row = "grid w-max min-w-full grid-cols-[repeat(14,minmax(4.75rem,1fr))] px-4 sm:px-6 lg:px-0";
 const cellBox = "flex h-24 w-full flex-col items-center justify-center rounded-md border";
 
 export function AvailabilityStrip() {
@@ -127,6 +128,8 @@ export function AvailabilityStrip() {
                   lang={lang}
                   premium={night.price > room.pricePerNight}
                   isEnd={i === checkIn || i === checkOut}
+                  // A full night opens up only as a check-out day: the guest leaves that morning.
+                  checkOutOnly={night.full && (i === checkOut || pickNight(pick, i, nights).checkOut === i)}
                   band={range ? (i === checkIn ? "start" : i === checkOut ? "end" : i > checkIn! && i < checkOut! ? "mid" : null) : null}
                   onPick={() => choose(i)}
                 />
@@ -176,6 +179,7 @@ function NightCell({
   lang,
   premium,
   isEnd,
+  checkOutOnly,
   band,
   onPick,
 }: {
@@ -184,17 +188,21 @@ function NightCell({
   /** A Friday or Saturday rate, shown in gold to match the weekend note. */
   premium: boolean;
   isEnd: boolean;
+  /** A full night that can still be picked (or is picked) as the check-out day. */
+  checkOutOnly: boolean;
   band: keyof typeof BAND | null;
   onPick: () => void;
 }) {
   const { iso, price, full } = night;
-  const label = fill(full ? ui.nightLabelFull[lang] : ui.nightLabel[lang], {
+  const labelKey = checkOutOnly ? ui.nightLabelCheckOut : full ? ui.nightLabelFull : ui.nightLabel;
+  const label = fill(labelKey[lang], {
     date: formatDate(iso, lang, "full"),
     price: formatTHB(price),
   });
 
   let tone: string;
   if (isEnd) tone = "border-(--sun) bg-(--sun) text-(--night)";
+  else if (checkOutOnly) tone = "border-dashed border-(--sun)/55 hover:border-solid hover:border-(--sun) hover:bg-white/5";
   else if (full) tone = "cursor-not-allowed border-white/10 opacity-45";
   else if (band === "mid") tone = "border-transparent hover:border-(--sun)/60";
   else tone = "border-white/15 hover:border-(--sun)/60 hover:bg-white/5";
@@ -205,7 +213,7 @@ function NightCell({
         type="button"
         data-testid="night"
         data-iso={iso}
-        disabled={full}
+        disabled={full && !checkOutOnly}
         aria-pressed={isEnd}
         aria-label={label}
         onClick={onPick}
@@ -216,19 +224,30 @@ function NightCell({
         </span>
         <span
           className={`mt-2 font-(family-name:--font-display) text-[1.75rem] leading-none tabular-nums ${
-            full ? "line-through decoration-(--sand)/80 decoration-[1.5px]" : ""
+            full && !isEnd ? "line-through decoration-(--sand)/80 decoration-[1.5px]" : ""
           }`}
         >
           {parseISODate(iso).getDate()}
         </span>
         <span
-          className={`mt-2 text-sm leading-none tabular-nums ${
-            isEnd ? "font-semibold text-(--night)" : full ? "text-(--sand)/80" : premium ? "text-(--sun)" : "text-(--sand)/80"
+          // inline-size containment keeps a two-word label from widening every column of the w-max grid; it wraps instead.
+          className={`mt-2 w-full text-center text-sm leading-[1.15] text-balance tabular-nums [contain:inline-size] ${
+            isEnd ? "font-semibold text-(--night)" : checkOutOnly ? "text-(--sun)" : full ? "text-(--sand)/80" : premium ? "text-(--sun)" : "text-(--sand)/80"
           }`}
         >
-          {full ? ui.fullNight[lang] : formatTHB(price)}
+          {checkOutOnly ? <WholeWords text={ui.checkOutOnly[lang]} /> : full ? ui.fullNight[lang] : formatTHB(price)}
         </span>
       </button>
     </li>
   );
+}
+
+/** Wraps only between words, so "Check-out only" never splits at its hyphen in a narrow cell. */
+function WholeWords({ text }: { text: string }) {
+  return text.split(" ").map((word, i) => (
+    <Fragment key={i}>
+      {i > 0 && " "}
+      <span className="inline-block whitespace-nowrap">{word}</span>
+    </Fragment>
+  ));
 }

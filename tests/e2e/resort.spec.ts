@@ -96,6 +96,31 @@ test("room rail steps through all five rooms", async ({ page }) => {
   await expect(rail.getByRole("link").first()).toHaveAttribute("href", /\/demos\/resort\/booking\?room=/);
 });
 
+test("the room rail ends at its last card", async ({ page }) => {
+  await page.goto("/demos/resort");
+  const rail = page.getByTestId("room-rail");
+  await rail.scrollIntoViewIfNeeded();
+  await expect(rail.getByTestId("rail-prev")).toBeDisabled();
+  for (let i = 0; i < 6 && (await rail.getByTestId("rail-next").isEnabled()); i++) {
+    await rail.getByTestId("rail-next").click();
+    await page.waitForTimeout(450);
+  }
+  await expect(rail.getByTestId("rail-counter")).toHaveText("05 / 05");
+  await expect(rail.getByTestId("rail-next")).toBeDisabled();
+  // No empty run-out: the last card's right edge sits on the page gutter, the same inset as the heading's
+  // container on the right. At 1440 that gutter is exactly 120px, so the bound is inclusive.
+  const [gap, gutter] = await rail.evaluate((el) => {
+    const scroller = el.querySelector<HTMLElement>("[data-rail-scroller]")!;
+    const cards = scroller.querySelectorAll("a");
+    const last = cards[cards.length - 1].getBoundingClientRect();
+    const head = el.querySelector("h2")!.closest<HTMLElement>(".max-w-7xl")!;
+    const right = scroller.getBoundingClientRect().right;
+    return [right - last.right, right - head.getBoundingClientRect().right + parseFloat(getComputedStyle(head).paddingRight)];
+  });
+  expect(Math.abs(gap - gutter)).toBeLessThan(2);
+  expect(gap).toBeLessThanOrEqual(120);
+});
+
 test("the moon rises as you scroll the hero", async ({ page }) => {
   await page.goto("/demos/resort");
   await page.waitForLoadState("networkidle");

@@ -91,8 +91,17 @@ describe("pickNight", () => {
     expect(pickNight({ checkIn: 0, checkOut: 1 }, 3, nights)).toEqual({ checkIn: 3, checkOut: null });
   });
 
-  it("ignores full nights", () => {
-    expect(pickNight({ checkIn: 0, checkOut: null }, 2, nights)).toEqual({ checkIn: 0, checkOut: null });
+  it("lets a stay end on a full night's morning", () => {
+    expect(pickNight({ checkIn: 0, checkOut: null }, 2, nights)).toEqual({ checkIn: 0, checkOut: 2 });
+  });
+
+  it("won't start a stay on a full night", () => {
+    expect(pickNight(none, 2, nights)).toEqual(none);
+  });
+
+  it("won't end on a full night past another full night", () => {
+    const gappy = [n(false), n(true), n(false), n(true)];
+    expect(pickNight({ checkIn: 0, checkOut: null }, 3, gappy)).toEqual({ checkIn: 0, checkOut: null });
   });
 
   it("restarts when check-out would sit right after a full night", () => {

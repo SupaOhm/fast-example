@@ -44,10 +44,18 @@ export function stayTotal(base: number, checkIn: string, checkOut: string): numb
 
 export type Pick = { checkIn: number | null; checkOut: number | null };
 
-/** The strip's two-click range picker: first night, then check-out. Full nights can't be picked or crossed. */
+/**
+ * The strip's two-click range picker: first night, then check-out. A stay can't start on or cross a full night,
+ * but it can end on one: the guest leaves that morning, so a full night is a valid check-out day when a check-in
+ * is waiting for its check-out and every night between them is open. Any other click on a full night changes nothing.
+ */
 export function pickNight(current: Pick, index: number, nights: Night[]): Pick {
-  if (!nights[index] || nights[index].full) return current;
+  if (!nights[index]) return current;
   const { checkIn, checkOut } = current;
+  if (nights[index].full) {
+    const endsHere = checkIn !== null && checkOut === null && index > checkIn && !nights.slice(checkIn, index).some((n) => n.full);
+    return endsHere ? { checkIn, checkOut: index } : current;
+  }
   if (checkIn === null || checkOut !== null || index <= checkIn) return { checkIn: index, checkOut: null };
   const crossesFull = nights.slice(checkIn, index).some((n) => n.full);
   return crossesFull ? { checkIn: index, checkOut: null } : { checkIn, checkOut: index };
