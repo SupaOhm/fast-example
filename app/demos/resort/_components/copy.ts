@@ -69,7 +69,6 @@ export const ui = {
   submit: { th: "ส่งคำขอจอง", en: "Send inquiry" },
   sending: { th: "กำลังส่ง…", en: "Sending…" },
   yourStay: { th: "สรุปการเข้าพัก", en: "Your stay" },
-  nights: { th: "คืน", en: "nights" },
   estimate: { th: "ราคาประมาณ", en: "Estimated total" },
   pickDates: { th: "เลือกวันเช็กอินและเช็กเอาต์เพื่อดูจำนวนคืน", en: "Choose your dates to see the number of nights" },
   pickRoom: { th: "เลือกห้องเพื่อดูราคาประมาณ", en: "Choose a room to see an estimate" },
@@ -105,6 +104,10 @@ export const ui = {
   nextRoom: { th: "ห้องถัดไป", en: "Next room" },
   // booking form
   nightsLabel: { th: "จำนวนคืน", en: "Nights" },
+  inquirySent: {
+    th: "ได้รับคำขอจองแล้ว {nights} (เว็บตัวอย่าง: ไม่มีการส่งข้อมูลจริง)",
+    en: "Inquiry received for {nights}. (Demo — nothing was sent.)",
+  },
 } satisfies Record<string, L>;
 
 export const roomTypeLabel = {

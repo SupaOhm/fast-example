@@ -6,7 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ROOMS } from "@/lib/demos/resort/content";
 import { nightsBetween, validateInquiry, type InquiryInput } from "@/lib/demos/resort/logic";
-import { toISODate } from "@/lib/dates";
+import { stayTotal } from "@/lib/demos/resort/availability";
+import { fill } from "@/lib/demos/format";
+import { parseISODate, toISODate } from "@/lib/dates";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { ui } from "./copy";
@@ -14,6 +16,11 @@ import { useLang } from "@/components/demo/lang";
 
 type Field = keyof InquiryInput;
 const FIELD_ORDER: Field[] = ["checkIn", "checkOut", "guests", "roomId", "name", "email"];
+
+/** A `YYYY-MM-DD` that names a real calendar day, so "2026-02-31" is rejected. */
+function isISODate(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) && toISODate(parseISODate(value)) === value;
+}
 
 const inputClass =
   "mt-2 block h-12 w-full rounded-md border bg-(--paper) px-4 text-base text-(--ink) transition-colors focus-visible:border-(--sea) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--sea)";
@@ -23,10 +30,14 @@ export function InquiryForm() {
   const params = useSearchParams();
   const roomParam = params.get("room") ?? "";
   const today = toISODate(new Date());
+  // Dates handed over by the availability strip. Anything malformed or already past is dropped.
+  const checkInParam = params.get("checkIn") ?? "";
+  const checkOutParam = params.get("checkOut") ?? "";
+  const checkInOk = isISODate(checkInParam) && checkInParam >= today;
 
   const [values, setValues] = useState({
-    checkIn: "",
-    checkOut: "",
+    checkIn: checkInOk ? checkInParam : "",
+    checkOut: checkInOk && isISODate(checkOutParam) ? checkOutParam : "",
     guests: "2",
     roomId: ROOMS.some((r) => r.id === roomParam) ? roomParam : "",
     name: "",
@@ -47,6 +58,10 @@ export function InquiryForm() {
   const datesValid = !!values.checkIn && !!values.checkOut && !liveErrors.checkIn && !liveErrors.checkOut;
   const nights = datesValid ? nightsBetween(values.checkIn, values.checkOut) : 0;
   const room = ROOMS.find((r) => r.id === values.roomId);
+
+  function nightCount(n: number) {
+    return n === 1 ? ui.nightOne[lang] : fill(ui.nightsMany[lang], { n: String(n) });
+  }
 
   function update(field: Field, value: string) {
     setValues((v) => ({ ...v, [field]: value }));
@@ -82,9 +97,7 @@ export function InquiryForm() {
           role="status"
           className="mt-5 font-(family-name:--font-display) text-2xl leading-[1.4] text-(--sea-deep)"
         >
-          {lang === "th"
-            ? `ได้รับคำขอจองแล้ว ${sentNights} คืน (เว็บตัวอย่าง: ไม่มีการส่งข้อมูลจริง)`
-            : `Inquiry received for ${sentNights} nights. (Demo — nothing was sent.)`}
+          {fill(ui.inquirySent[lang], { nights: nightCount(sentNights) })}
         </p>
         <button
           type="button"
@@ -124,7 +137,7 @@ export function InquiryForm() {
 
   function label(field: Field, text: string, optional = false) {
     return (
-      <label htmlFor={`inq-${field}`} className="text-[15px] font-medium text-(--ink)">
+      <label htmlFor={`inq-${field}`} className="text-base font-medium text-(--ink)">
         {text}
         {optional && <span className="font-normal text-(--muted)"> {ui.optional[lang]}</span>}
       </label>
@@ -231,13 +244,11 @@ export function InquiryForm() {
               {ui.yourStay[lang]}
             </h2>
             <p className="mt-1 leading-[1.5] text-(--sand)/80">{room ? room.name[lang] : ui.anyRoom[lang]}</p>
-            <div className="mt-6 space-y-3 border-t border-white/15 pt-5 text-[15px]" aria-live="polite">
+            <div className="mt-6 space-y-3 border-t border-white/15 pt-5 text-base" aria-live="polite">
               {nights > 0 ? (
                 <dl className="flex justify-between gap-4">
-                  <dt className="text-(--sand)/80">{lang === "th" ? "จำนวนคืน" : "Nights"}</dt>
-                  <dd data-testid="inquiry-nights">
-                    {nights} {ui.nights[lang]}
-                  </dd>
+                  <dt className="text-(--sand)/80">{ui.nightsLabel[lang]}</dt>
+                  <dd data-testid="inquiry-nights">{nightCount(nights)}</dd>
                 </dl>
               ) : (
                 <p className="leading-[1.6] text-(--sand)/80">{ui.pickDates[lang]}</p>
@@ -247,7 +258,7 @@ export function InquiryForm() {
                   <dl className="flex items-end justify-between gap-4 pt-2">
                     <dt className="text-(--sand)/80">{ui.estimate[lang]}</dt>
                     <dd data-testid="inquiry-total" className="font-(family-name:--font-display) text-3xl leading-[1.2] text-(--sun)">
-                      {formatTHB(room.pricePerNight * nights)}
+                      {formatTHB(stayTotal(room.pricePerNight, values.checkIn, values.checkOut))}
                     </dd>
                   </dl>
                 ) : (

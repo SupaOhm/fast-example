@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GALLERY, ROOMS, highlights, resort } from "@/lib/demos/resort/content";
 import { unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
+import { AvailabilityStrip } from "../_components/availability-strip";
 import { ui } from "../_components/copy";
 import { Moonrise } from "../_components/moonrise";
 import { Reveal } from "../_components/reveal";
@@ -56,6 +57,8 @@ export default function ResortHome() {
           </div>
         </div>
       </section>
+
+      <AvailabilityStrip />
 
       {/* Intro and highlights */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-28 lg:px-10">

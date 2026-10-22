@@ -52,3 +52,35 @@ test("booking inquiry validates dates and succeeds", async ({ page }) => {
   await page.getByTestId("inquiry-submit").click();
   await expect(page.getByTestId("inquiry-success")).toContainText("2");
 });
+
+test("availability strip hands a stay to the booking form", async ({ page }) => {
+  await page.goto("/demos/resort");
+  const strip = page.getByTestId("availability");
+  await strip.scrollIntoViewIfNeeded();
+  await expect(strip.getByTestId("night").first()).toHaveAttribute("data-iso", /\d{4}-\d{2}-\d{2}/);
+
+  // Find two neighbouring open nights.
+  const nights = strip.getByTestId("night");
+  const count = await nights.count();
+  let first = -1;
+  for (let i = 0; i < count - 1; i++) {
+    if ((await nights.nth(i).isEnabled()) && (await nights.nth(i + 1).isEnabled())) {
+      first = i;
+      break;
+    }
+  }
+  expect(first).toBeGreaterThanOrEqual(0);
+  const checkIn = await nights.nth(first).getAttribute("data-iso");
+  const checkOut = await nights.nth(first + 1).getAttribute("data-iso");
+
+  await nights.nth(first).click();
+  await nights.nth(first + 1).click();
+  await expect(strip.getByTestId("availability-summary")).toContainText("1");
+  await strip.getByTestId("availability-book").click();
+
+  await expect(page).toHaveURL(/\/demos\/resort\/booking\?/);
+  await expect(page.getByTestId("input-checkIn")).toHaveValue(checkIn!);
+  await expect(page.getByTestId("input-checkOut")).toHaveValue(checkOut!);
+  await expect(page.getByTestId("input-roomId")).toHaveValue("sea-deluxe");
+  await expect(page.getByTestId("inquiry-nights")).toContainText("1");
+});
