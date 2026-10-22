@@ -3,6 +3,7 @@ import Link from "next/link";
 import { T, TImage } from "@/components/demo/lang";
 import { unsplash } from "@/lib/images";
 import { clients, company, SERVICES, stats } from "@/lib/demos/company/content";
+import { ClientLogo } from "../_components/client-logos";
 import { CtaBand } from "../_components/cta-band";
 import { ui } from "../_components/copy";
 import { CropMarks, DimensionLine, gridStyle } from "../_components/drawing";
@@ -55,7 +56,7 @@ export default function CompanyHome() {
                   fill
                   preload
                   sizes="(min-width: 1024px) 560px, 100vw"
-                  className="object-cover object-[30%_50%]"
+                  className="object-cover object-[40%_50%]"
                 />
               </div>
               <figcaption className="absolute -bottom-6 left-4 max-w-[17rem] border-l-[3px] border-(--orange) bg-white px-4 py-3 text-sm leading-[1.5] text-(--ink) sm:left-auto sm:-right-4">
@@ -142,13 +143,10 @@ export default function CompanyHome() {
           <h2 className="text-center text-base leading-[1.5] font-medium text-(--muted)">
             <T value={ui.clientsHeading} />
           </h2>
-          <ul className="mt-6 flex flex-wrap justify-center gap-3 lg:grid lg:grid-cols-5">
+          <ul className="mt-8 grid grid-cols-2 items-center gap-x-6 gap-y-8 text-[#5d6878] sm:gap-x-10 lg:grid-cols-5">
             {clients.map((c) => (
-              <li
-                key={c.logo}
-                className="grid h-14 place-items-center rounded-[2px] bg-(--steel) px-5 text-center text-base leading-[1.3] font-bold whitespace-nowrap text-[#5d6878] lg:h-16 lg:px-3"
-              >
-                <T value={c.name} />
+              <li key={c.logo} className="flex justify-center last:col-span-2 lg:last:col-span-1">
+                <ClientLogo id={c.logo} name={c.name} className="max-w-full" />
               </li>
             ))}
           </ul>
