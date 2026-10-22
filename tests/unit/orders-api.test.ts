@@ -56,7 +56,7 @@ describe("POST /orders", () => {
     expect(next).toHaveLength(9);
     expect(next[0].id).toBe("ORD-1009");
     expect(orders).toHaveLength(8);
-    expect(response.notification?.lines[0]).toContain("ORD-1009");
+    expect(response.notification).toMatchObject({ kind: "new", orderId: "ORD-1009" });
   });
 
   it("returns 422 with details for invalid bodies", () => {
@@ -90,7 +90,7 @@ describe("PATCH /orders/:id/status", () => {
     });
     expect(response.status).toBe(200);
     expect(orders.find((o) => o.id === "ORD-1001")?.status).toBe("shipped");
-    expect(response.notification?.lines[1]).toMatch(/→ shipped$/);
+    expect(response.notification).toMatchObject({ kind: "status", to: "shipped" });
   });
 
   it("rejects invalid status, unknown id and cancelled orders", () => {

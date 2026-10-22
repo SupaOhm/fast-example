@@ -1,18 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { ENDPOINTS } from "@/lib/demos/orders-api/api";
+import { useLang } from "@/components/demo/lang";
+import { ENDPOINTS, handleRequest } from "@/lib/demos/orders-api/api";
+import { SEED_ORDERS } from "@/lib/demos/orders-api/seed";
 import { ApiConsole } from "./api-console";
+import { endpointCopy, ui } from "./copy";
 import { METHOD_STYLE, MethodBadge } from "./http";
 
-const THAI_SUMMARY: Record<string, string> = {
-  "GET /orders": "ดูรายการออเดอร์ทั้งหมด กรองตามสถานะได้",
-  "GET /orders/:id": "ดูรายละเอียดออเดอร์ทีละรายการ",
-  "POST /orders": "สร้างออเดอร์ใหม่ แล้วแจ้งร้านทาง LINE",
-  "PATCH /orders/:id/status": "เปลี่ยนสถานะออเดอร์ แล้วแจ้งทาง LINE",
-};
-
 const DEFAULT_INDEX = ENDPOINTS.findIndex((e) => e.method === "POST");
+
+// A fixed clock, so the examples render the same on the server and in every browser.
+const EXAMPLE_NOW = new Date("2026-10-19T04:30:00.000Z");
+
+/** Each endpoint's typical success response: its example request, run against a fresh copy of the seed orders. */
+const EXAMPLES = ENDPOINTS.map(
+  (ep) =>
+    handleRequest(structuredClone(SEED_ORDERS), { method: ep.method, path: ep.example.path, body: ep.example.body }, EXAMPLE_NOW)
+      .response,
+);
 
 const bodyFor = (i: number) => {
   const b = ENDPOINTS[i].example.body;
@@ -20,6 +26,7 @@ const bodyFor = (i: number) => {
 };
 
 export function Playground() {
+  const lang = useLang();
   const [selected, setSelected] = useState(DEFAULT_INDEX);
   const [path, setPath] = useState(ENDPOINTS[DEFAULT_INDEX].example.path);
   const [body, setBody] = useState(bodyFor(DEFAULT_INDEX));
@@ -31,12 +38,11 @@ export function Playground() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-8">
+    <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
       <nav aria-labelledby="endpoints-heading" className="min-w-0">
-        <h2 id="endpoints-heading" className="mb-1 text-sm font-medium">
-          Endpoints
-        </h2>
-        <p className="mb-3 text-xs leading-[1.5] text-(--muted)">เลือก endpoint แล้วกด Send เพื่อลองยิงคำขอ ทุกอย่างจำลองในเบราว์เซอร์</p>
+        <h3 id="endpoints-heading" className="mb-3 text-base leading-[1.4] font-semibold">
+          {ui.endpointsHeading[lang]}
+        </h3>
         <ul className="space-y-1.5">
           {ENDPOINTS.map((ep, i) => {
             const active = i === selected;
@@ -48,18 +54,17 @@ export function Playground() {
                   data-testid={`endpoint-${ep.method}-${ep.path}`}
                   aria-pressed={active}
                   onClick={() => select(i)}
-                  className={`w-full rounded-lg border-l-2 px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-(--muted) ${
+                  className={`w-full rounded-xl border px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) ${
                     active
-                      ? `${METHOD_STYLE[ep.method].border} bg-(--panel-2)`
+                      ? `border-(--line) bg-(--panel) shadow-[inset_3px_0_0_0] ${METHOD_STYLE[ep.method].text}`
                       : "border-transparent hover:bg-(--panel)"
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
                     <MethodBadge method={ep.method} />
-                    <span className="min-w-0 truncate font-(family-name:--font-mono) text-[13px] text-(--text)">{ep.path}</span>
+                    <span className="min-w-0 truncate font-(family-name:--font-mono) text-sm text-(--text)">{ep.path}</span>
                   </span>
-                  <span className="mt-1.5 block text-sm leading-[1.45] text-(--text)">{THAI_SUMMARY[key]}</span>
-                  <span className="mt-0.5 block text-xs leading-[1.45] text-(--muted)">{ep.summary}</span>
+                  <span className="mt-1.5 block text-base leading-[1.45] text-(--text)">{endpointCopy[key][lang]}</span>
                 </button>
               </li>
             );
@@ -72,6 +77,7 @@ export function Playground() {
         path={path}
         body={body}
         endpointKey={`${ENDPOINTS[selected].method} ${ENDPOINTS[selected].path}`}
+        example={EXAMPLES[selected]}
         onPathChange={setPath}
         onBodyChange={setBody}
       />

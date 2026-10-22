@@ -6,6 +6,7 @@ const DEMOS = [
   { name: "resort", home: "/demos/resort", next: "/demos/resort/rooms", where: "navigation", en: "Rooms", th: "ห้องพัก" },
   { name: "sale page", home: "/demos/sale-page", next: "/demos/sale-page", where: "main", en: "Order on LINE", th: "สั่งซื้อทาง LINE" },
   { name: "company", home: "/demos/company", next: "/demos/company/services", where: "navigation", en: "Services", th: "บริการ" },
+  { name: "orders api", home: "/demos/orders-api", next: "/demos/orders-api", where: "main", en: "An order comes in", th: "ออเดอร์เข้าปุ๊บ" },
 ] as const;
 
 // The demo bar's small print, which is always visible.

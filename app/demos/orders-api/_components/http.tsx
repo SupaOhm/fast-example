@@ -12,11 +12,12 @@ export const STATUS_TEXT: Record<number, string> = {
 
 export const statusLine = (code: number) => (STATUS_TEXT[code] ? `${code} ${STATUS_TEXT[code]}` : String(code));
 
-// Literal class strings so Tailwind can see them.
-export const METHOD_STYLE: Record<HttpMethod, { text: string; bg: string; tint: string; border: string }> = {
-  GET: { text: "text-(--get)", bg: "bg-(--get)", tint: "bg-(--get)/12", border: "border-(--get)" },
-  POST: { text: "text-(--post)", bg: "bg-(--post)", tint: "bg-(--post)/12", border: "border-(--post)" },
-  PATCH: { text: "text-(--patch)", bg: "bg-(--patch)", tint: "bg-(--patch)/12", border: "border-(--patch)" },
+// Literal class strings so Tailwind can see them. Method colours are text on white or --bg only, or a solid
+// fill behind white text (all 4.5:1 or better).
+export const METHOD_STYLE: Record<HttpMethod, { text: string; bg: string; border: string }> = {
+  GET: { text: "text-(--get)", bg: "bg-(--get)", border: "border-(--get)" },
+  POST: { text: "text-(--post)", bg: "bg-(--post)", border: "border-(--post)" },
+  PATCH: { text: "text-(--patch)", bg: "bg-(--patch)", border: "border-(--patch)" },
 };
 
 export function statusTone(code: number): string {
@@ -29,7 +30,7 @@ export function MethodBadge({ method, className = "" }: { method: HttpMethod; cl
   const s = METHOD_STYLE[method];
   return (
     <span
-      className={`inline-flex w-[3.75rem] shrink-0 justify-center rounded-md py-0.5 font-(family-name:--font-mono) text-[11px] font-bold ${s.text} ${s.tint} ${className}`}
+      className={`inline-flex w-[3.75rem] shrink-0 justify-center rounded-md py-0.5 font-(family-name:--font-mono) text-xs font-bold text-white ${s.bg} ${className}`}
     >
       {method}
     </span>
