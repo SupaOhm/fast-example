@@ -42,12 +42,18 @@ const STYLE = {
 /** The home hero: as you scroll, the bay turns to dusk and the moon rises over the cliffs. */
 export function MoonriseHero() {
   const ref = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    const stage = stageRef.current;
+    if (!el || !stage) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
+    // The stage pins for (section height − stage height). The stage can be taller than the viewport
+    // (its min-height on a short phone in landscape), so measure it rather than assume innerHeight.
+    // Read on mount and on resize only, never per scroll frame.
+    let stageHeight = stage.offsetHeight;
 
     const write = () => {
       frame = 0;
@@ -56,7 +62,7 @@ export function MoonriseHero() {
         return;
       }
       const rect = el.getBoundingClientRect();
-      const range = rect.height - window.innerHeight;
+      const range = rect.height - stageHeight;
       const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 0;
       el.style.setProperty("--p", p.toFixed(4));
     };
@@ -64,14 +70,19 @@ export function MoonriseHero() {
       if (!frame) frame = requestAnimationFrame(write);
     };
 
+    const onResize = () => {
+      stageHeight = stage.offsetHeight;
+      schedule();
+    };
+
     schedule();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     reduce.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", onResize);
       reduce.removeEventListener("change", schedule);
     };
   }, []);
@@ -83,7 +94,7 @@ export function MoonriseHero() {
       data-hero-pin
       className="relative h-[180svh] min-h-[620px] bg-(--night) [--p:0] motion-reduce:h-[100svh]"
     >
-      <div className="sticky top-0 isolate flex h-[100svh] min-h-[620px] items-end overflow-hidden text-white [container-type:size]">
+      <div ref={stageRef} data-hero-stage className="sticky top-0 isolate flex h-[100svh] min-h-[620px] items-end overflow-hidden text-white [container-type:size]">
         <div aria-hidden className="absolute inset-0 -z-10 will-change-transform" style={STYLE.photo}>
           {/* Decorative: the h1 and the moonrise line already describe the scene. */}
           <Image src={unsplash(resort.heroImage, 2000)} alt="" fill preload sizes="100vw" className="object-cover" />

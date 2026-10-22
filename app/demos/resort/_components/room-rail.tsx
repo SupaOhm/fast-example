@@ -58,7 +58,7 @@ const activeOf = (rail: HTMLElement) => (atEnd(rail) && rail.scrollLeft > END_SL
 /** All five rooms on one sideways rail: drag, swipe, or step through with the arrows. */
 export function RoomRail() {
   const lang = useLang();
-  const sectionRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [edges, setEdges] = useState({ start: true, end: false });
@@ -104,9 +104,11 @@ export function RoomRail() {
 
   // The arrows go to the next snap position either way. Near the end, "next" is the end itself,
   // and "previous" from the end skips the cards that share the end position.
+  // At an end the arrow is only aria-disabled (a native disabled would drop keyboard focus to <body>), so it does nothing here.
   const step = (dir: 1 | -1) => {
     const rail = railRef.current;
-    if (rail) scrollToLeft(snapFrom(rail, rail.scrollLeft, dir));
+    if (!rail || (dir === -1 ? edges.start : edges.end)) return;
+    scrollToLeft(snapFrom(rail, rail.scrollLeft, dir));
   };
 
   // Drop a pending scroll's timer and listener if the rail unmounts mid-scroll.
@@ -125,17 +127,20 @@ export function RoomRail() {
   // React state only when the room number actually changes.
   useEffect(() => {
     const rail = railRef.current;
-    const section = sectionRef.current;
-    if (!rail || !section) return;
+    const progress = progressRef.current;
+    if (!rail || !progress) return;
     let frame = 0;
     const update = () => {
       frame = 0;
+      // Every layout read first, then the one style write, so the frame never forces a second layout.
+      const left = rail.scrollLeft;
       const max = maxScroll(rail);
-      section.style.setProperty("--rail", (max > 0 ? Math.min(1, Math.max(0, rail.scrollLeft / max)) : 0).toFixed(4));
-      setActive(activeOf(rail));
-      // Both setters bail out when nothing changed, so React only renders when the room or an end changes.
-      const start = rail.scrollLeft <= END_SLOP;
+      const room = activeOf(rail);
+      const start = left <= END_SLOP;
       const end = atEnd(rail);
+      progress.style.setProperty("--rail", (max > 0 ? Math.min(1, Math.max(0, left / max)) : 0).toFixed(4));
+      // Both setters bail out when nothing changed, so React only renders when the room or an end changes.
+      setActive(room);
       setEdges((e) => (e.start === start && e.end === end ? e : { start, end }));
     };
     const schedule = () => {
@@ -209,12 +214,7 @@ export function RoomRail() {
     "grid size-12 place-items-center rounded-full border border-(--sea-deep)/35 text-(--sea-deep) transition-colors hover:border-(--sea) hover:bg-(--sea) hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) aria-disabled:pointer-events-none aria-disabled:opacity-35 motion-reduce:transition-none";
 
   return (
-    <section
-      ref={sectionRef}
-      data-testid="room-rail"
-      aria-labelledby="room-rail-heading"
-      className="overflow-hidden pb-20 [--rail:0] md:pb-28"
-    >
+    <section data-testid="room-rail" aria-labelledby="room-rail-heading" className="overflow-hidden pb-20 md:pb-28">
       <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-x-10 gap-y-6 px-4 sm:px-6 lg:px-10">
         <div className="max-w-2xl">
           <h2 id="room-rail-heading" className="font-(family-name:--font-display) text-3xl leading-[1.25] text-(--sea-deep) md:text-5xl">
@@ -230,7 +230,6 @@ export function RoomRail() {
             type="button"
             data-testid="rail-prev"
             aria-label={ui.previousRoom[lang]}
-            disabled={edges.start}
             aria-disabled={edges.start || undefined}
             onClick={() => step(-1)}
             className={arrow}
@@ -241,7 +240,6 @@ export function RoomRail() {
             type="button"
             data-testid="rail-next"
             aria-label={ui.nextRoom[lang]}
-            disabled={edges.end}
             aria-disabled={edges.end || undefined}
             onClick={() => step(1)}
             className={arrow}
@@ -279,7 +277,7 @@ export function RoomRail() {
             >
               <Image
                 src={unsplash(room.image, featured ? 1300 : 800)}
-                alt={room.name[lang]}
+                alt=""
                 fill
                 draggable={false}
                 sizes={featured ? "(min-width: 1024px) 600px, (min-width: 640px) 460px, 84vw" : "(min-width: 1024px) 340px, (min-width: 640px) 300px, 70vw"}
@@ -326,7 +324,10 @@ export function RoomRail() {
 
       <div className="mx-auto mt-6 max-w-7xl px-4 sm:px-6 lg:px-10">
         <div aria-hidden className="relative h-px bg-(--sea-deep)/15">
-          <span className="absolute -top-px left-0 h-[3px] w-1/5 rounded-full bg-(--sea) [transform:translateX(calc(var(--rail)*400%))]" />
+          <span
+            ref={progressRef}
+            className="absolute -top-px left-0 h-[3px] w-1/5 rounded-full bg-(--sea) [--rail:0] [transform:translateX(calc(var(--rail)*400%))]"
+          />
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { addDays, parseISODate, toISODate } from "@/lib/dates";
 import { ROOMS } from "@/lib/demos/resort/content";
 import { filterRooms, nightsBetween, validateInquiry, type InquiryInput } from "@/lib/demos/resort/logic";
 
@@ -56,5 +57,13 @@ describe("validateInquiry", () => {
     const errors = validateInquiry({ ...ok, checkIn: "", checkOut: "" }, "2026-10-19", "en");
     expect(errors.checkIn).toBe("Choose a check-in date");
     expect(errors.checkOut).toBe("Choose a check-out date");
+  });
+
+  it("caps a stay at 30 nights", () => {
+    const today = "2026-10-19";
+    const plus = (n: number) => toISODate(addDays(parseISODate(today), n));
+    // checkIn today+1 → checkOut today+32 is 31 nights
+    expect(validateInquiry({ ...ok, checkIn: plus(1), checkOut: plus(32) }, today, "en").checkOut).toBe("Stays can be up to 30 nights");
+    expect(validateInquiry({ ...ok, checkIn: plus(1), checkOut: plus(31) }, today, "en").checkOut).toBeUndefined();
   });
 });

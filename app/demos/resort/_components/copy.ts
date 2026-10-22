@@ -91,7 +91,10 @@ export const ui = {
   availabilityHeading: { th: "ห้องว่าง 14 คืนข้างหน้า", en: "Availability for the next 14 nights" },
   pickFirstNight: { th: "เลือกคืนแรกที่เข้าพัก", en: "Pick your first night" },
   pickCheckOutDay: { th: "เลือกวันเช็กเอาต์", en: "Now pick your check-out day" },
-  crossesFull: { th: "ช่วงนี้มีคืนที่เต็มแล้ว เลือกคืนแรกใหม่อีกครั้ง", en: "Those dates include a full night. Pick a new first night." },
+  crossesFull: {
+    th: "ช่วงนั้นมีคืนที่เต็ม เราเริ่มนับจากคืนที่เลือกใหม่ เลือกวันเช็กเอาต์ได้เลย",
+    en: "Those dates include a full night, so your stay now starts on the night you picked. Choose your check-out day.",
+  },
   fullNight: { th: "เต็ม", en: "Full" },
   checkOutOnly: { th: "เช็กเอาต์ได้", en: "Check-out only" },
   nightOne: { th: "1 คืน", en: "1 night" },

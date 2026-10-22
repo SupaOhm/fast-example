@@ -75,7 +75,11 @@ test("availability strip hands a stay to the booking form", async ({ page }) => 
 
   await nights.nth(first).click();
   await nights.nth(first + 1).click();
-  await expect(strip.getByTestId("availability-summary")).toContainText("1");
+  const summary = strip.getByTestId("availability-summary");
+  await expect(summary).toContainText(/1 (night|คืน)/);
+  // The strip and the form price the stay with the same stayTotal, so the two amounts must match.
+  const total = (await summary.textContent())?.match(/฿[\d,]+/)?.[0];
+  expect(total).toBeTruthy();
   await strip.getByTestId("availability-book").click();
 
   await expect(page).toHaveURL(/\/demos\/resort\/booking\?/);
@@ -83,6 +87,7 @@ test("availability strip hands a stay to the booking form", async ({ page }) => 
   await expect(page.getByTestId("input-checkOut")).toHaveValue(checkOut!);
   await expect(page.getByTestId("input-roomId")).toHaveValue("sea-deluxe");
   await expect(page.getByTestId("inquiry-nights")).toContainText("1");
+  await expect(page.getByTestId("inquiry-total")).toHaveText(total!);
 });
 
 test("room rail steps through all five rooms", async ({ page }) => {
@@ -96,29 +101,37 @@ test("room rail steps through all five rooms", async ({ page }) => {
   await expect(rail.getByRole("link").first()).toHaveAttribute("href", /\/demos\/resort\/booking\?room=/);
 });
 
-test("the room rail ends at its last card", async ({ page }) => {
-  await page.goto("/demos/resort");
-  const rail = page.getByTestId("room-rail");
-  await rail.scrollIntoViewIfNeeded();
-  await expect(rail.getByTestId("rail-prev")).toBeDisabled();
-  for (let i = 0; i < 6 && (await rail.getByTestId("rail-next").isEnabled()); i++) {
-    await rail.getByTestId("rail-next").click();
-    await page.waitForTimeout(450);
-  }
-  await expect(rail.getByTestId("rail-counter")).toHaveText("05 / 05");
-  await expect(rail.getByTestId("rail-next")).toBeDisabled();
-  // No empty run-out: the last card's right edge sits on the page gutter, the same inset as the heading's
-  // container on the right. At 1440 that gutter is exactly 120px, so the bound is inclusive.
-  const [gap, gutter] = await rail.evaluate((el) => {
-    const scroller = el.querySelector<HTMLElement>("[data-rail-scroller]")!;
-    const cards = scroller.querySelectorAll("a");
-    const last = cards[cards.length - 1].getBoundingClientRect();
-    const head = el.querySelector("h2")!.closest<HTMLElement>(".max-w-7xl")!;
-    const right = scroller.getBoundingClientRect().right;
-    return [right - last.right, right - head.getBoundingClientRect().right + parseFloat(getComputedStyle(head).paddingRight)];
+// Instant scrolling, so each arrow press has settled before the next one.
+test.describe("rail with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the room rail ends at its last card", async ({ page }) => {
+    await page.goto("/demos/resort");
+    const rail = page.getByTestId("room-rail");
+    await rail.scrollIntoViewIfNeeded();
+    const next = rail.getByTestId("rail-next");
+    const counter = rail.getByTestId("rail-counter");
+    await expect(rail.getByTestId("rail-prev")).toHaveAttribute("aria-disabled", "true");
+    for (let i = 0; i < 6 && (await next.getAttribute("aria-disabled")) !== "true"; i++) {
+      const before = (await counter.textContent()) ?? "";
+      await next.click();
+      await expect(counter).not.toHaveText(before);
+    }
+    await expect(counter).toHaveText("05 / 05");
+    await expect(next).toHaveAttribute("aria-disabled", "true");
+    // No empty run-out: the last card's right edge sits on the page gutter, the same inset as the heading's
+    // container on the right. At 1440 that gutter is exactly 120px, so the bound is inclusive.
+    const [gap, gutter] = await rail.evaluate((el) => {
+      const scroller = el.querySelector<HTMLElement>("[data-rail-scroller]")!;
+      const cards = scroller.querySelectorAll("a");
+      const last = cards[cards.length - 1].getBoundingClientRect();
+      const head = el.querySelector("h2")!.closest<HTMLElement>(".max-w-7xl")!;
+      const right = scroller.getBoundingClientRect().right;
+      return [right - last.right, right - head.getBoundingClientRect().right + parseFloat(getComputedStyle(head).paddingRight)];
+    });
+    expect(Math.abs(gap - gutter)).toBeLessThan(2);
+    expect(gap).toBeLessThanOrEqual(120);
   });
-  expect(Math.abs(gap - gutter)).toBeLessThan(2);
-  expect(gap).toBeLessThanOrEqual(120);
 });
 
 test("the moon rises as you scroll the hero", async ({ page }) => {
@@ -142,5 +155,6 @@ test.describe("with reduced motion", () => {
     const [height, viewport] = await hero.evaluate((el) => [el.getBoundingClientRect().height, window.innerHeight]);
     expect(height).toBeLessThanOrEqual(viewport + 1);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByTestId("moonrise-line")).toBeHidden();
   });
 });

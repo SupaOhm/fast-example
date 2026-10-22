@@ -23,11 +23,13 @@ export function ResortHeader() {
     if (!isHome) return;
     // Clear over the hero: past 48px, or for as long as the moonrise stage is pinned, whichever is longer.
     // The hero and its pinned length are read once and again on resize, never on each scroll event.
+    // The stage can be taller than the viewport on a short screen, so its own height sets the pinned length.
     const hero = document.querySelector<HTMLElement>("[data-hero-pin]");
+    const stage = hero?.querySelector<HTMLElement>("[data-hero-stage]");
     let pinned = 0;
     const onScroll = () => setScrolled(window.scrollY > Math.max(48, pinned));
     const measure = () => {
-      pinned = hero ? hero.offsetHeight - window.innerHeight : 0;
+      pinned = hero && stage ? hero.offsetHeight - stage.offsetHeight : 0;
       onScroll();
     };
     measure();

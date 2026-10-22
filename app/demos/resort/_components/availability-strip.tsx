@@ -219,7 +219,7 @@ function NightCell({
         onClick={onPick}
         className={`${cellBox} ${tone} transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sun) motion-reduce:transition-none`}
       >
-        <span className={`text-sm leading-none ${isEnd ? "text-(--night)/75" : "text-(--sand)/70"}`}>
+        <span className={`text-sm leading-none ${isEnd ? "text-(--night)/85" : "text-(--sand)/70"}`}>
           {formatDate(iso, lang, "weekday")}
         </span>
         <span
