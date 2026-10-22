@@ -7,7 +7,7 @@ export const ui = {
   heroTitle: { th: "ออเดอร์เข้าปุ๊บ เด้งใน LINE ปั๊บ", en: "An order comes in, and LINE pings right away" },
   heroSub: {
     th: "รับออเดอร์จากเว็บ แชต หรือหน้าร้านไว้ที่เดียว ร้านรู้ทันทีทุกครั้งที่มีออเดอร์ใหม่หรือสถานะเปลี่ยน",
-    en: "Orders from your website, chat or counter land in one place, and the shop hears about every new order and status change straight away.",
+    en: "Orders from your website, chat or counter land in one place, and you hear about every new order and status change straight away.",
   },
   benefitLine: { th: "แจ้งเตือนเข้า LINE ร้านอัตโนมัติ", en: "Automatic alerts in the shop's LINE" },
   benefitStatus: { th: "ติดตามสถานะ รอชำระ → ชำระแล้ว → ส่งแล้ว", en: "Track every order: pending → paid → shipped" },
@@ -43,24 +43,14 @@ export const ui = {
   laneSaved: { th: "บันทึก {id} แล้ว", en: "Saved {id}" },
 
   // page.tsx
-  developers: { th: "Developers", en: "Developers" },
   pageNavLabel: { th: "ในหน้านี้", en: "On this page" },
   navTry: { th: "ลองใช้งาน", en: "Try it" },
   navReference: { th: "อ้างอิง", en: "Reference" },
-  introTagline: {
-    th: "ระบบรับออเดอร์ของร้านออนไลน์ สร้าง ดู อัปเดตสถานะ และแจ้งเตือนเข้า LINE ของร้านทันที",
-    en: "An order system for an online shop: create and view orders, update their status, and notify the shop's LINE straight away.",
-  },
-  introSub: {
-    th: "REST API ขนาดเล็กสำหรับรับออเดอร์ ติดตามสถานะ และแจ้งเตือนร้านทาง LINE",
-    en: "A small REST API for taking orders, tracking their status and notifying the shop on LINE.",
-  },
   baseUrl: { th: "Base URL", en: "Base URL" },
   auth: { th: "Auth", en: "Auth" },
   authValue: { th: "Bearer token (ไม่ต้องใช้ในเดโม)", en: "Bearer token (not needed in this demo)" },
   format: { th: "Format", en: "Format" },
   formatValue: { th: "JSON, UTF-8", en: "JSON, UTF-8" },
-  tryRegionLabel: { th: "ลองใช้งาน API", en: "Try the API" },
   referenceHeading: { th: "อ้างอิง", en: "Reference" },
   orderObject: { th: "Order", en: "Order" },
   orderObjectHint: {
@@ -99,7 +89,6 @@ export const ui = {
     th: "JSON ไม่ถูกต้อง ตรวจวงเล็บปีกกาและเครื่องหมายคำพูดอีกครั้ง",
     en: "Invalid JSON. Check the curly braces and quotation marks again.",
   },
-  invalidJsonFallback: { th: "Invalid JSON", en: "Invalid JSON" },
   invalidJsonBody: { th: "Invalid JSON body", en: "Invalid JSON body" },
   getNoBody: { th: "GET ไม่มี body", en: "GET has no body" },
   tryFilter: { th: "ลองกรองสถานะ:", en: "Try filtering by status:" },
@@ -107,10 +96,6 @@ export const ui = {
   sending: { th: "กำลังส่งคำขอ", en: "Sending request" },
   checkedInBrowser: { th: "ตรวจในเบราว์เซอร์", en: "Checked in the browser" },
   waitingForServer: { th: "รอคำตอบจากเซิร์ฟเวอร์จำลอง…", en: "Waiting for the mock server…" },
-  responsePlaceholder: {
-    th: "กด Send เพื่อยิงคำขอ ผลลัพธ์จะแสดงที่นี่",
-    en: "Press Send to make a request. The result appears here.",
-  },
   lineAsideLabel: { th: "ตัวอย่างแจ้งเตือน LINE", en: "LINE notification preview" },
   lineAsideHeading: { th: "แจ้งเตือนที่ร้านได้รับใน LINE", en: "What the shop receives in LINE" },
   lineAsideNote: {
@@ -129,11 +114,6 @@ export const ui = {
   // line-preview.tsx
   lineBotName: { th: "ร้านดี Bot", en: "Raan Dee Bot" },
   lineOfficialAccount: { th: "LINE Official Account", en: "LINE Official Account" },
-  lineEmpty: {
-    th: "ยังไม่มีข้อความ ลองส่ง POST /orders แล้วดูแจ้งเตือนที่ร้านได้รับตรงนี้",
-    en: "No messages yet. Send POST /orders to see the alert the shop receives here.",
-  },
-  lineToday: { th: "วันนี้", en: "Today" },
   lineLogLabel: { th: "ข้อความ LINE จากร้านดี Bot", en: "LINE messages from Raan Dee Bot" },
   lineViewOrder: { th: "ดูออเดอร์", en: "View order" },
 } satisfies Record<string, L>;
@@ -141,7 +121,7 @@ export const ui = {
 export const endpointCopy: Record<string, L> = {
   "GET /orders": {
     th: "ดูรายการออเดอร์ทั้งหมด กรองตามสถานะได้",
-    en: "List orders, optionally filtered by ?status=",
+    en: "List orders, optionally filtered by status",
   },
   "GET /orders/:id": { th: "ดูรายละเอียดออเดอร์ทีละรายการ", en: "Get one order" },
   "POST /orders": {

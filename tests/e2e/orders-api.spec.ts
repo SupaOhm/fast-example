@@ -7,7 +7,9 @@ test("the shop's LINE fills with orders on its own", async ({ page }) => {
   const phone = page.getByTestId("story-phone");
   await expect(phone).toContainText("ORD-1001");
   await expect(page.getByTestId("story-log")).toContainText("POST");
-  await expect(phone).toContainText("ORD-1002", { timeout: 6000 });
+  // The first three events are on screen at load; ORD-1003 only arrives with the first tick.
+  await expect(phone).not.toContainText("ORD-1003");
+  await expect(phone).toContainText("ORD-1003", { timeout: 6000 });
 });
 
 test("the console shows an example response before the first send", async ({ page }) => {
@@ -57,6 +59,16 @@ test.describe("in English", () => {
     await page.goto("/demos/orders-api");
     await expect(page.getByTestId("story-phone")).toContainText("New order");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("An order comes in, and LINE pings right away");
+  });
+
+  test("the console sends a request and words the LINE alert in English", async ({ page }) => {
+    await page.goto("/demos/orders-api");
+    await page.waitForLoadState("networkidle");
+    await page.getByTestId("endpoint-POST-/orders").click();
+    await page.getByTestId("api-send").click();
+    await expect(page.getByTestId("api-status")).toHaveText(/201/);
+    await expect(page.getByTestId("line-preview")).toContainText("New order");
+    await expect(page.getByTestId("line-preview")).toContainText("ORD-1009");
   });
 });
 

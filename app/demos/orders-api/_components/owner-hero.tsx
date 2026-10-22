@@ -11,7 +11,6 @@ import { latest, useStory, useStoryControls } from "./story-player";
 
 const BENEFITS = [ui.benefitLine, ui.benefitStatus, ui.benefitApi];
 
-
 function StoryPhone() {
   const lang = useLang();
   const frame = useStory();
