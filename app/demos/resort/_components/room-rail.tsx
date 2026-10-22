@@ -210,8 +210,9 @@ export function RoomRail() {
     scrollToCard(cardsOf(rail).indexOf(card));
   };
 
+  // At an end only the border and icon dim, never the whole button, so a keyboard focus ring stays at full strength.
   const arrow =
-    "grid size-12 place-items-center rounded-full border border-(--sea-deep)/35 text-(--sea-deep) transition-colors hover:border-(--sea) hover:bg-(--sea) hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) aria-disabled:pointer-events-none aria-disabled:opacity-35 motion-reduce:transition-none";
+    "grid size-12 place-items-center rounded-full border border-(--sea-deep)/35 text-(--sea-deep) transition-colors hover:border-(--sea) hover:bg-(--sea) hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sea) aria-disabled:pointer-events-none aria-disabled:border-(--sea-deep)/12 aria-disabled:text-(--sea-deep)/30 motion-reduce:transition-none";
 
   return (
     <section data-testid="room-rail" aria-labelledby="room-rail-heading" className="overflow-hidden pb-20 md:pb-28">

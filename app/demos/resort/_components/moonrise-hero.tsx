@@ -88,11 +88,13 @@ export function MoonriseHero() {
   }, []);
 
   return (
+    // At least 80svh of pinned scroll on any screen: the stage is max(100svh, 620px) tall, so a short landscape
+    // phone needs 620px + 80svh. Reduced motion drops to the stage's own height, with nothing to scroll through.
     <section
       ref={ref}
       data-testid="moonrise-hero"
       data-hero-pin
-      className="relative h-[180svh] min-h-[620px] bg-(--night) [--p:0] motion-reduce:h-[100svh]"
+      className="relative h-[max(180svh,620px_+_80svh)] min-h-[620px] bg-(--night) [--p:0] motion-reduce:h-[100svh]"
     >
       <div ref={stageRef} data-hero-stage className="sticky top-0 isolate flex h-[100svh] min-h-[620px] items-end overflow-hidden text-white [container-type:size]">
         <div aria-hidden className="absolute inset-0 -z-10 will-change-transform" style={STYLE.photo}>
