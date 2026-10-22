@@ -24,7 +24,7 @@ export const ui = {
   laneApi: { th: "Orders API", en: "Orders API" },
   laneLine: { th: "LINE ของร้าน", en: "The shop's LINE" },
   lineNewTitle: { th: "🛒 ออเดอร์ใหม่", en: "🛒 New order" },
-  lineNewBody: { th: "{items} ชิ้น · {total}", en: "{items} items · {total}" },
+  lineNewBody: { th: "{items} ชิ้น · {total}", en: "Items: {items} · {total}" },
   lineStatusTitle: { th: "📦 อัปเดตสถานะออเดอร์", en: "📦 Order status updated" },
   lineStatusBody: { th: "{from} → {to}", en: "{from} → {to}" },
   statusPending: { th: "รอชำระ", en: "pending" },
@@ -34,6 +34,13 @@ export const ui = {
   exampleResponse: { th: "ตัวอย่าง response", en: "Example response" },
   exampleResponseHint: { th: "กด Send เพื่อยิงคำขอจริงในเบราว์เซอร์", en: "Press Send to make a real request in your browser" },
   resetDemo: { th: "รีเซ็ตข้อมูลตัวอย่าง", en: "Reset sample data" },
+  navHow: { th: "ทำงานอย่างไร", en: "How it works" },
+  storyPhoneLabel: { th: "ข้อความ LINE ตัวอย่างที่ร้านได้รับ", en: "Sample LINE messages the shop receives" },
+  storyPause: { th: "หยุดตัวอย่างชั่วคราว", en: "Pause the sample" },
+  storyPlay: { th: "เล่นตัวอย่างต่อ", en: "Play the sample" },
+  laneNewOrder: { th: "{customer} สั่ง {items}", en: "{customer} orders {items}" },
+  laneSetStatus: { th: "ตั้งสถานะเป็น{status}", en: "Marked as {status}" },
+  laneSaved: { th: "บันทึก {id} แล้ว", en: "Saved {id}" },
 
   // page.tsx
   developers: { th: "Developers", en: "Developers" },
