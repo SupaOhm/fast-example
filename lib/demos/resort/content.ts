@@ -106,7 +106,7 @@ export const facts: { figure: string; unit?: L; title: L; body: L; photo: string
   {
     figure: "24",
     unit: { th: "ห้อง", en: "rooms" },
-    title: { th: "เท่านั้น ไม่พลุกพล่าน", en: "And no more, so it never feels busy" },
+    title: { th: "เท่านั้น ไม่พลุกพล่าน", en: "That's all, so it never feels crowded" },
     body: { th: "พนักงานจำชื่อแขกได้ตั้งแต่วันแรก", en: "Our team knows every guest by name from the first day." },
     photo: PHOTOS.resortGallery4,
     alt: { th: "สระว่ายน้ำในสวนเขตร้อน", en: "Pool in the tropical garden" },

@@ -29,10 +29,16 @@ export function upcomingNights(from: Date, roomId: string, base: number, count =
   });
 }
 
-/** Sum of each night's rate from check-in up to (not including) check-out. */
+// The booking form reads its dates from the URL, so bound the stay instead of trusting it.
+const MAX_STAY_NIGHTS = 366;
+
+/** Sum of each night's rate from check-in up to (not including) check-out. Zero for an invalid or over-long stay. */
 export function stayTotal(base: number, checkIn: string, checkOut: string): number {
+  const start = parseISODate(checkIn);
+  const nights = Math.round((parseISODate(checkOut).getTime() - start.getTime()) / 86_400_000);
+  if (!Number.isFinite(nights) || nights < 1 || nights > MAX_STAY_NIGHTS) return 0;
   let total = 0;
-  for (let d = parseISODate(checkIn); toISODate(d) < checkOut; d = addDays(d, 1)) total += nightlyRate(base, toISODate(d));
+  for (let i = 0; i < nights; i++) total += nightlyRate(base, toISODate(addDays(start, i)));
   return total;
 }
 
@@ -40,7 +46,7 @@ export type Pick = { checkIn: number | null; checkOut: number | null };
 
 /** The strip's two-click range picker: first night, then check-out. Full nights can't be picked or crossed. */
 export function pickNight(current: Pick, index: number, nights: Night[]): Pick {
-  if (nights[index]?.full) return current;
+  if (!nights[index] || nights[index].full) return current;
   const { checkIn, checkOut } = current;
   if (checkIn === null || checkOut !== null || index <= checkIn) return { checkIn: index, checkOut: null };
   const crossesFull = nights.slice(checkIn, index).some((n) => n.full);

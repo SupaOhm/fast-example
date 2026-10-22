@@ -54,6 +54,16 @@ describe("stayTotal", () => {
     expect(stayTotal(3600, "2026-10-22", "2026-10-22")).toBe(0);
     expect(stayTotal(3600, "2026-10-23", "2026-10-22")).toBe(0);
   });
+
+  it("crosses month and year ends", () => {
+    // Tue 30 Dec + Wed 31 Dec + Thu 1 Jan, all weekdays
+    expect(stayTotal(3600, "2025-12-30", "2026-01-02")).toBe(10800);
+  });
+
+  it("is zero for a malformed or absurd check-out instead of looping", () => {
+    expect(stayTotal(3600, "2026-10-22", "abc")).toBe(0);
+    expect(stayTotal(3600, "2026-10-22", "9999-12-31")).toBe(0);
+  });
 });
 
 describe("pickNight", () => {
@@ -83,6 +93,15 @@ describe("pickNight", () => {
 
   it("ignores full nights", () => {
     expect(pickNight({ checkIn: 0, checkOut: null }, 2, nights)).toEqual({ checkIn: 0, checkOut: null });
+  });
+
+  it("restarts when check-out would sit right after a full night", () => {
+    expect(pickNight({ checkIn: 1, checkOut: null }, 3, nights)).toEqual({ checkIn: 3, checkOut: null });
+  });
+
+  it("ignores indexes outside the strip", () => {
+    expect(pickNight(none, -1, nights)).toEqual(none);
+    expect(pickNight(none, 5, nights)).toEqual(none);
   });
 });
 

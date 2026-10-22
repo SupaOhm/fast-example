@@ -86,7 +86,7 @@ export const ui = {
   // moonrise hero
   heroMoonrise: { th: "คืนนี้พระจันทร์ขึ้นเหนืออ่าว 19:30 น.", en: "Tonight the moon rises over the bay at 7:30 pm" },
   // availability strip
-  availabilityHeading: { th: "ห้องว่าง 14 คืนข้างหน้า", en: "The next 14 nights" },
+  availabilityHeading: { th: "ห้องว่าง 14 คืนข้างหน้า", en: "Availability for the next 14 nights" },
   pickFirstNight: { th: "เลือกคืนแรกที่เข้าพัก", en: "Pick your first night" },
   pickCheckOutDay: { th: "เลือกวันเช็กเอาต์", en: "Now pick your check-out day" },
   crossesFull: { th: "ช่วงนี้มีคืนที่เต็มแล้ว เลือกคืนแรกใหม่อีกครั้ง", en: "Those dates include a full night. Pick a new first night." },
