@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Thai } from "next/font/google";
 import { DemoPill } from "@/components/demo/demo-pill";
+import { LangScope } from "@/components/demo/lang";
+import { company } from "@/lib/demos/company/content";
 import { SiteFooter } from "./_components/site-footer";
 import { SiteHeader } from "./_components/site-header";
 
@@ -8,9 +10,10 @@ const plex = IBM_Plex_Sans_Thai({ weight: ["400", "500", "700"], subsets: ["thai
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | สยามพรีซิชั่น",
-    default: "สยามพรีซิชั่น เอ็นจิเนียริ่ง",
+    template: "%s | Siam Precision",
+    default: "Siam Precision Engineering · สยามพรีซิชั่น",
   },
+  description: company.intro.en,
 };
 
 const palette = {
@@ -26,11 +29,11 @@ const palette = {
 
 export default function CompanyLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={palette} className={`${plex.className} flex min-h-screen flex-col bg-white text-(--ink)`}>
+    <LangScope style={palette} className={`${plex.className} flex min-h-screen flex-col bg-white text-(--ink)`}>
       <SiteHeader />
       <div className="flex-1">{children}</div>
       <SiteFooter />
       <DemoPill packageId="web-standard" />
-    </div>
+    </LangScope>
   );
 }

@@ -1,5 +1,8 @@
 import Link from "next/link";
+import { T } from "@/components/demo/lang";
 import { company, SERVICES } from "@/lib/demos/company/content";
+import { ui } from "./copy";
+import { Filled } from "./filled";
 import { CentreMark } from "./mark";
 
 export function SiteFooter() {
@@ -9,22 +12,34 @@ export function SiteFooter() {
         <div>
           <p className="flex items-center gap-3">
             <CentreMark className="size-10 shrink-0 [&_rect]:fill-white/10" />
-            <span className="text-lg leading-[1.3] font-bold">{company.name}</span>
+            <span className="text-lg leading-[1.3] font-bold">
+              <T value={company.name} />
+            </span>
           </p>
-          <p className="mt-4 max-w-sm text-sm leading-[1.7] text-white/70">{company.legal}</p>
+          <p className="mt-4 max-w-sm text-sm leading-[1.7] text-white/70">
+            <T value={company.legal} />
+          </p>
         </div>
         <div className="text-sm leading-[1.7]">
-          <h2 className="font-bold text-(--orange)">ที่ตั้งโรงงาน</h2>
-          <p className="mt-3 text-white/80">{company.address}</p>
-          <p className="mt-2 text-white/80">เวลาทำการ {company.hours}</p>
+          <h2 className="font-bold text-(--orange)">
+            <T value={ui.factory} />
+          </h2>
+          <p className="mt-3 text-white/80">
+            <T value={company.address} />
+          </p>
+          <p className="mt-2 text-white/80">
+            <Filled value={ui.openHours} vars={{ hours: company.hours }} />
+          </p>
         </div>
         <div className="text-sm leading-[1.7]">
-          <h2 className="font-bold text-(--orange)">บริการ</h2>
+          <h2 className="font-bold text-(--orange)">
+            <T value={ui.services} />
+          </h2>
           <ul className="mt-3 space-y-1.5">
             {SERVICES.map((s) => (
               <li key={s.id}>
                 <Link href="/demos/company/services" className="text-white/80 hover:text-white hover:underline">
-                  {s.name}
+                  <T value={s.name} />
                 </Link>
               </li>
             ))}

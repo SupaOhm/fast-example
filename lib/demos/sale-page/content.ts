@@ -1,10 +1,7 @@
 import type { L } from "@/lib/demos/lang";
 import { PHOTOS } from "@/lib/images";
 
-/** Replaces `{name}` placeholders, so Thai and English can put a value in different places. */
-export function fill(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{(\w+)\}/g, (match, key: string) => vars[key] ?? match);
-}
+export { fill } from "@/lib/demos/format";
 
 export const brand = {
   name: "Mali Botanics",

@@ -12,11 +12,11 @@ const valid: ContactInput = {
 
 describe("validateContact", () => {
   it("accepts a valid enquiry with optional fields empty", () => {
-    expect(validateContact(valid)).toEqual({});
+    expect(validateContact(valid, "th")).toEqual({});
   });
 
   it("requires name, valid email, service and a 10+ char message", () => {
-    expect(validateContact({ ...valid, name: " ", email: "x", service: "", message: "สั้น" })).toEqual({
+    expect(validateContact({ ...valid, name: " ", email: "x", service: "", message: "สั้น" }, "th")).toEqual({
       name: "กรุณากรอกชื่อ",
       email: "อีเมลไม่ถูกต้อง",
       service: "กรุณาเลือกบริการ",
@@ -25,11 +25,21 @@ describe("validateContact", () => {
   });
 
   it("validates phone only when provided", () => {
-    expect(validateContact({ ...valid, phone: "080-000-0001" })).toEqual({});
-    expect(validateContact({ ...valid, phone: "12345" })).toEqual({ phone: "เบอร์โทรไม่ถูกต้อง" });
+    expect(validateContact({ ...valid, phone: "080-000-0001" }, "th")).toEqual({});
+    expect(validateContact({ ...valid, phone: "12345" }, "th")).toEqual({ phone: "เบอร์โทรไม่ถูกต้อง" });
   });
 
   it("rejects unknown services", () => {
-    expect(validateContact({ ...valid, service: "nope" })).toEqual({ service: "กรุณาเลือกบริการ" });
+    expect(validateContact({ ...valid, service: "nope" }, "th")).toEqual({ service: "กรุณาเลือกบริการ" });
+  });
+
+  it("writes messages in English when asked", () => {
+    expect(validateContact({ ...valid, name: " ", email: "x", service: "", message: "short" }, "en")).toEqual({
+      name: "Please enter your name",
+      email: "Please enter a valid email address",
+      service: "Please choose a service",
+      message: "Please describe the job in at least 10 characters",
+    });
+    expect(validateContact({ ...valid, phone: "12345" }, "en")).toEqual({ phone: "Please enter a valid phone number" });
   });
 });
