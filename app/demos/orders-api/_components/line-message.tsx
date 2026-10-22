@@ -7,6 +7,12 @@ import type { Lang, L } from "@/lib/demos/lang";
 import type { LineNotification, OrderStatus } from "@/lib/demos/orders-api/api";
 import { ui } from "./copy";
 
+// The shop's LINE shows Thai time whoever is looking. A fixed zone also keeps server and client renders identical.
+export const clock: Record<Lang, Intl.DateTimeFormat> = {
+  th: new Intl.DateTimeFormat("th-TH", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
+  en: new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
+};
+
 export const STATUS_WORD: Record<OrderStatus, L> = {
   pending: ui.statusPending,
   paid: ui.statusPaid,

@@ -4,7 +4,6 @@ import { Check, Copy, Loader2, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/components/demo/lang";
 import { ResetDemoButton } from "@/components/demo/reset-demo-button";
-import type { Lang } from "@/lib/demos/lang";
 import {
   ORDER_STATUSES,
   handleRequest,
@@ -17,6 +16,7 @@ import { ordersStore } from "@/lib/demos/orders-api/store";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { ui } from "./copy";
 import { METHOD_STYLE, MethodBadge, statusLine, statusTone } from "./http";
+import { clock } from "./line-message";
 import { LinePreview } from "./line-preview";
 
 const BASE_URL = "https://api.example.test";
@@ -32,12 +32,6 @@ interface Sent {
   n: LineNotification;
   at: number;
 }
-
-// The shop's LINE shows Thai time whoever is looking, which also keeps the server render and hydration identical.
-const clock: Record<Lang, Intl.DateTimeFormat> = {
-  th: new Intl.DateTimeFormat("th-TH", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
-  en: new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
-};
 
 // The newest seed order arrived before the visitor did, so the shop's chat already has its alert.
 const latestSeed = SEED_ORDERS[0];
@@ -368,7 +362,7 @@ export function ApiConsole({
       </section>
 
       <aside aria-label={ui.lineAsideLabel[lang]} className="min-w-0 py-4 xl:col-start-2 xl:row-span-5 xl:row-start-1 xl:py-0">
-        <p className="mx-auto mb-3 max-w-[300px] text-[15px] leading-[1.4] font-semibold">{ui.lineAsideHeading[lang]}</p>
+        <p className="mx-auto mb-3 max-w-[300px] text-base leading-[1.4] font-semibold">{ui.lineAsideHeading[lang]}</p>
         <LinePreview messages={sent.map((m) => ({ id: m.id, n: m.n, time: clock[lang].format(m.at) }))} />
         <p className="mx-auto mt-3 max-w-[300px] text-sm leading-[1.55] text-(--muted)">{ui.lineAsideNote[lang]}</p>
       </aside>

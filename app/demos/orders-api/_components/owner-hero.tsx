@@ -2,21 +2,15 @@
 
 import { ArrowDown, Check, Pause, Play } from "lucide-react";
 import { useLang } from "@/components/demo/lang";
-import type { Lang } from "@/lib/demos/lang";
 import { ui } from "./copy";
 import { DevLog } from "./dev-log";
-import { LineChatMessage } from "./line-message";
+import { LineChatMessage, clock } from "./line-message";
 import { PhoneFrame } from "./line-preview";
 import { beat } from "./story-motion";
-import { latest, useReducedMotion, useStory, useStoryControls } from "./story-player";
+import { latest, useStory, useStoryControls } from "./story-player";
 
 const BENEFITS = [ui.benefitLine, ui.benefitStatus, ui.benefitApi];
 
-// The shop's LINE runs on Thai time, as in the console's phone.
-const clock: Record<Lang, Intl.DateTimeFormat> = {
-  th: new Intl.DateTimeFormat("th-TH", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
-  en: new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" }),
-};
 
 function StoryPhone() {
   const lang = useLang();
@@ -45,15 +39,14 @@ function StoryPhone() {
 
 function PauseButton() {
   const lang = useLang();
-  const reduced = useReducedMotion();
   const { paused, setPaused } = useStoryControls();
-  // Nothing plays under reduced motion, so there is nothing to pause.
-  if (reduced) return null;
+  // Nothing plays under reduced motion, so there is nothing to pause. CSS hides it but keeps its room,
+  // so the server markup and the hydrated page match and the column never jumps.
   return (
     <button
       type="button"
       onClick={() => setPaused(!paused)}
-      className="mx-auto mt-3 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-(--muted) transition-colors hover:bg-(--panel-2) hover:text-(--text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+      className="mx-auto mt-3 flex motion-reduce:invisible items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-(--muted) transition-colors hover:bg-(--panel-2) hover:text-(--text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
     >
       {paused ? <Play className="size-3.5" aria-hidden /> : <Pause className="size-3.5" aria-hidden />}
       {paused ? ui.storyPlay[lang] : ui.storyPause[lang]}

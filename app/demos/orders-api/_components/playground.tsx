@@ -40,7 +40,7 @@ export function Playground() {
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
       <nav aria-labelledby="endpoints-heading" className="min-w-0">
-        <h3 id="endpoints-heading" className="mb-3 text-[15px] leading-[1.4] font-semibold">
+        <h3 id="endpoints-heading" className="mb-3 text-base leading-[1.4] font-semibold">
           {ui.endpointsHeading[lang]}
         </h3>
         <ul className="space-y-1.5">
@@ -64,7 +64,7 @@ export function Playground() {
                     <MethodBadge method={ep.method} />
                     <span className="min-w-0 truncate font-(family-name:--font-mono) text-sm text-(--text)">{ep.path}</span>
                   </span>
-                  <span className="mt-1.5 block text-[15px] leading-[1.45] text-(--text)">{endpointCopy[key][lang]}</span>
+                  <span className="mt-1.5 block text-base leading-[1.45] text-(--text)">{endpointCopy[key][lang]}</span>
                 </button>
               </li>
             );

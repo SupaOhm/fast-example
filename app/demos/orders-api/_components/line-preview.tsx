@@ -67,16 +67,18 @@ export function LinePreview({ messages }: { messages: ConsoleMessage[] }) {
   const lang = useLang();
   return (
     <PhoneFrame screenClassName="h-[500px] xl:h-[540px]" statusTime={messages.at(-1)?.time}>
-      <ol role="log" aria-live="polite" aria-label={ui.lineLogLabel[lang]} data-testid="line-preview" className="flex flex-col gap-3">
-        {messages.map((m) => (
-          <LineChatMessage
-            key={m.id}
-            n={m.n}
-            time={m.time}
-            className="transition duration-500 ease-out starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none"
-          />
-        ))}
-      </ol>
+      <div role="log" aria-live="polite" aria-label={ui.lineLogLabel[lang]} data-testid="line-preview">
+        <ol className="flex flex-col gap-3">
+          {messages.map((m) => (
+            <LineChatMessage
+              key={m.id}
+              n={m.n}
+              time={m.time}
+              className="transition duration-500 ease-out starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none"
+            />
+          ))}
+        </ol>
+      </div>
     </PhoneFrame>
   );
 }

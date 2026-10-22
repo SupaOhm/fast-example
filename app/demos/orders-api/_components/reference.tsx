@@ -27,7 +27,7 @@ export function Reference() {
       <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="min-w-0">
           <h3 className={`${mono} text-base font-semibold`}>{ui.orderObject[lang]}</h3>
-          <p className="mt-1 text-[15px] leading-[1.6] text-(--muted)">{ui.orderObjectHint[lang]}</p>
+          <p className="mt-1 text-base leading-[1.6] text-(--muted)">{ui.orderObjectHint[lang]}</p>
           <dl className="mt-4 divide-y divide-(--line) border-y border-(--line)">
             {ORDER_FIELDS.map((f) => (
               <div key={f.name} className="grid gap-1 py-3 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-4">
@@ -39,7 +39,7 @@ export function Reference() {
               </div>
             ))}
           </dl>
-          <p className="mt-6 text-[15px] font-semibold">{ui.statusFlow[lang]}</p>
+          <p className="mt-6 text-base font-semibold">{ui.statusFlow[lang]}</p>
           <ol className={`mt-2 flex flex-wrap items-center gap-2 ${mono} text-sm`}>
             {FLOW.map((st, i) => (
               <li key={st} className="flex items-center gap-2">
@@ -52,14 +52,14 @@ export function Reference() {
               </li>
             ))}
           </ol>
-          <p className="mt-3 text-[15px] leading-[1.6] text-(--muted)">
+          <p className="mt-3 text-base leading-[1.6] text-(--muted)">
             {ui.cancelNotePre[lang]} <span className={`${mono} text-sm text-(--text)`}>cancelled</span> {ui.cancelNotePost[lang]}
           </p>
         </div>
 
         <div className="min-w-0">
           <h3 className="text-base font-semibold">{ui.statusCodesHeading[lang]}</h3>
-          <p className="mt-1 text-[15px] leading-[1.6] text-(--muted)">{ui.statusCodesHint[lang]}</p>
+          <p className="mt-1 text-base leading-[1.6] text-(--muted)">{ui.statusCodesHint[lang]}</p>
           <dl className="mt-4 divide-y divide-(--line) border-y border-(--line)">
             {Object.entries(STATUS_TEXT).map(([code, text]) => (
               <div key={code} className="grid gap-1 py-3 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-4">

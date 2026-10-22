@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { STORY_LENGTH, storyEvents, type StoryEvent } from "@/lib/demos/orders-api/story";
 
 /** How often the next event plays. */
@@ -148,7 +148,8 @@ export function StoryPlayer({ children }: { children: React.ReactNode }) {
     };
   }, [player, paused, reduced]);
 
-  return <Ctx value={{ player, watch, paused, setPaused }}>{children}</Ctx>;
+  const value = useMemo(() => ({ player, watch, paused, setPaused }), [player, watch, paused]);
+  return <Ctx value={value}>{children}</Ctx>;
 }
 
 function useStoryContext(): StoryContext {

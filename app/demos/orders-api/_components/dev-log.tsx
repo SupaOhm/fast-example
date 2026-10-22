@@ -29,7 +29,7 @@ export function DevLog({ className = "" }: { className?: string }) {
       data-testid="story-log"
       className={`flex min-w-0 flex-col rounded-[22px] bg-(--code-bg) p-4 text-(--code-text) sm:p-5 ${className}`}
     >
-      <p className="text-[15px] leading-[1.4] font-semibold">{ui.devLogTitle[lang]}</p>
+      <p className="text-base leading-[1.4] font-semibold">{ui.devLogTitle[lang]}</p>
       <p className="mt-0.5 text-sm leading-[1.5] text-(--code-muted)">{ui.devLogHint[lang]}</p>
 
       <ol aria-label={ui.devLogTitle[lang]} className="mt-4 flex min-h-[calc(6*2.25rem+5*0.25rem)] flex-col gap-1 font-(family-name:--font-mono) text-sm">

@@ -10,7 +10,7 @@ export const ui = {
     en: "Orders from your website, chat or counter land in one place, and the shop hears about every new order and status change straight away.",
   },
   benefitLine: { th: "แจ้งเตือนเข้า LINE ร้านอัตโนมัติ", en: "Automatic alerts in the shop's LINE" },
-  benefitStatus: { th: "ติดตามสถานะ รอจ่าย → จ่ายแล้ว → ส่งแล้ว", en: "Track every order: pending → paid → shipped" },
+  benefitStatus: { th: "ติดตามสถานะ รอชำระ → ชำระแล้ว → ส่งแล้ว", en: "Track every order: pending → paid → shipped" },
   benefitApi: { th: "ต่อกับเว็บหรือแอปที่มีอยู่ได้ผ่าน API", en: "Connects to your existing website or app through an API" },
   devLogTitle: { th: "สำหรับนักพัฒนา", en: "For your developer" },
   devLogHint: { th: "คำขอ API ที่อยู่เบื้องหลังแต่ละข้อความ", en: "The API call behind each message" },
