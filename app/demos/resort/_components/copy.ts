@@ -83,6 +83,28 @@ export const ui = {
   address: { th: "88 หมู่ 2 ต.อ่าวนาง อ.เมือง จ.กระบี่ 81180", en: "88 Moo 2, Ao Nang, Mueang Krabi 81180" },
   phone: { th: "โทร 080-000-0000 (ตัวอย่าง)", en: "Tel 080-000-0000 (sample)" },
   footerNote: { th: "ธุรกิจสมมติสำหรับเว็บตัวอย่าง", en: "A fictional business for a demo site" },
+  // moonrise hero
+  heroMoonrise: { th: "คืนนี้พระจันทร์ขึ้นเหนืออ่าว 19:30 น.", en: "Tonight the moon rises over the bay at 7:30 pm" },
+  // availability strip
+  availabilityHeading: { th: "ห้องว่าง 14 คืนข้างหน้า", en: "The next 14 nights" },
+  pickFirstNight: { th: "เลือกคืนแรกที่เข้าพัก", en: "Pick your first night" },
+  pickCheckOutDay: { th: "เลือกวันเช็กเอาต์", en: "Now pick your check-out day" },
+  crossesFull: { th: "ช่วงนี้มีคืนที่เต็มแล้ว เลือกคืนแรกใหม่อีกครั้ง", en: "Those dates include a full night. Pick a new first night." },
+  fullNight: { th: "เต็ม", en: "Full" },
+  nightOne: { th: "1 คืน", en: "1 night" },
+  nightsMany: { th: "{n} คืน", en: "{n} nights" },
+  bookTheseDates: { th: "จองช่วงนี้", en: "Book these dates" },
+  weekendNote: { th: "คืนวันศุกร์และเสาร์ราคาสูงกว่าวันธรรมดา", en: "Friday and Saturday nights cost more." },
+  nightLabel: { th: "{date} · {price}", en: "{date} · {price}" },
+  nightLabelFull: { th: "{date} · เต็ม", en: "{date} · full" },
+  // room rail
+  railHeading: { th: "ห้องพักทั้ง 5 แบบ", en: "All five room types" },
+  railSub: { th: "ทุกห้องรวมอาหารเช้า เดินถึงหาด 3 นาที", en: "Breakfast included with every room, three minutes from the beach." },
+  seeRoomAndDates: { th: "ดูห้องและเช็กวันว่าง", en: "See the room and dates" },
+  previousRoom: { th: "ห้องก่อนหน้า", en: "Previous room" },
+  nextRoom: { th: "ห้องถัดไป", en: "Next room" },
+  // booking form
+  nightsLabel: { th: "จำนวนคืน", en: "Nights" },
 } satisfies Record<string, L>;
 
 export const roomTypeLabel = {

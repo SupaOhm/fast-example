@@ -93,6 +93,33 @@ export const highlights: { title: L; body: L }[] = [
   { title: { th: "ทริปเกาะ", en: "Island trips" }, body: { th: "จัดทริปเรือหางยาวส่วนตัว", en: "Private longtail boat tours" } },
 ];
 
+/** The home page's three big facts. `unit` sits small beside the figure; the moonrise has none. */
+export const facts: { figure: string; unit?: L; title: L; body: L; photo: string; alt: L }[] = [
+  {
+    figure: "3",
+    unit: { th: "นาที", en: "min" },
+    title: { th: "เดินถึงหาดอ่าวนาง", en: "Walk to Ao Nang beach" },
+    body: { th: "ผ่านสวนเขตร้อนของรีสอร์ท ไม่ต้องข้ามถนน", en: "Through the resort's tropical garden, without crossing a road." },
+    photo: PHOTOS.resortGallery2,
+    alt: { th: "ชายหาดและรีสอร์ทจากมุมสูง", en: "The beach and resort from above" },
+  },
+  {
+    figure: "24",
+    unit: { th: "ห้อง", en: "rooms" },
+    title: { th: "เท่านั้น ไม่พลุกพล่าน", en: "And no more, so it never feels busy" },
+    body: { th: "พนักงานจำชื่อแขกได้ตั้งแต่วันแรก", en: "Our team knows every guest by name from the first day." },
+    photo: PHOTOS.resortGallery4,
+    alt: { th: "สระว่ายน้ำในสวนเขตร้อน", en: "Pool in the tropical garden" },
+  },
+  {
+    figure: "19:30",
+    title: { th: "พระจันทร์ขึ้นเหนืออ่าว", en: "Moonrise over the bay" },
+    body: { th: "มื้อค่ำริมทะเลจัดตามเวลาพระจันทร์ขึ้นของแต่ละคืน", en: "Beachside dinner is timed to each night's moonrise." },
+    photo: PHOTOS.resortGallery6,
+    alt: { th: "พระอาทิตย์ตกเหนืออ่าว", en: "Sunset over the bay" },
+  },
+];
+
 export const about: { heading: L; body: L } = {
   heading: { th: "ครอบครัวเล็ก\u00a0ๆ ริมทะเลกระบี่", en: "A small family place on the Krabi coast" },
   body: {
