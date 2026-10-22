@@ -76,9 +76,15 @@ export function ContactForm() {
     valuesRef.current = values;
   });
 
-  // Messages are written when validation runs, so re-word any that are showing when the language changes.
+  // Messages are written when validation runs, so re-word the ones showing when the language changes.
+  // Only those: a field the visitor is still correcting keeps its cleared state.
   useEffect(() => {
-    setErrors((current) => (Object.keys(current).length > 0 ? validateContact(valuesRef.current, lang) : current));
+    setErrors((current) => {
+      const showing = (Object.keys(current) as (keyof ContactInput)[]).filter((k) => current[k]);
+      if (showing.length === 0) return current;
+      const fresh = validateContact(valuesRef.current, lang);
+      return Object.fromEntries(showing.map((k) => [k, fresh[k]])) as ContactErrors;
+    });
   }, [lang]);
 
   function update(key: keyof ContactInput, value: string) {

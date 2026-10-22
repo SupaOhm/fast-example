@@ -9,7 +9,7 @@ export const company = {
   } satisfies L,
   tagline: {
     th: "งานกลึง CNC และชิ้นส่วนอุตสาหกรรม แม่นยำระดับไมครอน",
-    en: "CNC machining and industrial parts, accurate to the micron",
+    en: "CNC machining and industrial parts with micron-level precision",
   } satisfies L,
   intro: {
     th: "รับผลิตชิ้นส่วนโลหะความแม่นยำสูงสำหรับโรงงานยานยนต์ อาหาร และอิเล็กทรอนิกส์ ตั้งแต่ชิ้นต้นแบบจนถึงการผลิตจำนวนมาก",

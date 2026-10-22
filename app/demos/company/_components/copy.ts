@@ -36,7 +36,7 @@ export const ui = {
     th: "รับงานตั้งแต่ชิ้นต้นแบบชิ้นเดียวไปจนถึงล็อตผลิตหลายพันชิ้น วิศวกรของเราดูแลตั้งแต่ตรวจแบบจนส่งมอบพร้อมรายงานการวัด",
     en: "From a single prototype to runs of several thousand parts. Our engineers stay with the job from drawing review to delivery with a measurement report.",
   },
-  quoteThis: { th: "ขอใบเสนอราคางานนี้", en: "Request a quote for this" },
+  quoteThis: { th: "ขอใบเสนอราคางานนี้", en: "Request a quote for this service" },
   processHeading: { th: "ขั้นตอนการสั่งผลิต", en: "How ordering works" },
   processSub: {
     th: "ชัดเจนทุกขั้น รู้ราคาและกำหนดส่งก่อนเริ่มงาน",
@@ -74,7 +74,7 @@ export const ui = {
   send: { th: "ส่งข้อมูล", en: "Send" },
   sending: { th: "กำลังส่ง…", en: "Sending…" },
   replyTime: { th: "ตอบกลับภายใน 1 วันทำการ", en: "We reply within 1 working day" },
-  successTitle: { th: "ได้รับข้อมูลแล้ว", en: "Thanks, we've got it" },
+  successTitle: { th: "ได้รับข้อมูลแล้ว", en: "Thank you, we've received your request" },
   successBody: {
     th: "ทีมขายจะติดต่อกลับภายใน 1 วันทำการ (เว็บตัวอย่าง: ไม่มีการส่งข้อมูลจริง)",
     en: "Our sales team will get back to you within 1 working day. (Demo site: nothing is actually sent.)",
