@@ -17,10 +17,9 @@ import { bookingsByService, revenueByDay, STAFF } from "@/lib/demos/clinic-booki
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { useLang } from "@/components/demo/lang";
 import { fill, formatDate, formatTHB } from "@/lib/demos/format";
-import type { Lang } from "@/lib/demos/lang";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { monogramOf } from "./admin-format";
-import { ui } from "./copy";
+import { countText, ui } from "./copy";
+import { StaffPortrait } from "./staff-portrait";
 
 // The clinic palette (see layout.tsx); recharts takes plain colours, so they are written out here.
 const BAR = "#6b1f3a"; // --wine
@@ -30,7 +29,6 @@ const TICK = "#6b5560"; // --muted
 const INK = "#2a1d22"; // --ink
 const CURSOR = "#fbeef0"; // --rose
 
-const countText = (n: number, lang: Lang) => (n === 1 ? ui.queueCountOne[lang] : fill(ui.queueCount[lang], { n: String(n) }));
 
 function RevenueTooltip({ active, payload }: TooltipContentProps) {
   const lang = useLang();
@@ -157,7 +155,7 @@ export function Reports() {
                 <CartesianGrid vertical={false} stroke={GRID} />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(d: string) => (d === todayISO ? ui.chipToday[lang] : `${formatDate(d, lang, "weekday")} ${Number(d.slice(8))}`)}
+                  tickFormatter={(d: string) => (d === todayISO ? ui.chipToday[lang] : `${formatDate(d, lang, lang === "th" ? "weekdayNarrow" : "weekday")} ${Number(d.slice(8))}`)}
                   tick={{ fill: TICK, fontSize: 12 }}
                   tickLine={false}
                   axisLine={{ stroke: GRID }}
@@ -217,31 +215,29 @@ export function Reports() {
           <table className="w-full text-left text-base">
             <thead>
               <tr className="border-y border-(--line) bg-(--paper) text-[14px] whitespace-nowrap text-(--muted)">
-                <th scope="col" className="pl-4 pr-2 py-2.5 font-normal sm:px-5">{ui.colStaff[lang]}</th>
-                <th scope="col" className="px-2 py-2.5 text-right font-normal sm:px-3">{ui.colDone[lang]}</th>
-                <th scope="col" className="px-2 py-2.5 text-right font-normal sm:px-3">{ui.colNoShow[lang]}</th>
-                <th scope="col" className="px-2 py-2.5 text-right font-normal sm:px-3">{ui.colRevenue[lang]}</th>
-                <th scope="col" className="py-2.5 pr-4 pl-2 text-right font-normal sm:px-5">{ui.colWaiting[lang]}</th>
+                <th scope="col" className="pl-3 pr-1 py-2.5 font-normal sm:px-5">{ui.colStaff[lang]}</th>
+                <th scope="col" className="px-1 py-2.5 text-right font-normal sm:px-3">{ui.colDone[lang]}</th>
+                <th scope="col" className="px-1 py-2.5 text-right font-normal sm:px-3">{ui.colNoShow[lang]}</th>
+                <th scope="col" className="px-1 py-2.5 text-right font-normal sm:px-3">{ui.colRevenue[lang]}</th>
+                <th scope="col" className="py-2.5 pr-3 pl-1 text-right font-normal sm:px-5">{ui.colWaiting[lang]}</th>
               </tr>
             </thead>
             <tbody>
               {staffRows.map((st) => (
                 <tr key={st.id} className="border-t border-(--line) first:border-t-0">
-                  <th scope="row" className="py-3 pr-2 pl-4 font-normal sm:px-5">
-                    <span className="flex items-center gap-3 leading-[1.35]">
-                      <span aria-hidden className="hidden size-9 shrink-0 place-items-center rounded-full bg-(--rose-2) text-sm sm:grid text-(--wine)">
-                        {monogramOf(st.name[lang])}
-                      </span>
+                  <th scope="row" className="py-3 pr-1 pl-3 font-normal sm:px-5">
+                    <span className="flex items-center gap-2 leading-[1.35] sm:gap-3">
+                      <StaffPortrait decorative staffId={st.id} width={120} sizes="36px" className="size-9 shrink-0 rounded-full" />
                       <span>
                         <span className="block">{st.name[lang]}</span>
                         <span className="hidden text-[14px] text-(--muted) sm:block">{st.role[lang]}</span>
                       </span>
                     </span>
                   </th>
-                  <td className="px-2 py-3 text-right tabular-nums sm:px-3">{st.done}</td>
-                  <td className="px-2 py-3 text-right tabular-nums sm:px-3">{st.noShow}</td>
-                  <td className="px-2 py-3 text-right tabular-nums sm:px-3">{formatTHB(st.revenue)}</td>
-                  <td className="py-3 pr-4 pl-2 text-right tabular-nums sm:px-5">{st.upcoming}</td>
+                  <td className="px-1 py-3 text-right tabular-nums sm:px-3">{st.done}</td>
+                  <td className="px-1 py-3 text-right tabular-nums sm:px-3">{st.noShow}</td>
+                  <td className="px-1 py-3 text-right tabular-nums sm:px-3">{formatTHB(st.revenue)}</td>
+                  <td className="py-3 pr-3 pl-1 text-right tabular-nums sm:px-5">{st.upcoming}</td>
                 </tr>
               ))}
             </tbody>

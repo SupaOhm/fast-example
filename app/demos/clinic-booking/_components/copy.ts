@@ -1,4 +1,5 @@
-import type { L } from "@/lib/demos/lang";
+import { fill } from "@/lib/demos/format";
+import type { L, Lang } from "@/lib/demos/lang";
 import type { BookingStatus, ClinicErrorCode } from "@/lib/demos/clinic-booking/data";
 
 export const ui = {
@@ -331,3 +332,7 @@ export const errorText: Record<ClinicErrorCode, L> = {
 
 // The clinic's own (fictional) address. It stays in Thai in both languages, as a Thai business's address would.
 export const CLINIC_ADDRESS = "ซอยทองหล่อ 13 แขวงคลองตันเหนือ กรุงเทพฯ";
+
+/** "5 bookings" / "1 booking", in the visitor's language. */
+export const countText = (n: number, lang: Lang) =>
+  n === 1 ? ui.queueCountOne[lang] : fill(ui.queueCount[lang], { n: String(n) });

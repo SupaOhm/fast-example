@@ -284,4 +284,24 @@ test.describe("in English", () => {
     await page.goto("/demos/clinic-booking/admin/reports");
     await expect(page.locator("main")).toContainText("Reports");
   });
+
+  test("a new treatment is named in both languages, and an edit changes only the language being read", async ({ page }) => {
+    await page.goto("/demos/clinic-booking/admin/services");
+    await page.getByTestId("service-add").click();
+    await page.getByTestId("service-name").fill("Calming peel");
+    await page.getByTestId("service-price").fill("900");
+    await page.getByTestId("service-save").click();
+    const row = page.getByTestId("service-row").filter({ hasText: "Calming peel" });
+    await expect(row).toBeVisible();
+    await page.getByTestId("lang-switch").click();
+    await expect(page.getByTestId("service-row").filter({ hasText: "Calming peel" })).toBeVisible();
+    await page.getByTestId("lang-switch").click();
+    await row.getByRole("button").first().click();
+    await page.getByTestId("service-name").fill("Gentle peel");
+    await page.getByTestId("service-save").click();
+    await expect(page.getByTestId("service-row").filter({ hasText: "Gentle peel" })).toBeVisible();
+    await page.getByTestId("lang-switch").click();
+    await expect(page.getByTestId("service-row").filter({ hasText: "Calming peel" })).toBeVisible();
+    await expect(page.getByTestId("service-row").filter({ hasText: "Gentle peel" })).toHaveCount(0);
+  });
 });

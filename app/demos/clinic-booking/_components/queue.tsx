@@ -26,7 +26,7 @@ import type { Lang } from "@/lib/demos/lang";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { focusRing, formatPhone, shortName, STATUS_TONE } from "./admin-format";
 import { BookingMotion } from "./booking-motion";
-import { statusLabel, ui } from "./copy";
+import { countText, statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { clock } from "./line-phone";
 import { StaffPortrait } from "./staff-portrait";
@@ -50,7 +50,6 @@ interface Row {
   staff?: Staff;
 }
 
-const countText = (n: number, lang: Lang) => (n === 1 ? ui.queueCountOne[lang] : fill(ui.queueCount[lang], { n: String(n) }));
 const priceText = (price: number, lang: Lang) => (price === 0 ? ui.free[lang] : formatTHB(price));
 
 export function Queue() {

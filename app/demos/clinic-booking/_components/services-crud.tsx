@@ -6,7 +6,7 @@ import { ClinicError, deleteService, newId, STAFF, upsertService, type Service }
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { useLang } from "@/components/demo/lang";
 import { fill } from "@/lib/demos/format";
-import { errorText, ui } from "./copy";
+import { countText, errorText, ui } from "./copy";
 import { formatTHB } from "@/lib/demos/format";
 import type { Lang } from "@/lib/demos/lang";
 import { useDemoStore } from "@/lib/use-demo-store";
@@ -25,7 +25,6 @@ interface Draft {
 type Errors = Partial<Record<"name" | "price", string>>;
 
 const priceText = (price: number, lang: Lang) => (price === 0 ? ui.free[lang] : formatTHB(price));
-const countText = (n: number, lang: Lang) => (n === 1 ? ui.queueCountOne[lang] : fill(ui.queueCount[lang], { n: String(n) }));
 
 export function ServicesCrud() {
   const lang = useLang();
