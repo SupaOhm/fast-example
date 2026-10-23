@@ -33,6 +33,8 @@ export interface Booking {
   date: string;
   time: string;
   status: BookingStatus;
+  /** Set when a staff member chose the status by hand; the clock then leaves it alone. */
+  manual?: true;
 }
 
 export interface ClinicData {
@@ -111,9 +113,11 @@ const FORWARD: BookingStatus[] = ["booked", "checked-in", "done"];
 /**
  * The status a booking shows, on the booking page's schedule and in the admin queue alike. On the booking's own
  * day a page left open keeps up with the clock (booked → checked-in → done), but a later status a staff member
- * already set, or a no-show, is never pulled back. Other days show the stored status as it is.
+ * already set, or a no-show, is never pulled back. A status a staff member chose by hand (`manual`) is shown as
+ * it is, even when it goes backwards. Other days show the stored status as it is.
  */
 export function displayStatus(booking: Booking, durationMin: number, now: Date): BookingStatus {
+  if (booking.manual) return booking.status;
   const stored = FORWARD.indexOf(booking.status);
   if (stored < 0 || booking.date !== toISODate(now)) return booking.status;
   const start = toMinutes(booking.time);
@@ -242,7 +246,7 @@ export function bookAsGuest(
 }
 
 export function setBookingStatus(data: ClinicData, id: string, status: BookingStatus): ClinicData {
-  return { ...data, bookings: data.bookings.map((b) => (b.id === id ? { ...b, status } : b)) };
+  return { ...data, bookings: data.bookings.map((b) => (b.id === id ? { ...b, status, manual: true as const } : b)) };
 }
 
 function upsert<T extends { id: string }>(list: T[], item: T): T[] {

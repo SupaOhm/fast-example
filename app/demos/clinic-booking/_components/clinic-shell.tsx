@@ -27,6 +27,10 @@ const NAV = [
   { href: `${BASE}/reports`, label: ui.navReports, icon: BarChart3 },
 ] as const;
 
+// Phone tabs are 16px. Only English below 360px drops to 14px: four 80px tabs can't hold "Customers" and
+// "Treatments" side by side at 16px (Treatments alone is about 81px). Thai fits at 16px down to 320px.
+const NARROW_EN = "max-[359px]:text-[14px]";
+
 const quiet = `text-(--muted) transition-colors hover:bg-(--rose) hover:text-(--wine) ${focusRing}`;
 
 // Client wrapper: the demo stores hold functions, so a server layout cannot pass them down.
@@ -41,6 +45,7 @@ export function ClinicFrame({ children }: { children: React.ReactNode }) {
 export function ClinicShell({ children }: { children: React.ReactNode }) {
   const lang = useLang();
   const pathname = usePathname();
+  const narrowEn = lang === "en" ? NARROW_EN : "";
   const [data] = useDemoStore(clinicData);
   useMinuteTick();
   // The shell only renders after hydration (RequireSession), so this is the browser's clock. The count follows
@@ -61,10 +66,11 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
         <Link
           href={BASE}
           aria-label={ui.adminHome[lang]}
-          className={`order-1 mr-auto flex min-w-0 items-center gap-2.5 rounded-lg px-4 py-3 text-(--wine) lg:mr-0 lg:px-6 lg:pt-7 lg:pb-8 ${focusRing}`}
+          className={`order-1 flex min-w-0 items-center gap-2.5 rounded-lg px-4 py-3 text-(--wine) lg:px-6 lg:pt-7 lg:pb-8 ${focusRing}`}
         >
           <RingMark className="size-7 shrink-0 lg:size-8" />
-          <span className="min-w-0 leading-[1.25]">
+          {/* Below 360px the controls need the room, so the mark stands alone (the link keeps its name). */}
+          <span className="min-w-0 leading-[1.25] max-[359px]:hidden">
             <span className="block truncate text-lg font-semibold">{ui.brand[lang]}</span>
             <span className="hidden text-[14px] text-(--muted) lg:block">{ui.adminSub[lang]}</span>
           </span>
@@ -80,7 +86,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
                   <Link
                     href={href}
                     aria-current={active ? "page" : undefined}
-                    className={`relative flex h-full flex-col items-center gap-1 px-1 pt-2.5 pb-2.5 text-center text-[14px] leading-[1.25] transition-colors lg:flex-row lg:gap-3 lg:rounded-xl lg:px-3 lg:py-2.5 lg:text-left lg:text-base ${focusRing} ${
+                    className={`relative flex h-full flex-col items-center gap-1 px-0.5 pt-2.5 pb-2.5 text-center text-base leading-[1.25] transition-colors lg:flex-row lg:gap-3 lg:rounded-xl lg:px-3 lg:py-2.5 lg:text-left ${narrowEn} ${focusRing} ${
                       active
                         ? "font-medium text-(--wine) after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-(--wine) lg:bg-(--rose) lg:after:hidden"
                         : "text-(--muted) hover:text-(--wine) lg:hover:bg-(--rose)/70"

@@ -197,6 +197,22 @@ test("the queue shows today in progress", async ({ page }) => {
   await expect(page.locator('[data-testid="queue-row"][data-status="booked"]').first()).toBeVisible();
 });
 
+test("a status set by hand stays put after a reload, in the queue and the booking page's schedule", async ({ page }) => {
+  await page.goto("/demos/clinic-booking/admin");
+  const done = page.locator('[data-testid="queue-row"][data-status="done"]').first();
+  const id = (await done.getAttribute("data-booking-id"))!;
+  const row = page.locator(`[data-testid="queue-row"][data-booking-id="${id}"]`);
+  await row.getByTestId("queue-status").selectOption("booked");
+  await expect(row).toHaveAttribute("data-status", "booked");
+  await expect(row.getByTestId("queue-status")).toHaveValue("booked");
+  await page.reload();
+  await expect(row).toHaveAttribute("data-status", "booked");
+  await expect(row.getByTestId("queue-status")).toHaveValue("booked");
+  await page.goto(BOOK);
+  await show(page, "คลินิก");
+  await expect(page.locator(`[data-testid="schedule-block"][data-booking-id="${id}"]`)).toHaveAttribute("data-status", "booked");
+});
+
 test("logging out shows the login, and logging in returns to the queue", async ({ page }) => {
   await page.goto("/demos/clinic-booking/admin");
   await page.getByTestId("demo-session").getByRole("button", { name: "ออกจากระบบ" }).click();

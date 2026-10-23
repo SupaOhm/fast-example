@@ -127,6 +127,15 @@ describe("displayStatus", () => {
     expect(displayStatus(booking("no-show"), 60, at(18, 0))).toBe("no-show");
   });
 
+  it("keeps a status set by hand, even when it goes backwards", () => {
+    expect(displayStatus({ ...booking("booked"), manual: true }, 60, at(12, 30))).toBe("booked");
+    expect(displayStatus({ ...booking("checked-in"), manual: true }, 60, at(12, 30))).toBe("checked-in");
+  });
+
+  it("follows the clock for every seeded booking, which is never marked manual", () => {
+    expect(buildClinicSeed(today).bookings.some((b) => b.manual)).toBe(false);
+  });
+
   it("shows other days' stored status as it is", () => {
     expect(displayStatus(booking("booked", "2026-10-18"), 60, at(18, 0))).toBe("booked");
     expect(displayStatus(booking("booked", "2026-10-20"), 60, at(18, 0))).toBe("booked");
@@ -232,6 +241,23 @@ describe("admin mutations and reports", () => {
   it("sets booking status", () => {
     const id = data.bookings[0].id;
     expect(setBookingStatus(data, id, "checked-in").bookings.find((b) => b.id === id)?.status).toBe("checked-in");
+  });
+
+  it("marks only the changed booking as set by hand", () => {
+    const id = data.bookings[0].id;
+    const next = setBookingStatus(data, id, "checked-in");
+    expect(next.bookings.find((b) => b.id === id)?.manual).toBe(true);
+    expect(next.bookings.filter((b) => b.manual)).toHaveLength(1);
+  });
+
+  it("keeps a past booking moved back to booked by hand as booked", () => {
+    const evening = new Date(2026, 9, 19, 18, 0);
+    const seed = buildClinicSeed(evening);
+    const past = seed.bookings.find((b) => b.date === "2026-10-19" && b.status === "done")!;
+    const duration = SERVICES.find((s) => s.id === past.serviceId)!.durationMin;
+    expect(displayStatus(past, duration, evening)).toBe("done");
+    const edited = setBookingStatus(seed, past.id, "booked").bookings.find((b) => b.id === past.id)!;
+    expect(displayStatus(edited, duration, evening)).toBe("booked");
   });
 
   it("blocks deleting referenced customers and services with error codes", () => {

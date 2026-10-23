@@ -280,6 +280,7 @@ function QueueRow({
     <li
       ref={ref}
       data-testid="queue-row"
+      data-booking-id={b.id}
       data-status={status}
       data-highlight={highlight ? "true" : undefined}
       className={`relative grid scroll-mt-40 grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1.5 px-4 py-4 [grid-template-areas:'time_status'_'who_who'_'what_what'_'staff_staff'] sm:px-5 xl:grid-cols-[5.5rem_minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,0.95fr)_9.5rem] xl:items-center xl:gap-x-5 xl:[grid-template-areas:'time_who_what_staff_status'] ${
