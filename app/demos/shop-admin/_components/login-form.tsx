@@ -8,6 +8,7 @@ import { shopSession } from "@/lib/demos/shop-admin/store";
 import { useDemoStore, useHydrated } from "@/lib/use-demo-store";
 import { BrandMark } from "./brand-mark";
 import { ui } from "./copy";
+import { LANG_SWITCH_CLASS } from "./shop-css";
 
 const field =
   "mt-1.5 block w-full rounded-md border-[1.5px] border-(--line) bg-white px-3.5 py-2.5 text-base text-(--ink) transition-colors focus:border-(--ink) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--mustard)";
@@ -30,7 +31,7 @@ export function LoginBar() {
           <span className="block text-sm text-(--mustard)">{ui.brandTagline[lang]}</span>
         </span>
       </span>
-      <DemoLangSwitch className="grid min-h-10 min-w-11 place-items-center rounded-md border-[1.5px] border-(--mustard) px-2 text-sm font-bold text-(--mustard) transition-colors hover:bg-(--mustard) hover:text-(--ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--mustard)" />
+      <DemoLangSwitch className={LANG_SWITCH_CLASS} />
     </header>
   );
 }

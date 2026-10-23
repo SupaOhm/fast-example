@@ -12,6 +12,7 @@ import { shopData, shopSession } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { BrandMark } from "./brand-mark";
 import { ui } from "./copy";
+import { LANG_SWITCH_CLASS } from "./shop-css";
 
 const NAV = [
   { href: "/demos/shop-admin", label: ui.navOverview, icon: LayoutDashboard },
@@ -56,7 +57,7 @@ function DemoSessionBanner() {
       <button
         type="button"
         onClick={logout}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-md border-[1.5px] border-(--ink) px-2 py-1 text-sm font-semibold transition-colors hover:bg-(--ink) hover:text-(--mustard) sm:px-2.5"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-md border-[1.5px] border-(--ink) px-2 py-1 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-(--mustard) sm:px-2.5"
       >
         <LogOut className="hidden size-4 sm:block" aria-hidden />
         {ui.logout[lang]}
@@ -114,21 +115,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 label={ui.resetData[lang]}
                 className="min-h-10 rounded-md px-2.5 text-(--bg) transition-colors hover:bg-(--bg)/10 lg:-ml-2.5"
               />
-              <DemoLangSwitch className="grid min-h-10 min-w-11 place-items-center rounded-md border-[1.5px] border-(--mustard) px-2 text-sm font-bold text-(--mustard) transition-colors hover:bg-(--mustard) hover:text-(--ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--mustard)" />
+              <DemoLangSwitch className={LANG_SWITCH_CLASS} />
             </div>
           </div>
 
           <nav aria-label={ui.mainNav[lang]} className="col-span-2 px-2 pt-1 lg:order-2 lg:px-4 lg:pt-0">
-            <ul className="grid grid-cols-3 gap-1 lg:flex lg:flex-col lg:gap-1.5">
+            <ul className="flex gap-1 lg:flex-col lg:gap-1.5">
               {NAV.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href;
                 const badge = badges[href];
                 return (
-                  <li key={href} className="min-w-0">
+                  <li key={href} className="min-w-0 flex-auto lg:flex-none">
                     <Link
                       href={href}
                       aria-current={active ? "page" : undefined}
-                      className={`flex min-h-11 items-center justify-center gap-1.5 rounded-t-lg px-1.5 text-[15px] font-semibold leading-[1.25] transition-colors lg:min-h-12 lg:justify-start lg:gap-3 lg:rounded-lg lg:px-3.5 lg:text-base ${
+                      className={`flex min-h-11 items-center justify-center gap-1.5 rounded-t-lg px-1 text-base font-semibold leading-[1.25] transition-colors lg:min-h-12 lg:justify-start lg:gap-3 lg:rounded-lg lg:px-3.5 ${
                         active
                           ? "bg-(--bg) text-(--ink) lg:bg-(--mustard) lg:shadow-[inset_0_-2px_0_rgba(43,34,23,.25)]"
                           : "text-(--bg) hover:bg-(--bg)/10"
