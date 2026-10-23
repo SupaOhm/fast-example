@@ -1,18 +1,73 @@
 import { expect, test, type Page } from "@playwright/test";
 
-test("unauthenticated visit redirects to login, login reaches overview", async ({ page }) => {
+test.use({ locale: "th-TH" });
+
+const nav = (page: Page) => page.getByRole("navigation", { name: "เมนูหลัก" });
+const countIn = async (page: Page, testId: string) =>
+  Number((await page.getByTestId(testId).innerText()).match(/\d+/)![0]);
+
+test("opens on the overview without logging in", async ({ page }) => {
   await page.goto("/demos/shop-admin");
-  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
-  await page.getByTestId("login-submit").click();
   await expect(page).toHaveURL(/\/demos\/shop-admin$/);
-  await expect(page.getByTestId("kpi")).toHaveCount(4);
+  await expect(page.getByTestId("demo-session")).toContainText("กำลังดูในฐานะเจ้าของร้าน (เดโม)");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("สวัสดี คุณนิ่ม");
+  await expect(page.getByTestId("todo-pack")).toContainText(/ต้องแพ็ก \d+ ออเดอร์/);
+  await expect(page.getByTestId("todo-low")).toContainText(/ใกล้หมด \d+ สินค้า/);
+  await expect(page.getByTestId("todo-sold")).toContainText("฿");
+  await expect(page.getByTestId("pack-row").first()).toBeVisible();
   await expect(page.getByTestId("sales-chart")).toBeVisible();
 });
 
-test("stock edit persists across reload and reset restores it", async ({ page }) => {
-  await page.goto("/demos/shop-admin/login");
+test("one tap packs an order: the row stamps, the tile counts down, the order is packed", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  const before = await countIn(page, "todo-pack");
+  const row = page.getByTestId("pack-row").first();
+  const id = (await row.getAttribute("data-order-id"))!;
+  await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
+  await expect(page.locator(`[data-testid="pack-row"][data-order-id="${id}"]`)).toContainText("แพ็กแล้ว");
+  await expect(page.getByTestId("todo-pack")).toContainText(`ต้องแพ็ก ${before - 1} ออเดอร์`);
+
+  await nav(page).getByRole("link", { name: /^คำสั่งซื้อ/ }).click();
+  await page.getByTestId("orders-search").fill(id);
+  await expect(page.getByRole("combobox", { name: `สถานะคำสั่งซื้อ ${id}` })).toHaveValue("packed");
+});
+
+test("undo puts a packed order back in the queue", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  const before = await countIn(page, "todo-pack");
+  const row = page.getByTestId("pack-row").first();
+  const id = (await row.getAttribute("data-order-id"))!;
+  await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
+  await page.getByRole("button", { name: `เลิกทำออเดอร์ ${id}` }).click();
+  await expect(page.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` })).toBeVisible();
+  await expect(page.getByTestId("todo-pack")).toContainText(`ต้องแพ็ก ${before} ออเดอร์`);
+});
+
+test("the sold-today till scrolls to the sales charts", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  await page.getByTestId("todo-sold").click();
+  await expect(page.getByTestId("sales-chart")).toBeInViewport();
+});
+
+test("logging out shows the login, and logging in returns to the overview", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  await page.getByTestId("demo-session").getByRole("button", { name: "ออกจากระบบ" }).click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
+  await page.goto("/demos/shop-admin/orders");
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
   await page.getByTestId("login-submit").click();
-  await page.getByRole("link", { name: "สต็อกสินค้า" }).click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
+  await expect(page.getByTestId("demo-session")).toBeVisible();
+});
+
+test("a signed-in visit to the login page goes to the overview", async ({ page }) => {
+  await page.goto("/demos/shop-admin/login");
+  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
+});
+
+test("stock edit persists across reload and reset restores it", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  await nav(page).getByRole("link", { name: /^สต็อกสินค้า/ }).click();
   const row = page.getByTestId("stock-row-NP-02");
   await row.getByTestId("stock-input").fill("50");
   await row.getByTestId("stock-save").click();
@@ -23,32 +78,31 @@ test("stock edit persists across reload and reset restores it", async ({ page })
   await expect(page.getByTestId("stock-row-NP-02")).toContainText("ใกล้หมด");
 });
 
-test("orders table filters by status and search", async ({ page }) => {
-  await page.goto("/demos/shop-admin/login");
-  await page.getByTestId("login-submit").click();
-  await page.getByRole("link", { name: "คำสั่งซื้อ" }).click();
-  await page.getByTestId("orders-search").fill("ไม่มีลูกค้าคนนี้");
-  await expect(page.getByTestId("orders-empty")).toBeVisible();
+test("empty stock input shows inline error and keeps stored stock", async ({ page }) => {
+  await page.goto("/demos/shop-admin/stock");
+  const row = page.getByTestId("stock-row-NP-02");
+  const input = row.getByTestId("stock-input");
+  const before = await input.inputValue();
+  await input.fill("");
+  await row.getByTestId("stock-save").click();
+  await expect(row.getByRole("alert")).toBeVisible();
+  await page.reload();
+  await expect(page.getByTestId("stock-row-NP-02").getByTestId("stock-input")).toHaveValue(before);
+  await expect(page.getByTestId("stock-row-NP-02").getByRole("alert")).toHaveCount(0);
 });
-
-async function login(page: Page) {
-  await page.goto("/demos/shop-admin/login");
-  await page.getByTestId("login-submit").click();
-  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
-}
-
-async function openOrders(page: Page) {
-  await login(page);
-  await page.getByRole("link", { name: "คำสั่งซื้อ" }).click();
-  await expect(page).toHaveURL(/\/demos\/shop-admin\/orders$/);
-}
 
 const rowStatusSelects = (page: Page) => page.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ / });
 const orderIds = (page: Page) =>
   rowStatusSelects(page).evaluateAll((els) => els.map((e) => (e.getAttribute("aria-label") ?? "").replace("สถานะคำสั่งซื้อ ", "")));
 
+test("orders search with no match shows the empty state", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders");
+  await page.getByTestId("orders-search").fill("ไม่มีลูกค้าคนนี้");
+  await expect(page.getByTestId("orders-empty")).toBeVisible();
+});
+
 test("orders status filter shows only cancelled orders", async ({ page }) => {
-  await openOrders(page);
+  await page.goto("/demos/shop-admin/orders");
   await expect(rowStatusSelects(page)).toHaveCount(15);
   await page.getByRole("combobox", { name: "สถานะ", exact: true }).selectOption("cancelled");
   const selects = rowStatusSelects(page);
@@ -63,7 +117,7 @@ test("orders status filter shows only cancelled orders", async ({ page }) => {
 });
 
 test("changing an order status persists across reload", async ({ page }) => {
-  await openOrders(page);
+  await page.goto("/demos/shop-admin/orders");
   const first = rowStatusSelects(page).first();
   await expect(first).toBeVisible();
   const label = await first.getAttribute("aria-label");
@@ -76,7 +130,7 @@ test("changing an order status persists across reload", async ({ page }) => {
 });
 
 test("orders paginate 15 per page", async ({ page }) => {
-  await openOrders(page);
+  await page.goto("/demos/shop-admin/orders");
   await expect(rowStatusSelects(page)).toHaveCount(15);
   const firstPage = await orderIds(page);
   expect(new Set(firstPage).size).toBe(15);
@@ -89,30 +143,106 @@ test("orders paginate 15 per page", async ({ page }) => {
   expect(secondPage.filter((id) => firstPage.includes(id))).toEqual([]);
 });
 
-test("empty stock input shows inline error and keeps stored stock", async ({ page }) => {
-  await login(page);
-  await page.getByRole("link", { name: "สต็อกสินค้า" }).click();
-  const row = page.getByTestId("stock-row-NP-02");
-  const input = row.getByTestId("stock-input");
-  const before = await input.inputValue();
-  await input.fill("");
-  await row.getByTestId("stock-save").click();
-  await expect(row.getByRole("alert")).toBeVisible();
-  await page.reload();
-  await expect(page.getByTestId("stock-row-NP-02").getByTestId("stock-input")).toHaveValue(before);
-  await expect(page.getByTestId("stock-row-NP-02").getByRole("alert")).toHaveCount(0);
-});
-
-test("logout returns to login and protects the admin routes", async ({ page }) => {
-  await login(page);
-  await page.getByRole("button", { name: "ออกจากระบบ" }).click();
-  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
+test("the to-pack tile opens the orders filtered to packing", async ({ page }) => {
   await page.goto("/demos/shop-admin");
-  await expect(page).toHaveURL(/\/demos\/shop-admin\/login$/);
+  const n = await countIn(page, "todo-pack");
+  await page.getByTestId("todo-pack").click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/orders\?status=paid$/);
+  await expect(page.getByRole("combobox", { name: "สถานะ", exact: true })).toHaveValue("paid");
+  await expect(page.getByTestId("receipt")).toHaveCount(Math.min(n, 15));
 });
 
-test("logged-in visit to login redirects to overview", async ({ page }) => {
-  await login(page);
-  await page.goto("/demos/shop-admin/login");
-  await expect(page).toHaveURL(/\/demos\/shop-admin$/);
+test("orders are receipts with items, a total and a stamped status", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders");
+  const receipts = page.getByTestId("receipt");
+  await expect(receipts).toHaveCount(15);
+  const first = receipts.first();
+  await expect(first).toContainText(/RD-\d{4}/);
+  await expect(first).toContainText("รวม");
+  await expect(first).toContainText("฿");
+  await expect(first.getByTestId("product-icon").first()).toBeVisible();
+  await expect(first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ })).toBeVisible();
+});
+
+test("stock rows show a drawn product icon", async ({ page }) => {
+  await page.goto("/demos/shop-admin/stock");
+  await expect(page.getByTestId("stock-row-NP-02").getByTestId("product-icon")).toBeVisible();
+  await expect(page.getByTestId("stock-row-GF-01")).toContainText("กล่องของฝากรวม");
+});
+
+test.describe("in English", () => {
+  test.use({ locale: "en-US" });
+
+  test("the overview, banner and packing read in English", async ({ page }) => {
+    await page.goto("/demos/shop-admin");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hello, Khun Nim");
+    await expect(page.getByTestId("demo-session")).toContainText("Viewing as the shop owner (demo)");
+    await expect(page.getByTestId("todo-pack")).toContainText(/\d+ orders to pack/);
+    const row = page.getByTestId("pack-row").first();
+    await expect(row).toContainText("Khun ");
+    const id = (await row.getAttribute("data-order-id"))!;
+    await row.getByRole("button", { name: `Mark ${id} as packed` }).click();
+    await expect(page.locator(`[data-testid="pack-row"][data-order-id="${id}"]`)).toContainText("Packed");
+  });
+
+  test("the login reads in English", async ({ page }) => {
+    await page.goto("/demos/shop-admin");
+    await page.getByTestId("demo-session").getByRole("button", { name: "Log out" }).click();
+    await expect(page.getByTestId("login-submit")).toHaveText("Log in");
+  });
+
+  test("orders and stock read in English and search finds English names", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    await expect(page.getByRole("combobox", { name: /^Order status RD-\d{4}$/ }).first()).toBeVisible();
+    await page.getByTestId("orders-search").fill("Khun May");
+    await expect(page.getByTestId("receipt").first()).toContainText("Khun May");
+    await page.goto("/demos/shop-admin/stock");
+    await expect(page.getByTestId("stock-row-GF-01")).toContainText("Chiang Mai gift box");
+    await expect(page.getByTestId("stock-row-NP-02")).toContainText("Running low");
+  });
+
+  test("counts of one read in the singular", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    await page.getByTestId("orders-search").fill("RD-2001");
+    await expect(page.getByText(/of 1 order/)).toBeVisible();
+    await expect(page.getByText("of 1 orders")).toHaveCount(0);
+
+    await page.goto("/demos/shop-admin/stock");
+    const row = page.getByTestId("stock-row-NP-02");
+    await row.getByTestId("stock-input").fill("50");
+    await row.getByTestId("stock-save").click();
+    await page.goto("/demos/shop-admin");
+    await expect(page.getByTestId("todo-low")).toContainText("1 product running low");
+  });
+});
+
+test.describe("with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("a freshly packed row's stamp does not animate", async ({ page }) => {
+    await page.goto("/demos/shop-admin");
+    const row = page.getByTestId("pack-row").first();
+    const id = (await row.getAttribute("data-order-id"))!;
+    await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
+    const stamp = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="stamp"]`);
+    await expect(stamp).toBeVisible();
+    await expect(stamp).toHaveCSS("animation-name", "none");
+  });
+});
+
+test("a receipt stays in a status-filtered list after its status changes", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders?status=paid");
+  const first = page.getByTestId("receipt").first();
+  const id = (await first.getAttribute("data-order-id"))!;
+  await first.getByRole("combobox").selectOption("packed");
+  const same = page.locator(`[data-testid="receipt"][data-order-id="${id}"]`);
+  await expect(same).toBeVisible();
+  await expect(same).toContainText("แพ็กแล้ว");
+});
+
+test("the nav's Orders link clears a status filter", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders?status=paid");
+  await expect(page.getByLabel("สถานะ", { exact: true })).toHaveValue("paid");
+  await nav(page).getByRole("link", { name: /^คำสั่งซื้อ/ }).click();
+  await expect(page.getByLabel("สถานะ", { exact: true })).toHaveValue("all");
 });
