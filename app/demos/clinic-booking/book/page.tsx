@@ -1,40 +1,21 @@
-import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { T } from "@/components/demo/lang";
+import { BookHeader } from "../_components/book-header";
 import { BookingFlow } from "../_components/booking-flow";
+import { ui } from "../_components/copy";
 
-export const metadata: Metadata = { title: "จองคิวผ่าน LINE" };
-
-const POINTS = [
-  "แสดงเฉพาะผู้ดูแลที่ทำบริการนั้นได้",
-  "ตัดเวลาที่มีคนจองแล้วและเวลาที่เลยไปแล้วออกให้อัตโนมัติ",
-  "คิวใหม่เข้าไปอยู่ในระบบหลังร้านของคลินิกทันที",
-];
+export const metadata: Metadata = { title: "Book on LINE · จองคิวผ่าน LINE" };
 
 export default function BookPage() {
   return (
-    <main className="lg:grid lg:min-h-screen lg:grid-cols-[1fr_420px_1fr] lg:items-start lg:gap-14 lg:px-10 lg:pt-6 lg:pb-24">
-      <aside className="hidden max-w-xs self-center justify-self-end lg:block">
-        <Link
-          href="/demos/clinic-booking"
-          className="inline-flex items-center gap-1 text-[15px] text-(--wine) underline-offset-4 hover:underline"
-        >
-          <ChevronLeft className="size-4" aria-hidden />
-          กลับหน้าคลินิก
-        </Link>
-        <h1 className="mt-6 text-[2rem] leading-[1.3] font-normal">หน้าจอที่ลูกค้าเห็นในแชต LINE ของคลินิก</h1>
-        <p className="mt-4 leading-[1.75] text-(--muted)">ลองจองคิวได้จริงในโทรศัพท์ข้าง ๆ ข้อมูลเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น</p>
-        <ul className="mt-6 grid gap-3 text-[15px] leading-[1.6]">
-          {POINTS.map((p) => (
-            <li key={p} className="flex gap-3">
-              <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-(--line-green)" />
-              {p}
-            </li>
-          ))}
-        </ul>
-      </aside>
-      <h1 className="sr-only lg:hidden">จองคิวผ่าน LINE ลูมิ คลินิก</h1>
-      <BookingFlow />
-    </main>
+    <>
+      <BookHeader />
+      <main className="mx-auto max-w-6xl px-4 pt-3 pb-28 sm:px-6 lg:pt-6">
+        <h1 className="max-w-3xl text-[1.75rem] leading-[1.3] font-medium text-balance text-(--wine) sm:text-[2.25rem] sm:leading-[1.25]">
+          <T value={ui.bookTitle} />
+        </h1>
+        <BookingFlow />
+      </main>
+    </>
   );
 }

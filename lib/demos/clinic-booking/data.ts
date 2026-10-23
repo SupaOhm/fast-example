@@ -1,6 +1,5 @@
 import { addDays, toISODate } from "@/lib/dates";
 import type { L } from "@/lib/demos/lang";
-import { isThaiPhone, normalizePhone } from "@/lib/validation";
 
 export interface Service {
   id: string;
@@ -44,7 +43,6 @@ export interface ClinicData {
 
 export type ClinicErrorCode =
   | "name-required"
-  | "phone-invalid"
   | "slot-taken"
   | "customer-has-bookings"
   | "service-has-bookings";
@@ -225,35 +223,6 @@ export function bookAsGuest(
     data: { ...data, customers: upsert(data.customers, { id: GUEST_ID, name, phone: "" }), bookings: [...data.bookings, booking] },
     booking,
   };
-}
-
-export function bookAppointment(
-  data: ClinicData,
-  input: { name: string; phone: string; serviceId: string; staffId: string; date: string; time: string },
-  now: Date = new Date(),
-): { data: ClinicData; booking: Booking } {
-  if (!input.name.trim()) throw new ClinicError("name-required");
-  if (!isThaiPhone(input.phone)) throw new ClinicError("phone-invalid");
-  const free = availableSlots(data, { date: input.date, staffId: input.staffId, serviceId: input.serviceId, now });
-  if (!free.includes(input.time)) throw new ClinicError("slot-taken");
-
-  const phone = normalizePhone(input.phone);
-  let customers = data.customers;
-  let customer = customers.find((c) => c.phone === phone);
-  if (!customer) {
-    customer = { id: newId("c"), name: input.name.trim(), phone };
-    customers = [...customers, customer];
-  }
-  const booking: Booking = {
-    id: newId("b"),
-    customerId: customer.id,
-    serviceId: input.serviceId,
-    staffId: input.staffId,
-    date: input.date,
-    time: input.time,
-    status: "booked",
-  };
-  return { data: { ...data, customers, bookings: [...data.bookings, booking] }, booking };
 }
 
 export function setBookingStatus(data: ClinicData, id: string, status: BookingStatus): ClinicData {

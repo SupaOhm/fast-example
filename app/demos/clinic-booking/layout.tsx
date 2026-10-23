@@ -26,7 +26,7 @@ const palette = {
   "--line-green": "#06c755",
   "--line-green-ink": "#04723a",
   "--error": "#b3261e",
-  // The LINE chat mock on the booking page; Task 3 redraws it.
+  // The booking page's LINE chat: the chat background, its name and timestamp grey (5.6:1 on it), and the visitor's bubble.
   "--chat": "#c9d6e6",
   "--chat-ink": "#46505e",
   "--bubble-me": "#a6e88e",

@@ -20,12 +20,15 @@ export function StaffPortrait({
   className = "",
   sizes,
   width = 800,
+  decorative = false,
 }: {
   staffId: string;
   className?: string;
   sizes: string;
   /** Pixel width fetched from Unsplash; pass a small value for small faces. */
   width?: number;
+  /** True when the name is written right beside the face, so the photo needs no alt text of its own. */
+  decorative?: boolean;
 }) {
   const lang = useLang();
   const staff = STAFF.find((s) => s.id === staffId);
@@ -35,7 +38,7 @@ export function StaffPortrait({
     <span className={`relative block overflow-hidden bg-(--rose-2) ${className}`}>
       <Image
         src={unsplash(photo.id, width)}
-        alt={fill(ui.staffPhotoAlt[lang], { name: staff.name[lang] })}
+        alt={decorative ? "" : fill(ui.staffPhotoAlt[lang], { name: staff.name[lang] })}
         fill
         sizes={sizes}
         className="object-cover"

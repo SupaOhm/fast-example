@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   availableSlots,
-  bookAppointment,
   bookAsGuest,
   bookingDay,
   bookingsByService,
@@ -195,16 +194,6 @@ describe("bookAsGuest", () => {
     const input = { name: "A", serviceId: b.serviceId, staffId: b.staffId, date: tomorrow, time: b.time };
     expect(codeOf(() => bookAsGuest(data, input, today))).toBe("slot-taken");
     expect(codeOf(() => bookAsGuest(data, { ...input, name: "  " }, today))).toBe("name-required");
-  });
-});
-
-describe("bookAppointment (kept until the new booking page replaces it)", () => {
-  const data = buildClinicSeed(today);
-
-  it("throws error codes", () => {
-    const b = data.bookings.find((x) => x.date === tomorrow)!;
-    expect(codeOf(() => bookAppointment(data, { name: "ก", phone: "0800000098", serviceId: b.serviceId, staffId: b.staffId, date: tomorrow, time: b.time }, today))).toBe("slot-taken");
-    expect(codeOf(() => bookAppointment(data, { name: "ก", phone: "123", serviceId: "s-facial", staffId: "st-2", date: tomorrow, time: "10:00" }, today))).toBe("phone-invalid");
   });
 });
 

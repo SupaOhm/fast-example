@@ -12,7 +12,7 @@ describe("clinic copy", () => {
 
   it("labels every status and every error code", () => {
     for (const s of BOOKING_STATUSES) expect(copy.statusLabel[s].en.length).toBeGreaterThan(0);
-    for (const code of ["name-required", "phone-invalid", "slot-taken", "customer-has-bookings", "service-has-bookings"] as const) {
+    for (const code of ["name-required", "slot-taken", "customer-has-bookings", "service-has-bookings"] as const) {
       expect(copy.errorText[code].th.length).toBeGreaterThan(0);
     }
   });
