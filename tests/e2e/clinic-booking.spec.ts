@@ -139,6 +139,25 @@ test("on desktop there are no tabs, so no clinic tab badge", async ({ page }) =>
   await expect(page.getByRole("tabpanel")).toHaveCount(0);
 });
 
+test("on desktop the toast is a banner inside the schedule, covering neither side", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop", "phones keep the fixed bottom toast");
+  await bookFacial(page);
+  await expect(page.getByTestId("booking-toast")).toHaveCount(1);
+  const banner = page.getByTestId("clinic-schedule").getByTestId("booking-toast");
+  await expect(banner).toContainText("คิวใหม่");
+  expect(await banner.evaluate((el) => getComputedStyle(el).position)).toBe("static");
+  const toast = (await banner.boundingBox())!;
+  const card = (await page.getByTestId("booking-confirmed").boundingBox())!;
+  expect(toast.x).toBeGreaterThanOrEqual(card.x + card.width);
+});
+
+test("on phones the toast is a single fixed bar", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the fixed bar is the phone variant");
+  await bookFacial(page);
+  await expect(page.getByTestId("booking-toast")).toHaveCount(1);
+  expect(await page.getByTestId("booking-toast").evaluate((el) => getComputedStyle(el).position)).toBe("fixed");
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 

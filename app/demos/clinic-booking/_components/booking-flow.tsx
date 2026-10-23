@@ -204,6 +204,22 @@ export function BookingFlow() {
   const formError = error && !nameError ? (error.code ? errorText[error.code] : ui.bookFailed)[lang] : null;
   const clinicLabel = hydrated && !bookingDay(new Date()).isToday ? ui.sideClinicTomorrow : ui.sideClinic;
 
+  // One toast at a time: a fixed bar on phones, an in-flow banner inside the schedule on wide screens, so it
+  // never covers the chat's confirmation or the lanes. The server and hydration render the phone variant.
+  const toastEl = (
+    <BookingToast
+      variant={wide ? "inline" : "fixed"}
+      message={
+        toast
+          ? { key: toast.id, text: fill(ui.toastLanded[lang], { staff: staffName(toast.staffId, lang), time: toast.time }) }
+          : null
+      }
+      onDismiss={dismissToast}
+      onSee={seeSchedule}
+      fallbackFocus={toastFallback}
+    />
+  );
+
   const chips =
     step === 4 ? undefined : (
       <>
@@ -463,20 +479,11 @@ export function BookingFlow() {
           <SideLabel id="label-clinic" icon={<RingMark className="size-5 text-white" />} tone="bg-(--wine)">
             {clinicLabel[lang]}
           </SideLabel>
-          <DaySchedule newId={landedId} />
+          <DaySchedule newId={landedId} banner={wide ? toastEl : null} />
         </section>
       </div>
 
-      <BookingToast
-        message={
-          toast
-            ? { key: toast.id, text: fill(ui.toastLanded[lang], { staff: staffName(toast.staffId, lang), time: toast.time }) }
-            : null
-        }
-        onDismiss={dismissToast}
-        onSee={seeSchedule}
-        fallbackFocus={toastFallback}
-      />
+      {!wide && toastEl}
     </div>
   );
 }

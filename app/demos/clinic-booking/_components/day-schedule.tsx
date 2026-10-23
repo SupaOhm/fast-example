@@ -62,7 +62,7 @@ function useMinuteTick() {
  * Phones get a taller day (2px a minute) so a 30-minute block still fits a name and a treatment, one line each.
  * `newId` is the booking made during this page visit, if any; only that one is marked and animated as new.
  */
-export function DaySchedule({ newId }: { newId: string | null }) {
+export function DaySchedule({ newId, banner }: { newId: string | null; banner?: React.ReactNode }) {
   const lang = useLang();
   const hydrated = useHydrated();
   const [data] = useDemoStore(clinicData);
@@ -92,6 +92,7 @@ export function DaySchedule({ newId }: { newId: string | null }) {
           {ui.openAdmin[lang]}
         </Link>
       </header>
+      {banner}
 
       <ul aria-label={ui.scheduleLegend[lang]} className="flex flex-wrap gap-x-5 gap-y-2 px-4 pt-4 text-[14px] leading-[1.4] text-(--muted) sm:px-6">
         {BOOKING_STATUSES.map((s) => (

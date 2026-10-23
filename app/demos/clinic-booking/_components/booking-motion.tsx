@@ -8,6 +8,7 @@ const CSS = `
   60% { opacity: 1; transform: translateY(2px) scale(1.01); }
   100% { opacity: 1; transform: none; }
 }
+@keyframes lumi-banner { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 12rem; } }
 @keyframes lumi-glow { 0% { box-shadow: 0 0 0 0 rgb(194 24 91 / 0.45); } 100% { box-shadow: 0 0 0 14px rgb(194 24 91 / 0); } }
 `;
 
