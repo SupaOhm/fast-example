@@ -9,7 +9,7 @@ import { LineGlyph } from "../_components/line-glyph";
 
 export const metadata: Metadata = { title: "คลินิกดูแลผิว จองคิวผ่าน LINE" };
 
-const serviceName = new Map(SERVICES.map((s) => [s.id, s.name]));
+const serviceName = new Map(SERVICES.map((s) => [s.id, s.name.th]));
 
 const STEPS = ["เลือกทรีตเมนต์", "เลือกแพทย์หรือนักบำบัด", "เลือกวันและเวลาที่ว่าง", "รับข้อความยืนยันใน LINE"];
 
@@ -118,7 +118,7 @@ export default function ClinicHome() {
             {SERVICES.map((s) => (
               <li key={s.id} className="flex items-baseline gap-4 py-5">
                 <div className="min-w-0">
-                  <p className="text-lg leading-[1.4] sm:text-xl">{s.name}</p>
+                  <p className="text-lg leading-[1.4] sm:text-xl">{s.name.th}</p>
                   <p className="text-sm text-(--muted)">{s.durationMin} นาที</p>
                 </div>
                 <span aria-hidden className="mb-1.5 flex-1 border-b border-dotted border-(--rose)/60" />
@@ -143,12 +143,12 @@ export default function ClinicHome() {
                   aria-hidden
                   className="grid size-16 shrink-0 place-items-center rounded-full bg-(--blush-2) text-3xl font-light text-(--rose-deep) sm:size-20 sm:text-4xl"
                 >
-                  {st.name.replace(/^(พญ\.|คุณ)\s*/, "").charAt(0)}
+                  {st.name.th.replace(/^(พญ\.|คุณ)\s*/, "").charAt(0)}
                 </span>
                 <div>
-                  <p className="text-xl leading-[1.4]">{st.name}</p>
-                  <p className="text-(--muted)">{st.role}</p>
-                  <ul aria-label={`บริการที่${st.name}ดูแล`} className="mt-3 flex flex-wrap gap-1.5">
+                  <p className="text-xl leading-[1.4]">{st.name.th}</p>
+                  <p className="text-(--muted)">{st.role.th}</p>
+                  <ul aria-label={`บริการที่${st.name.th}ดูแล`} className="mt-3 flex flex-wrap gap-1.5">
                     {st.serviceIds.map((id) => (
                       <li key={id} className="rounded-full border border-(--line) bg-(--paper) px-2.5 py-0.5 text-[13px] text-(--muted)">
                         {serviceName.get(id)}

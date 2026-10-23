@@ -1,13 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { routes } from "./routes";
 
-test.beforeEach(async ({ page }) => {
-  // Log in to the clinic demo so its admin routes render their real content (the shop opens signed in).
-  await page.addInitScript(() => {
-    localStorage.setItem("demo:clinic:session", "true");
-  });
-});
-
 for (const route of routes) {
   test(`smoke ${route}`, async ({ page }) => {
     const errors: string[] = [];

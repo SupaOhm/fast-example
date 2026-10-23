@@ -79,7 +79,7 @@ export function Reports() {
   const upcoming = data.bookings.filter((b) => upcomingDays.has(b.date) && b.status !== "no-show");
   const todayCount = upcoming.filter((b) => b.date === todayISO).length;
 
-  const byService = bookingsByService(data).sort((a, b) => b.count - a.count);
+  const byService = bookingsByService(data).map((r) => ({ ...r, name: r.name.th })).sort((a, b) => b.count - a.count);
   const top = byService[0];
 
   const price = new Map(data.services.map((s) => [s.id, s.price]));
@@ -220,11 +220,11 @@ export function Reports() {
                   <th scope="row" className="py-3 pr-2 pl-4 font-normal sm:px-5">
                     <span className="flex items-center gap-3 leading-[1.35]">
                       <span aria-hidden className="hidden size-9 shrink-0 place-items-center rounded-full bg-(--blush-2) text-sm sm:grid text-(--rose-deep)">
-                        {monogramOf(st.name)}
+                        {monogramOf(st.name.th)}
                       </span>
                       <span>
-                        <span className="block">{st.name}</span>
-                        <span className="hidden text-[13px] text-(--muted) sm:block">{st.role}</span>
+                        <span className="block">{st.name.th}</span>
+                        <span className="hidden text-[13px] text-(--muted) sm:block">{st.role.th}</span>
                       </span>
                     </span>
                   </th>

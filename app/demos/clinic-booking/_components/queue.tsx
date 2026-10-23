@@ -7,6 +7,7 @@ import { nextDays, parseISODate } from "@/lib/dates";
 import {
   BOOKING_STATUSES,
   CLOSE,
+  isLineBooking,
   OPEN,
   setBookingStatus,
   STAFF,
@@ -16,6 +17,7 @@ import {
   type BookingStatus,
 } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
+import type { L } from "@/lib/demos/lang";
 import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
 import {
@@ -37,15 +39,15 @@ const HOURS = Array.from({ length: DAY_SPAN / 60 + 1 }, (_, i) => DAY_START / 60
 const STAFF_ORDER = new Map(STAFF.map((s, i) => [s.id, i]));
 
 // Seeded bookings have ids b-1, b-2…; anything else came in through the LINE booking page.
-const fromLine = (b: Booking) => !/^b-\d+$/.test(b.id);
+const fromLine = isLineBooking;
 
 interface Row {
   booking: Booking;
   start: number;
   end: number;
   customer: { name: string; phone: string };
-  service: { name: string; durationMin: number; price: number };
-  staff: { name: string; role: string };
+  service: { name: L; durationMin: number; price: number };
+  staff: { name: L; role: L };
 }
 
 export function Queue() {
@@ -69,7 +71,7 @@ export function Queue() {
     .filter((b) => b.date === date)
     .sort((a, b) => a.time.localeCompare(b.time) || (STAFF_ORDER.get(a.staffId) ?? 0) - (STAFF_ORDER.get(b.staffId) ?? 0))
     .map((b) => {
-      const service = services.get(b.serviceId) ?? { name: "บริการที่ถูกลบ", durationMin: 30, price: 0 };
+      const service = services.get(b.serviceId) ?? { name: { th: "บริการที่ถูกลบ", en: "Deleted treatment" }, durationMin: 30, price: 0 };
       const start = toMinutes(b.time);
       return {
         booking: b,
@@ -77,7 +79,7 @@ export function Queue() {
         end: start + service.durationMin,
         customer: customers.get(b.customerId) ?? { name: "ลูกค้าที่ถูกลบ", phone: "" },
         service,
-        staff: staffById.get(b.staffId) ?? { name: "-", role: "" },
+        staff: staffById.get(b.staffId) ?? { name: { th: "-", en: "-" }, role: { th: "", en: "" } },
       };
     });
 
@@ -256,7 +258,7 @@ function QueueRow({ row, onStatus }: { row: Row; onStatus: (id: string, s: Booki
       </div>
 
       <div className="mt-2 min-w-0 leading-[1.35] sm:mt-0">
-        <p className="truncate text-[15px]">{service.name}</p>
+        <p className="truncate text-[15px]">{service.name.th}</p>
         <p className="text-sm text-(--muted)">
           {service.durationMin} นาที{service.price > 0 ? ` ${formatTHB(service.price)}` : " ไม่มีค่าใช้จ่าย"}
         </p>
@@ -268,11 +270,11 @@ function QueueRow({ row, onStatus }: { row: Row; onStatus: (id: string, s: Booki
             aria-hidden
             className="hidden size-8 shrink-0 place-items-center rounded-full bg-(--blush-2) text-[13px] text-(--rose-deep) sm:grid"
           >
-            {monogramOf(staff.name)}
+            {monogramOf(staff.name.th)}
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-sm sm:text-[15px]">{staff.name}</span>
-            <span className="hidden truncate text-xs text-(--muted) sm:block">{staff.role}</span>
+            <span className="block truncate text-sm sm:text-[15px]">{staff.name.th}</span>
+            <span className="hidden truncate text-xs text-(--muted) sm:block">{staff.role.th}</span>
           </span>
         </p>
         <div className="relative shrink-0">
@@ -326,10 +328,10 @@ function StaffTimeline({ rows, now }: { rows: Row[]; now: number | null }) {
             <Fragment key={st.id}>
               <div className="flex items-center gap-2.5 border-t border-(--line) py-2.5 leading-[1.3]">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-(--blush-2) text-[13px] text-(--rose-deep)">
-                  {monogramOf(st.name)}
+                  {monogramOf(st.name.th)}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-sm">{st.name}</span>
+                  <span className="block truncate text-sm">{st.name.th}</span>
                   <span className="block text-xs text-(--muted)">{lane.length} คิว</span>
                 </span>
               </div>
@@ -340,12 +342,12 @@ function StaffTimeline({ rows, now }: { rows: Row[]; now: number | null }) {
                 {lane.map((r) => (
                   <div
                     key={r.booking.id}
-                    title={`${r.booking.time} ${r.customer.name} ${r.service.name}`}
+                    title={`${r.booking.time} ${r.customer.name} ${r.service.name.th}`}
                     className={`absolute inset-y-1.5 overflow-hidden rounded-lg border-l-[3px] py-1 leading-[1.25] ${r.end - r.start < 45 ? "px-1.5" : "px-2"} ${STATUS_TONE[r.booking.status].block}`}
                     style={{ left: `calc(${pct(r.start)} + 2px)`, width: `calc(${pct(DAY_START + r.end - r.start)} - 4px)` }}
                   >
                     <p className="truncate text-xs">{shortName(r.customer.name)}</p>
-                    <p className="truncate text-[11px] tabular-nums">{r.end - r.start < 45 ? r.booking.time : r.service.name}</p>
+                    <p className="truncate text-[11px] tabular-nums">{r.end - r.start < 45 ? r.booking.time : r.service.name.th}</p>
                   </div>
                 ))}
                 {now !== null && (

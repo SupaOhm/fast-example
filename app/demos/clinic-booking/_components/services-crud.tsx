@@ -2,8 +2,9 @@
 
 import { Check, Clock, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { deleteService, newId, STAFF, upsertService, type Service } from "@/lib/demos/clinic-booking/data";
+import { ClinicError, deleteService, newId, STAFF, upsertService, type Service } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
+import { errorText } from "./copy";
 import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { fieldClass, focusRing } from "./admin-format";
@@ -48,7 +49,7 @@ export function ServicesCrud() {
     setCrudError(null);
     setSaved(null);
     setErrors({});
-    setDraft({ id: s.id, name: s.name, durationMin: s.durationMin, price: String(s.price) });
+    setDraft({ id: s.id, name: s.name.th, durationMin: s.durationMin, price: String(s.price) });
   }
 
   function save(e: React.FormEvent) {
@@ -64,7 +65,7 @@ export function ServicesCrud() {
     if (next.price) return priceRef.current?.focus();
 
     const durationMin = Math.min(180, Math.max(15, Math.round(draft.durationMin / 15) * 15));
-    setData((d) => upsertService(d, { id: draft.id ?? newId("s"), name, durationMin, price }));
+    setData((d) => upsertService(d, { id: draft.id ?? newId("s"), name: { th: name, en: d.services.find((x) => x.id === draft.id)?.name.en ?? name }, durationMin, price }));
     setSaved(draft.id ? `บันทึกการแก้ไข${name}แล้ว` : `เพิ่มบริการ${name}แล้ว`);
     setDraft(null);
   }
@@ -77,7 +78,7 @@ export function ServicesCrud() {
       setCrudError(null);
       if (draft?.id === s.id) setDraft(null);
     } catch (err) {
-      setCrudError(`${s.name}: ${err instanceof Error ? err.message : "ลบไม่สำเร็จ"}`);
+      setCrudError(`${s.name.th}: ${err instanceof ClinicError ? errorText[err.code].th : "ลบไม่สำเร็จ"}`);
     }
   }
 
@@ -240,9 +241,9 @@ export function ServicesCrud() {
                   className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 border-t border-(--line) px-4 py-4 first:border-t-0 md:grid-cols-[minmax(0,2fr)_7rem_7rem_6rem_6rem] md:gap-4 md:px-5"
                 >
                   <div className="min-w-0 leading-[1.35]">
-                    <p className="text-base">{s.name}</p>
+                    <p className="text-base">{s.name.th}</p>
                     <p className="mt-0.5 truncate text-sm text-(--muted)">
-                      {staff.length ? staff.map((st) => st.name).join(", ") : "ยังไม่มีผู้ดูแลที่ทำบริการนี้"}
+                      {staff.length ? staff.map((st) => st.name.th).join(", ") : "ยังไม่มีผู้ดูแลที่ทำบริการนี้"}
                     </p>
                   </div>
                   <p className="text-right text-lg text-(--rose-deep) tabular-nums md:hidden">
@@ -261,7 +262,7 @@ export function ServicesCrud() {
                     <button
                       type="button"
                       onClick={() => openEdit(s)}
-                      aria-label={`แก้ไข ${s.name}`}
+                      aria-label={`แก้ไข ${s.name.th}`}
                       className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-(--blush) hover:text-(--ink) ${focusRing}`}
                     >
                       <Pencil className="size-4" aria-hidden />
@@ -270,7 +271,7 @@ export function ServicesCrud() {
                       type="button"
                       data-testid="service-delete"
                       onClick={() => remove(s)}
-                      aria-label={`ลบ ${s.name}`}
+                      aria-label={`ลบ ${s.name.th}`}
                       className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-[#fbe4e2] hover:text-(--error) ${focusRing}`}
                     >
                       <Trash2 className="size-4" aria-hidden />

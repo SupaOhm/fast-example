@@ -26,6 +26,7 @@ import { nextDays, parseISODate } from "@/lib/dates";
 import {
   availableSlots,
   bookAppointment,
+  ClinicError,
   fromMinutes,
   STAFF,
   toMinutes,
@@ -35,6 +36,7 @@ import {
   type Staff,
 } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
+import { errorText } from "./copy";
 import { PHOTOS, unsplash } from "@/lib/images";
 import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
@@ -66,7 +68,7 @@ const shortDay = (iso: string) =>
   parseISODate(iso).toLocaleDateString("th-TH", { weekday: "short", day: "numeric", month: "short" });
 const longDay = (iso: string) =>
   parseISODate(iso).toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-const monogram = (s: Staff) => s.name.replace(/^(พญ\.|คุณ)\s*/, "").charAt(0);
+const monogram = (s: Staff) => s.name.th.replace(/^(พญ\.|คุณ)\s*/, "").charAt(0);
 
 // The greeting's timestamp is the moment the chat opened in this browser.
 // The server snapshot is empty, so the prerendered HTML never carries a build-time clock.
@@ -142,7 +144,8 @@ export function BookingFlow() {
       setData(result.data);
       pick({ booking: result.booking });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "จองไม่สำเร็จ กรุณาลองใหม่";
+      const code = err instanceof ClinicError ? err.code : null;
+      const message = code ? errorText[code].th : "จองไม่สำเร็จ กรุณาลองใหม่";
       setError({ field: message.includes("ชื่อ") ? "name" : message.includes("เบอร์") ? "phone" : "slot", message });
     }
   }
@@ -170,19 +173,19 @@ export function BookingFlow() {
           {step === 1 ? (
             <ServiceCard services={data.services} onPick={(id) => pick({ serviceId: id })} />
           ) : (
-            <MeSay time={at(0)}>{service?.name ?? "บริการ"}</MeSay>
+            <MeSay time={at(0)}>{service?.name.th ?? "บริการ"}</MeSay>
           )}
         </Turn>
 
         {step >= 2 && service && (
           <Turn active={step === 2} label="ขั้นที่ 2: เลือกผู้ดูแล" ref={step === 2 ? activeRef : undefined}>
             <BotSay first time={at(0)}>
-              {service.name} {service.durationMin} นาทีนะคะ อยากให้ใครดูแลดีคะ
+              {service.name.th} {service.durationMin} นาทีนะคะ อยากให้ใครดูแลดีคะ
             </BotSay>
             {step === 2 ? (
               <StaffCard service={service} onPick={(id) => pick({ staffId: id })} />
             ) : (
-              <MeSay time={at(1)}>{staff?.name}</MeSay>
+              <MeSay time={at(1)}>{staff?.name.th}</MeSay>
             )}
           </Turn>
         )}
@@ -202,8 +205,8 @@ export function BookingFlow() {
           <Turn active={step === 4} label="ขั้นที่ 4: เลือกเวลา" ref={step === 4 ? activeRef : undefined}>
             <BotSay first time={at(2)}>
               {step === 4 && slots.length === 0
-                ? `${longDay(picks.date)} ${staff.name}ไม่มีเวลาว่างแล้วค่ะ`
-                : `เวลาที่${staff.name}ว่าง${longDay(picks.date)} เลือกได้เลยค่ะ`}
+                ? `${longDay(picks.date)} ${staff.name.th}ไม่มีเวลาว่างแล้วค่ะ`
+                : `เวลาที่${staff.name.th}ว่าง${longDay(picks.date)} เลือกได้เลยค่ะ`}
             </BotSay>
             {step === 4 ? (
               <SlotCard
@@ -225,9 +228,9 @@ export function BookingFlow() {
                 <form onSubmit={confirm} noValidate className="p-4">
                   <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-xl bg-(--blush) px-3.5 py-3 text-[13px] leading-[1.5]">
                     <dt className="text-(--muted)">บริการ</dt>
-                    <dd className="text-right">{service.name}</dd>
+                    <dd className="text-right">{service.name.th}</dd>
                     <dt className="text-(--muted)">ผู้ดูแล</dt>
-                    <dd className="text-right">{staff.name}</dd>
+                    <dd className="text-right">{staff.name.th}</dd>
                     <dt className="text-(--muted)">วันเวลา</dt>
                     <dd className="text-right">
                       {shortDay(picks.date)} {picks.time} น.
@@ -375,7 +378,7 @@ function BehindTheScenes({
         </p>
         {done ? (
           <p className="mt-2 text-[15px] leading-[1.6]">
-            พรุ่งนี้ {booking.time} น. {customer} มีนัด{service.name}กับ{staff.name}ที่ลูมิ คลินิก แล้วพบกันนะคะ
+            พรุ่งนี้ {booking.time} น. {customer} มีนัด{service.name.th}กับ{staff.name.th}ที่ลูมิ คลินิก แล้วพบกันนะคะ
           </p>
         ) : (
           <p className="mt-2 text-[15px] leading-[1.6] text-(--muted)">จองให้เสร็จ แล้วตัวอย่างข้อความจะขึ้นตรงนี้</p>
@@ -394,7 +397,7 @@ function BehindTheScenes({
               <span className="min-w-0 text-[15px] leading-[1.45]">
                 {customer}
                 <span className="block text-[13px] text-(--muted)">
-                  {service.name} กับ{staff.name}
+                  {service.name.th} กับ{staff.name.th}
                 </span>
               </span>
             </div>
@@ -552,7 +555,7 @@ function ServiceCard({ services, onPick }: { services: Service[]; onPick: (id: s
               className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-(--blush) ${focusRing} focus-visible:-outline-offset-2`}
             >
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] leading-[1.4]">{s.name}</span>
+                <span className="block text-[15px] leading-[1.4]">{s.name.th}</span>
                 <span className="block text-xs text-(--muted)">{s.durationMin} นาที</span>
               </span>
               <span className="text-[15px] font-medium text-(--rose-deep)">{s.price === 0 ? "ฟรี" : formatTHB(s.price)}</span>
@@ -587,8 +590,8 @@ function StaffCard({ service, onPick }: { service: Service; onPick: (id: string)
                   {monogram(s)}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] leading-[1.4]">{s.name}</span>
-                  <span className="block text-xs text-(--muted)">{s.role}</span>
+                  <span className="block text-[15px] leading-[1.4]">{s.name.th}</span>
+                  <span className="block text-xs text-(--muted)">{s.role.th}</span>
                 </span>
               </button>
             </li>
@@ -728,8 +731,8 @@ function Receipt({ booking, customer, service, staff }: { booking: Booking; cust
   const end = fromMinutes(toMinutes(booking.time) + service.durationMin);
   const rows: [string, string][] = [
     ["ชื่อผู้จอง", customer],
-    ["บริการ", service.name],
-    ["ผู้ดูแล", staff.name],
+    ["บริการ", service.name.th],
+    ["ผู้ดูแล", staff.name.th],
     ["วันที่", longDay(booking.date)],
     ["เวลา", `${booking.time}–${end} น.`],
   ];

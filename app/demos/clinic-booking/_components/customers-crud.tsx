@@ -3,8 +3,9 @@
 import { Check, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { addDays, toISODate } from "@/lib/dates";
-import { deleteCustomer, newId, upsertCustomer, type Customer } from "@/lib/demos/clinic-booking/data";
+import { ClinicError, deleteCustomer, newId, upsertCustomer, type Customer } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
+import { errorText } from "./copy";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { isThaiPhone, normalizePhone } from "@/lib/validation";
 import { fieldClass, focusRing, formatPhone, monogramOf, thDayMonth } from "./admin-format";
@@ -103,7 +104,7 @@ export function CustomersCrud() {
       setCrudError(null);
       if (draft?.id === c.id) setDraft(null);
     } catch (err) {
-      setCrudError(`${c.name}: ${err instanceof Error ? err.message : "ลบไม่สำเร็จ"}`);
+      setCrudError(`${c.name}: ${err instanceof ClinicError ? errorText[err.code].th : "ลบไม่สำเร็จ"}`);
     }
   }
 

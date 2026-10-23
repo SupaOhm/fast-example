@@ -40,7 +40,6 @@ async function openPage(viewport, deviceScaleFactor) {
   await context.addInitScript(() => {
     // The hub's screenshots show the demos in Thai, their main language.
     localStorage.setItem("demo:lang", JSON.stringify("th"));
-    localStorage.setItem("demo:clinic:session", "true");
   });
   const page = await context.newPage();
   // Pin the browser clock to today at 10:30 local, so time-of-day UI (the clinic

@@ -1,17 +1,18 @@
 import { addDays, toISODate } from "@/lib/dates";
+import type { L } from "@/lib/demos/lang";
 import { isThaiPhone, normalizePhone } from "@/lib/validation";
 
 export interface Service {
   id: string;
-  name: string;
+  name: L;
   durationMin: number;
   price: number;
 }
 
 export interface Staff {
   id: string;
-  name: string;
-  role: string;
+  name: L;
+  role: L;
   serviceIds: string[];
 }
 
@@ -41,23 +42,40 @@ export interface ClinicData {
   bookings: Booking[];
 }
 
+export type ClinicErrorCode =
+  | "name-required"
+  | "phone-invalid"
+  | "slot-taken"
+  | "customer-has-bookings"
+  | "service-has-bookings";
+
+/** Data errors carry a code, so each screen can word them in the visitor's language. */
+export class ClinicError extends Error {
+  constructor(readonly code: ClinicErrorCode) {
+    super(code);
+    this.name = "ClinicError";
+  }
+}
+
 export const OPEN = "10:00";
 export const CLOSE = "19:00";
 export const SLOT_STEP_MIN = 30;
 
 export const SERVICES: Service[] = [
-  { id: "s-consult", name: "ปรึกษาแพทย์", durationMin: 30, price: 0 },
-  { id: "s-facial", name: "ทรีตเมนต์หน้าใส", durationMin: 60, price: 1500 },
-  { id: "s-hydra", name: "ไฮดราเฟเชียล", durationMin: 60, price: 2500 },
-  { id: "s-acne", name: "รักษาสิว", durationMin: 45, price: 1200 },
-  { id: "s-laser", name: "เลเซอร์ปรับสีผิว", durationMin: 30, price: 1800 },
-  { id: "s-mask", name: "มาสก์ฟื้นฟูผิว", durationMin: 30, price: 600 },
+  { id: "s-consult", name: { th: "ปรึกษาแพทย์", en: "Doctor consultation" }, durationMin: 30, price: 0 },
+  { id: "s-facial", name: { th: "ทรีตเมนต์หน้าใส", en: "Brightening facial" }, durationMin: 60, price: 1500 },
+  { id: "s-hydra", name: { th: "ไฮดราเฟเชียล", en: "Deep hydrating facial" }, durationMin: 60, price: 2500 },
+  { id: "s-acne", name: { th: "รักษาสิว", en: "Acne treatment" }, durationMin: 45, price: 1200 },
+  { id: "s-laser", name: { th: "เลเซอร์ปรับสีผิว", en: "Laser toning" }, durationMin: 30, price: 1800 },
+  { id: "s-mask", name: { th: "มาสก์ฟื้นฟูผิว", en: "Skin recovery mask" }, durationMin: 30, price: 600 },
 ];
 
+const THERAPIST = { th: "นักบำบัดผิว", en: "Skin therapist" };
+
 export const STAFF: Staff[] = [
-  { id: "st-1", name: "พญ. ลลิตา", role: "แพทย์ผิวหนัง", serviceIds: ["s-consult", "s-laser", "s-acne"] },
-  { id: "st-2", name: "คุณมิว", role: "นักบำบัดผิว", serviceIds: ["s-facial", "s-hydra", "s-mask", "s-acne"] },
-  { id: "st-3", name: "คุณบีม", role: "นักบำบัดผิว", serviceIds: ["s-facial", "s-hydra", "s-mask"] },
+  { id: "st-1", name: { th: "พญ. ลลิตา", en: "Dr. Lalita" }, role: { th: "แพทย์ผิวหนัง", en: "Dermatologist" }, serviceIds: ["s-consult", "s-laser", "s-acne"] },
+  { id: "st-2", name: { th: "คุณมิว", en: "Khun Mew" }, role: THERAPIST, serviceIds: ["s-facial", "s-hydra", "s-mask", "s-acne"] },
+  { id: "st-3", name: { th: "คุณบีม", en: "Khun Beam" }, role: THERAPIST, serviceIds: ["s-facial", "s-hydra", "s-mask"] },
 ];
 
 const CUSTOMER_NAMES = ["คุณแพร", "คุณบีบี", "คุณออม", "คุณจูน", "คุณน้ำ", "คุณพลอย", "คุณเฟิร์น", "คุณมุก", "คุณกาย", "คุณโอ๊ต"];
@@ -82,6 +100,13 @@ export function newId(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/** Where a booking stands at `nowMin` minutes past midnight on its own day. */
+export function progressStatus(startMin: number, endMin: number, nowMin: number): BookingStatus {
+  if (nowMin >= endMin) return "done";
+  if (nowMin >= startMin) return "checked-in";
+  return "booked";
+}
+
 export function buildClinicSeed(today: Date): ClinicData {
   const customers: Customer[] = CUSTOMER_NAMES.map((name, i) => ({
     id: `c-${i + 1}`,
@@ -89,6 +114,7 @@ export function buildClinicSeed(today: Date): ClinicData {
     phone: `08000000${String(i + 1).padStart(2, "0")}`,
   }));
   const bookings: Booking[] = [];
+  const nowMin = today.getHours() * 60 + today.getMinutes();
   let n = 1;
   for (let offset = -7; offset <= 6; offset++) {
     const date = toISODate(addDays(today, offset));
@@ -97,7 +123,10 @@ export function buildClinicSeed(today: Date): ClinicData {
       times.forEach((time, k) => {
         const serviceId = staff.serviceIds[(k + offset + 7) % staff.serviceIds.length];
         const customerId = customers[(k * 3 + si + offset + 20) % customers.length].id;
-        const status: BookingStatus = offset < 0 ? (n % 5 === 0 ? "no-show" : "done") : "booked";
+        const start = toMinutes(time);
+        const duration = SERVICES.find((s) => s.id === serviceId)!.durationMin;
+        const status: BookingStatus =
+          offset < 0 ? (n % 5 === 0 ? "no-show" : "done") : offset === 0 ? progressStatus(start, start + duration, nowMin) : "booked";
         bookings.push({ id: `b-${n++}`, customerId, serviceId, staffId: staff.id, date, time, status });
       });
     });
@@ -132,15 +161,81 @@ export function availableSlots(
   return slots;
 }
 
+/** The day the 3-tap booking offers: today while an hour is left before closing, otherwise tomorrow. */
+export function bookingDay(now: Date): { date: string; isToday: boolean } {
+  const isToday = now.getHours() * 60 + now.getMinutes() < toMinutes(CLOSE) - 60;
+  return { date: toISODate(isToday ? now : addDays(now, 1)), isToday };
+}
+
+/** The earliest free start times for a service on one day, each with the first staff member free then. */
+export function freeTimes(
+  data: ClinicData,
+  { serviceId, date, now, limit = 6 }: { serviceId: string; date: string; now?: Date; limit?: number },
+): { time: string; staffId: string }[] {
+  const byTime = new Map<string, string>();
+  for (const staff of STAFF) {
+    for (const time of availableSlots(data, { date, staffId: staff.id, serviceId, now })) {
+      if (!byTime.has(time)) byTime.set(time, staff.id);
+    }
+  }
+  return [...byTime.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(0, limit)
+    .map(([time, staffId]) => ({ time, staffId }));
+}
+
+/** The next free time for any treatment on the booking day, for the "next opening" chip. */
+export function nextOpening(data: ClinicData, now: Date) {
+  const { date, isToday } = bookingDay(now);
+  const firsts = data.services
+    .map((s) => freeTimes(data, { serviceId: s.id, date, now, limit: 1 })[0])
+    .filter((o): o is { time: string; staffId: string } => Boolean(o))
+    .sort((a, b) => a.time.localeCompare(b.time));
+  return firsts[0] ? { date, isToday, ...firsts[0] } : null;
+}
+
+export const GUEST_ID = "c-guest";
+
+// Bookings made on the LINE booking page get "line-" ids; seeded ones are b-1, b-2…
+export const isLineBooking = (b: Booking) => b.id.startsWith("line-");
+
+/**
+ * The 3-tap booking. The visitor books as one guest customer. There is no phone number,
+ * because LINE already knows who is chatting; the latest name typed wins.
+ */
+export function bookAsGuest(
+  data: ClinicData,
+  input: { name: string; serviceId: string; staffId: string; date: string; time: string },
+  now: Date = new Date(),
+): { data: ClinicData; booking: Booking } {
+  const name = input.name.trim();
+  if (!name) throw new ClinicError("name-required");
+  const free = availableSlots(data, { date: input.date, staffId: input.staffId, serviceId: input.serviceId, now });
+  if (!free.includes(input.time)) throw new ClinicError("slot-taken");
+  const booking: Booking = {
+    id: newId("line"),
+    customerId: GUEST_ID,
+    serviceId: input.serviceId,
+    staffId: input.staffId,
+    date: input.date,
+    time: input.time,
+    status: "booked",
+  };
+  return {
+    data: { ...data, customers: upsert(data.customers, { id: GUEST_ID, name, phone: "" }), bookings: [...data.bookings, booking] },
+    booking,
+  };
+}
+
 export function bookAppointment(
   data: ClinicData,
   input: { name: string; phone: string; serviceId: string; staffId: string; date: string; time: string },
   now: Date = new Date(),
 ): { data: ClinicData; booking: Booking } {
-  if (!input.name.trim()) throw new Error("กรุณากรอกชื่อ");
-  if (!isThaiPhone(input.phone)) throw new Error("เบอร์โทรไม่ถูกต้อง");
+  if (!input.name.trim()) throw new ClinicError("name-required");
+  if (!isThaiPhone(input.phone)) throw new ClinicError("phone-invalid");
   const free = availableSlots(data, { date: input.date, staffId: input.staffId, serviceId: input.serviceId, now });
-  if (!free.includes(input.time)) throw new Error("เวลานี้ไม่ว่างแล้ว กรุณาเลือกเวลาใหม่");
+  if (!free.includes(input.time)) throw new ClinicError("slot-taken");
 
   const phone = normalizePhone(input.phone);
   let customers = data.customers;
@@ -174,7 +269,7 @@ export function upsertCustomer(data: ClinicData, c: Customer): ClinicData {
 }
 
 export function deleteCustomer(data: ClinicData, id: string): ClinicData {
-  if (data.bookings.some((b) => b.customerId === id)) throw new Error("ลบไม่ได้ ลูกค้ารายนี้มีประวัติการจอง");
+  if (data.bookings.some((b) => b.customerId === id)) throw new ClinicError("customer-has-bookings");
   return { ...data, customers: data.customers.filter((c) => c.id !== id) };
 }
 
@@ -183,7 +278,7 @@ export function upsertService(data: ClinicData, s: Service): ClinicData {
 }
 
 export function deleteService(data: ClinicData, id: string): ClinicData {
-  if (data.bookings.some((b) => b.serviceId === id)) throw new Error("ลบไม่ได้ บริการนี้มีการจองอยู่");
+  if (data.bookings.some((b) => b.serviceId === id)) throw new ClinicError("service-has-bookings");
   return { ...data, services: data.services.filter((s) => s.id !== id) };
 }
 
@@ -199,7 +294,7 @@ export function revenueByDay(data: ClinicData, end: Date, days = 7): { date: str
   return series;
 }
 
-export function bookingsByService(data: ClinicData): { serviceId: string; name: string; count: number }[] {
+export function bookingsByService(data: ClinicData): { serviceId: string; name: L; count: number }[] {
   return data.services.map((s) => ({
     serviceId: s.id,
     name: s.name,
