@@ -1,329 +1,413 @@
 "use client";
 
-import { AlertTriangle, ArrowDownRight, ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, ChevronDown, ChevronRight, PackageOpen, TriangleAlert, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, type TooltipContentProps } from "recharts";
+import { useLang } from "@/components/demo/lang";
+import { toISODate } from "@/lib/dates";
+import { fill, formatTHB } from "@/lib/demos/format";
+import type { Lang } from "@/lib/demos/lang";
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  type TooltipContentProps,
-} from "recharts";
-import { channelSales, dailySales, isLowStock, kpis, topProducts } from "@/lib/demos/shop-admin/data";
+  channelSales,
+  dailySales,
+  isLowStock,
+  markPacked,
+  packingQueue,
+  salesOn,
+  setOrderStatus,
+  toPack,
+  topProducts,
+  type ShopOrder,
+} from "@/lib/demos/shop-admin/data";
 import { shopData } from "@/lib/demos/shop-admin/store";
-import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { channelLabel, statusLabel } from "./copy";
+import { channelLabel, ui } from "./copy";
 import { CHANNEL_ICON, dayMonth, fullDate, shortDate, weekdayDate } from "./format";
+import { ProductIcon } from "./product-icon";
+import { Stamp } from "./stamp";
 
-const BRAND = "#1f7a5a";
-const GRID = "#e3e8e4";
-const TICK = "#56655c";
+const MUSTARD = "#e2b04a";
+const WOOD = "#2b2217";
+const TICK = "#665540";
 
+const ORDERS_TO_PACK = "/demos/shop-admin/orders?status=paid";
 const sum = (xs: { revenue: number }[]) => xs.reduce((s, d) => s + d.revenue, 0);
-const nf = new Intl.NumberFormat("en-US");
 
-function SalesTooltip({ active, payload }: TooltipContentProps) {
+/** Renders a `{n}` template with the number set large, keeping the words around it as they are. */
+function BigCount({ template, n, numberClass }: { template: string; n: number; numberClass: string }) {
+  const [before, after = ""] = template.split("{n}");
+  return (
+    <span className="block pr-8 text-lg font-semibold leading-[1.25]">
+      {before}
+      <span className={`my-1 block text-[44px] font-bold leading-none tabular-nums lg:my-0 lg:inline lg:px-1 lg:text-[56px] ${numberClass}`}>{n}</span>
+      {after}
+    </span>
+  );
+}
+
+/** A strip of packing tape holding a paper tile to the counter. */
+function Tape({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`absolute -top-2.5 h-5 w-16 bg-(--mustard)/75 shadow-[0_1px_1px_rgba(43,34,23,.15)] ${className}`}
+    />
+  );
+}
+
+function SalesTooltip({ active, payload, lang }: TooltipContentProps & { lang: Lang }) {
   const point = payload?.[0]?.payload as { date: string; revenue: number } | undefined;
   if (!active || !point) return null;
   return (
-    <div className="rounded-lg border border-(--line) bg-white px-3 py-2 text-sm leading-[1.4] shadow-[0_8px_24px_-12px_rgba(23,32,27,0.3)]">
-      <p className="text-xs text-(--muted)">{weekdayDate(point.date, "th")}</p>
-      <p className="font-semibold tabular-nums">{formatTHB(point.revenue)}</p>
+    <div className="rounded-md border border-(--line) bg-(--paper) px-3 py-2 leading-[1.4] shadow-[0_8px_20px_-10px_rgba(43,34,23,.45)]">
+      <p className="text-sm text-(--muted)">{weekdayDate(point.date, lang)}</p>
+      <p className="font-(family-name:--font-mono) font-semibold">{formatTHB(point.revenue)}</p>
     </div>
   );
 }
 
-function Panel({
-  title,
-  aside,
-  className = "",
-  children,
+function PackRow({
+  order,
+  onPack,
+  onUndo,
 }: {
-  title: string;
-  aside?: React.ReactNode;
-  className?: string;
-  children: React.ReactNode;
+  order: ShopOrder;
+  onPack: (id: string) => void;
+  onUndo: (id: string) => void;
 }) {
+  const lang = useLang();
+  const [data] = useDemoStore(shopData);
+  const packed = order.status === "packed";
+  const ChannelIcon = CHANNEL_ICON[order.channel];
+
   return (
-    <section className={`rounded-xl border border-(--line) bg-(--panel) ${className}`}>
-      <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-4 pt-4 sm:px-5 sm:pt-5">
-        <h2 className="text-base font-semibold leading-[1.3]">{title}</h2>
-        {aside}
-      </header>
-      {children}
-    </section>
+    <li
+      data-testid="pack-row"
+      data-order-id={order.id}
+      className={`grid gap-x-6 gap-y-3 px-4 py-4 transition-colors sm:px-5 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto_11.5rem] lg:items-center ${
+        packed ? "bg-(--bg)/45" : ""
+      }`}
+    >
+      <div className="min-w-0 leading-[1.35]">
+        <p className="flex flex-wrap items-baseline gap-x-2">
+          <span className="font-(family-name:--font-mono) text-[15px] font-semibold">{order.id}</span>
+          <span className="font-semibold">{order.customer[lang]}</span>
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-(--muted)">
+          <ChannelIcon className="size-4 shrink-0" aria-hidden />
+          {channelLabel[order.channel][lang]}
+          <span aria-hidden className="mx-0.5 h-3.5 w-px bg-(--line)" />
+          {shortDate(order.date, lang)}
+        </p>
+      </div>
+
+      <ul className="flex min-w-0 flex-col gap-1.5">
+        {order.items.map((item) => {
+          const product = data.products.find((p) => p.sku === item.sku);
+          return (
+            <li key={item.sku} className="flex items-center gap-2.5 leading-[1.3]">
+              <ProductIcon sku={item.sku} className="size-8" />
+              <span className="min-w-0 truncate">{product?.name[lang] ?? item.sku}</span>
+              <span className="shrink-0 font-(family-name:--font-mono) text-[15px] text-(--muted)">×{item.qty}</span>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="flex items-center justify-between gap-4 border-t border-dashed border-(--line) pt-3 lg:contents">
+        <p className="font-(family-name:--font-mono) text-base font-semibold lg:text-right">{formatTHB(order.total)}</p>
+
+        <div aria-live="polite" className="flex min-h-11 items-center justify-end gap-3">
+          {packed ? (
+            <>
+              <Stamp status="packed" fresh tilt={-7} />
+              <button
+                type="button"
+                id={`undo-${order.id}`}
+                onClick={() => onUndo(order.id)}
+                aria-label={fill(ui.undoLabel[lang], { id: order.id })}
+                className="inline-flex min-h-11 items-center gap-1 rounded-md px-1.5 text-sm font-semibold underline decoration-(--line) decoration-2 underline-offset-4 hover:decoration-(--ink)"
+              >
+                <Undo2 className="size-4" aria-hidden />
+                {ui.undo[lang]}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              id={`pack-${order.id}`}
+              onClick={() => onPack(order.id)}
+              aria-label={fill(ui.markPackedLabel[lang], { id: order.id })}
+              className="min-h-11 rounded-md border-2 border-(--ink) bg-(--mustard) px-4 font-bold text-(--ink) shadow-[0_3px_0_var(--ink)] transition-[transform,box-shadow] hover:-translate-y-px hover:shadow-[0_4px_0_var(--ink)] active:translate-y-[3px] active:shadow-none"
+            >
+              {ui.markPacked[lang]}
+            </button>
+          )}
+        </div>
+      </div>
+    </li>
   );
 }
 
 export function Overview() {
-  const [data] = useDemoStore(shopData);
+  const lang = useLang();
+  const [data, setData] = useDemoStore(shopData);
   // Rendered only after hydration (RequireSession), so reading the clock here is safe.
   const [today] = useState(() => new Date());
+  // Orders packed during this visit keep their row, so the owner can see it worked and undo.
+  const [packedHere, setPackedHere] = useState<string[]>([]);
 
-  const k = kpis(data, today);
+  const packCount = toPack(data).length;
+  const lowCount = data.products.filter(isLowStock).length;
+  const sold = salesOn(data, toISODate(today));
+  const queue = packingQueue(data, packedHere);
+  const more = packCount - queue.filter((o) => o.status === "paid").length;
+
   const series = dailySales(data, today);
+  const total30 = sum(series);
   const last7 = sum(series.slice(-7));
   const prev7 = sum(series.slice(-14, -7));
   const delta = prev7 ? Math.round(((last7 - prev7) / prev7) * 100) : 0;
   const best = series.reduce((a, b) => (b.revenue > a.revenue ? b : a), series[0]);
   const top = topProducts(data, 5);
-  const topMax = top[0]?.revenue ?? 1;
-  const low = data.products.filter(isLowStock).sort((a, b) => a.stock / a.reorderAt - b.stock / b.reorderAt);
-  const queue = data.orders
-    .filter((o) => o.status === "paid" || o.status === "packed")
-    .sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id))
-    .slice(0, 7);
-
+  const topMax = top[0]?.revenue || 1;
   const channels = channelSales(data, today);
+  const channelTotal = channels.reduce((s, c) => s + c.revenue, 0) || 1;
 
-  const tiles = [
-    {
-      label: "ยอดขาย 30 วัน",
-      value: formatTHB(k.revenue30d),
-      foot: (
-        <span className={`inline-flex items-center gap-1 ${delta >= 0 ? "text-(--brand-ink)" : "text-(--warn-ink)"}`}>
-          {delta >= 0 ? <ArrowUpRight className="size-3.5" aria-hidden /> : <ArrowDownRight className="size-3.5" aria-hidden />}
-          <span>
-            <span className="font-semibold">{delta >= 0 ? "+" : ""}{delta}%</span> จากสัปดาห์ก่อน
-          </span>
-        </span>
-      ),
-    },
-    {
-      label: "คำสั่งซื้อ 30 วัน",
-      value: nf.format(k.orders30d),
-      unit: "บิล",
-      foot: <span>เฉลี่ยวันละ {(k.orders30d / 30).toFixed(1)} บิล</span>,
-    },
-    {
-      label: "ยอดเฉลี่ยต่อบิล",
-      value: formatTHB(k.avgOrderValue),
-      foot: <span>ไม่รวมบิลที่ยกเลิก</span>,
-    },
-    {
-      label: "สินค้าใกล้หมด",
-      value: String(k.lowStockCount),
-      unit: "รายการ",
-      warn: k.lowStockCount > 0,
-      foot: <span>{k.lowStockCount > 0 ? "ถึงจุดสั่งซื้อแล้ว ควรสั่งเพิ่ม" : "สต็อกพอทุกรายการ"}</span>,
-    },
-  ];
+  const focusLater = (id: string) => requestAnimationFrame(() => document.getElementById(id)?.focus());
+
+  function pack(id: string) {
+    setData((d) => markPacked(d, id));
+    setPackedHere((ids) => (ids.includes(id) ? ids : [...ids, id]));
+    focusLater(`undo-${id}`);
+  }
+
+  function undo(id: string) {
+    setData((d) => setOrderStatus(d, id, "paid"));
+    setPackedHere((ids) => ids.filter((x) => x !== id));
+    focusLater(`pack-${id}`);
+  }
+
+  const tileBase =
+    "group relative flex flex-col justify-between gap-4 rounded-lg p-4 transition-transform hover:-translate-y-0.5 sm:p-5";
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
-        <div>
-          <h1 className="text-2xl font-semibold leading-[1.25] sm:text-[28px]">สวัสดี คุณนิ่ม</h1>
-          <p className="mt-1 text-sm leading-[1.5] text-(--muted)">
-            สรุปร้าน 30 วันล่าสุด ถึง {fullDate(today, "th")}
-          </p>
-        </div>
-      </div>
+      <header>
+        <h1 className="text-[32px] font-bold leading-[1.2] lg:text-[40px]">{ui.greeting[lang]}</h1>
+        <p className="mt-1 text-base text-(--muted)">{fill(ui.todayIs[lang], { date: fullDate(today, lang) })}</p>
+      </header>
 
-      <section
-        aria-label="ตัวเลขสำคัญ"
-        className="mt-5 grid grid-cols-2 overflow-hidden rounded-xl border border-(--line) bg-(--line) [gap:1px] lg:grid-cols-4"
-      >
-        {tiles.map((t) => (
-          <div
-            key={t.label}
-            data-testid="kpi"
-            className={`flex flex-col gap-1 px-4 py-4 sm:px-5 sm:py-5 ${t.warn ? "bg-(--warn-soft)" : "bg-(--panel)"}`}
+      <section aria-labelledby="todo-heading" className="mt-6">
+        <h2 id="todo-heading" className="text-lg font-bold leading-[1.3]">
+          {ui.todoHeading[lang]}
+        </h2>
+        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 lg:grid-cols-[1fr_1fr_1.3fr] lg:gap-5">
+          <Link
+            href={ORDERS_TO_PACK}
+            data-testid="todo-pack"
+            className={`${tileBase} border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]`}
           >
-            <p className={`flex items-center gap-1.5 text-sm leading-[1.4] ${t.warn ? "text-(--warn-ink)" : "text-(--muted)"}`}>
-              {t.warn && <AlertTriangle className="size-3.5" aria-hidden />}
-              {t.label}
-            </p>
-            <p className={`text-[26px] font-semibold leading-[1.2] tabular-nums sm:text-[32px] ${t.warn ? "text-(--warn-ink)" : ""}`}>
-              {t.value}
-              {t.unit && <span className="ml-1.5 text-sm font-medium text-(--muted)">{t.unit}</span>}
-            </p>
-            <div className={`mt-auto text-xs leading-[1.45] ${t.warn ? "text-(--warn-ink)" : "text-(--muted)"}`}>{t.foot}</div>
-          </div>
-        ))}
+            <Tape className="left-6 -rotate-3" />
+            <PackageOpen className="absolute right-4 top-4 size-6 text-(--muted)" aria-hidden />
+            <BigCount template={ui.tileToPack[lang]} n={packCount} numberClass="" />
+            <span className="inline-flex items-center gap-0.5 text-[15px] font-semibold text-(--mustard-ink) group-hover:underline">
+              {ui.tileToPackAction[lang]}
+              <ChevronRight className="size-4 shrink-0" aria-hidden />
+            </span>
+          </Link>
+
+          <Link
+            href="/demos/shop-admin/stock"
+            data-testid="todo-low"
+            className={`${tileBase} border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]`}
+          >
+            <Tape className="right-8 rotate-2" />
+            <TriangleAlert className="absolute right-4 top-4 size-6 text-(--warn)" aria-hidden />
+            <BigCount template={ui.tileLow[lang]} n={lowCount} numberClass="text-(--warn)" />
+            <span className="inline-flex items-center gap-0.5 text-[15px] font-semibold text-(--mustard-ink) group-hover:underline">
+              {ui.tileLowAction[lang]}
+              <ChevronRight className="size-4 shrink-0" aria-hidden />
+            </span>
+          </Link>
+
+          <a
+            href="#sales"
+            data-testid="todo-sold"
+            className={`${tileBase} rd-wood col-span-2 bg-(--wood) text-(--bg) shadow-[0_3px_0_#120d07] lg:col-span-1`}
+          >
+            <span className="text-[15px] font-semibold">{ui.tileSoldToday[lang]}</span>
+            <span className="block rounded-md border border-(--mustard)/35 bg-black/25 px-3.5 py-2.5 text-right shadow-[inset_0_2px_6px_rgba(0,0,0,.45)]">
+              <span className="font-(family-name:--font-mono) text-[34px] font-semibold leading-[1.1] text-(--mustard) lg:text-[40px]">
+                {formatTHB(sold.revenue)}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1 text-[15px] group-hover:underline">
+              {fill(ui.tileSoldTodayFoot[lang], { n: String(sold.orders) })}
+              <ChevronDown className="size-4 shrink-0 text-(--mustard)" aria-hidden />
+            </span>
+          </a>
+        </div>
       </section>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-3">
-        <Panel
-          title="ยอดขายรายวัน"
-          className="min-w-0 lg:col-span-2"
-          aside={
-            <p className="text-xs leading-[1.45] text-(--muted)">
-              วันที่ขายดีที่สุด {shortDate(best.date, "th")}{" "}
-              <span className="font-semibold text-(--ink) tabular-nums">{formatTHB(best.revenue)}</span>
+      <section aria-labelledby="queue-heading" className="mt-10">
+        <h2 id="queue-heading" className="text-[22px] font-bold leading-[1.3]">
+          {ui.queueHeading[lang]}
+        </h2>
+        <p className="mt-1 text-base text-(--muted)">{ui.queueHint[lang]}</p>
+
+        <div className="mt-4 overflow-hidden rounded-lg border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]">
+          {queue.length === 0 ? (
+            <p className="px-5 py-10 text-center text-lg font-semibold">{ui.queueEmpty[lang]}</p>
+          ) : (
+            <ul className="divide-y-[1.5px] divide-dashed divide-(--line)">
+              {queue.map((o) => (
+                <PackRow key={o.id} order={o} onPack={pack} onUndo={undo} />
+              ))}
+            </ul>
+          )}
+          {more > 0 && (
+            <Link
+              href={ORDERS_TO_PACK}
+              className="flex items-center justify-center gap-1 border-t-[1.5px] border-(--line) bg-(--bg)/40 px-4 py-3 font-semibold text-(--mustard-ink) hover:underline"
+            >
+              {fill(ui.queueMore[lang], { n: String(more) })}
+              <ChevronRight className="size-4" aria-hidden />
+            </Link>
+          )}
+        </div>
+      </section>
+
+      <section id="sales" aria-labelledby="sales-heading" className="mt-12 scroll-mt-32 lg:scroll-mt-6">
+        <h2 id="sales-heading" className="text-[22px] font-bold leading-[1.3]">
+          {ui.salesHeading[lang]}
+        </h2>
+
+        <div className="mt-4 grid gap-5 rounded-lg border-[1.5px] border-(--line) bg-(--paper) p-4 sm:p-5 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
+          <div className="flex flex-col gap-3">
+            <h3 className="font-bold leading-[1.3]">{ui.dailySales[lang]}</h3>
+            <div>
+              <p className="text-sm text-(--muted)">{ui.last30[lang]}</p>
+              <p className="font-(family-name:--font-mono) text-[28px] font-semibold leading-[1.2]">{formatTHB(total30)}</p>
+            </div>
+            <p className={`flex items-center gap-1 text-sm font-semibold ${delta >= 0 ? "text-(--ok)" : "text-(--warn)"}`}>
+              {delta >= 0 ? <ArrowUpRight className="size-4" aria-hidden /> : <ArrowDownRight className="size-4" aria-hidden />}
+              {fill(ui.salesDelta[lang], { delta: `${delta >= 0 ? "+" : "−"}${Math.abs(delta)}` })}
             </p>
-          }
-        >
+            <p className="text-sm text-(--muted)">
+              {fill(ui.bestDay[lang], { date: shortDate(best.date, lang) })}{" "}
+              <span className="font-(family-name:--font-mono) font-semibold text-(--ink)">{formatTHB(best.revenue)}</span>
+            </p>
+          </div>
+
           <div
             data-testid="sales-chart"
             role="img"
-            aria-label={`กราฟยอดขายรายวัน 30 วันล่าสุด รวม ${formatTHB(k.revenue30d)} วันที่ขายดีที่สุดคือ ${shortDate(best.date, "th")} ${formatTHB(best.revenue)}`}
-            className="min-w-0 px-1 pb-3 pt-4 sm:px-3"
+            aria-label={fill(ui.salesChartLabel[lang], {
+              total: formatTHB(total30),
+              date: shortDate(best.date, lang),
+              best: formatTHB(best.revenue),
+            })}
+            className="min-w-0"
           >
-            <ResponsiveContainer width="100%" height={280} minWidth={0}>
-              <AreaChart data={series} margin={{ top: 8, right: 12, bottom: 0, left: 0 }} accessibilityLayer={false}>
-                <defs>
-                  <linearGradient id="shop-sales-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={BRAND} stopOpacity={0.22} />
-                    <stop offset="100%" stopColor={BRAND} stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid vertical={false} stroke={GRID} />
+            <ResponsiveContainer width="100%" height={184} minWidth={0}>
+              <BarChart data={series} margin={{ top: 8, right: 4, bottom: 0, left: 4 }} accessibilityLayer={false}>
                 <XAxis
                   dataKey="date"
                   tickFormatter={dayMonth}
                   tick={{ fill: TICK, fontSize: 12 }}
                   tickLine={false}
-                  axisLine={{ stroke: GRID }}
-                  minTickGap={18}
-                  tickMargin={8}
-                />
-                <YAxis
-                  tickFormatter={(v: number) => (v >= 1000 ? `฿${v / 1000}k` : `฿${v}`)}
-                  tick={{ fill: TICK, fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  width={52}
+                  axisLine={{ stroke: WOOD, strokeWidth: 1.5 }}
+                  minTickGap={22}
+                  tickMargin={6}
                 />
                 <Tooltip
-                  content={SalesTooltip}
-                  cursor={{ stroke: BRAND, strokeWidth: 1, strokeDasharray: "3 3" }}
+                  content={(props) => <SalesTooltip {...props} lang={lang} />}
+                  cursor={{ fill: "rgba(226,176,74,.18)" }}
                 />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke={BRAND}
-                  strokeWidth={2}
-                  fill="url(#shop-sales-fill)"
-                  activeDot={{ r: 5, stroke: "#fff", strokeWidth: 2, fill: BRAND }}
-                  animationDuration={700}
-                />
-              </AreaChart>
+                <Bar dataKey="revenue" radius={[3, 3, 0, 0]} animationDuration={500}>
+                  {series.map((d, i) => (
+                    <Cell
+                      key={d.date}
+                      fill={i === series.length - 1 || d.date === best.date ? WOOD : MUSTARD}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
-        </Panel>
+        </div>
 
-        <Panel title="สินค้าขายดี" aside={<p className="text-xs text-(--muted)">ตามยอดขาย 30 วัน</p>}>
-          <ol className="space-y-4 px-4 pb-5 pt-4 sm:px-5">
-            {top.map((p, i) => (
-              <li key={p.sku}>
-                <div className="flex items-baseline gap-2.5 text-sm leading-[1.4]">
-                  <span className="w-4 shrink-0 text-xs font-semibold tabular-nums text-(--muted)">{i + 1}</span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{p.name.th}</span>
-                  <span className="shrink-0 font-semibold tabular-nums">{formatTHB(p.revenue)}</span>
-                </div>
-                <div className="ml-6.5 mt-1.5 flex items-center gap-2.5">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-(--bg)">
-                    <div className="h-full rounded-full bg-(--brand)" style={{ width: `${(p.revenue / topMax) * 100}%` }} />
-                  </div>
-                  <span className="w-14 shrink-0 text-right text-xs tabular-nums text-(--muted)">{p.qty} ชิ้น</span>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Panel>
-
-        <Panel
-          title="รอแพ็กและรอส่ง"
-          className="lg:col-span-2"
-          aside={
-            <Link
-              href="/demos/shop-admin/orders"
-              className="inline-flex items-center gap-0.5 text-sm font-medium text-(--brand-ink) hover:underline"
-            >
-              เปิดหน้าจัดการบิล
-              <ChevronRight className="size-4" aria-hidden />
-            </Link>
-          }
-        >
-          {queue.length === 0 ? (
-            <p className="px-5 py-8 text-sm text-(--muted)">ไม่มีบิลค้างแพ็ก ส่งครบทุกบิลแล้ว</p>
-          ) : (
-            <ul className="mt-2 divide-y divide-(--line) pb-2">
-              {queue.map((o) => (
-                <li key={o.id} className="flex items-center gap-3 px-4 py-3 text-sm leading-[1.4] sm:px-5">
+        <div className="mt-5 grid gap-5 lg:grid-cols-2 lg:items-start">
+          <section aria-labelledby="top-heading" className="min-w-0 rounded-lg border-[1.5px] border-(--line) bg-(--paper) p-4 sm:p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h3 id="top-heading" className="font-bold leading-[1.3]">
+                {ui.topHeading[lang]}
+              </h3>
+              <p className="text-sm text-(--muted)">{ui.topHint[lang]}</p>
+            </div>
+            <ol className="mt-3 divide-y divide-dashed divide-(--line)">
+              {top.map((p) => (
+                <li key={p.sku} className="flex items-center gap-3 py-2.5">
+                  <ProductIcon sku={p.sku} className="size-11" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium">
-                      {o.customer.th} <span className="font-normal text-(--muted)">{o.id}</span>
-                    </p>
-                    <p className="text-xs text-(--muted)">
-                      {shortDate(o.date, "th")} ผ่าน {channelLabel[o.channel].th}
-                    </p>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="min-w-0 truncate font-semibold">{p.name[lang]}</span>
+                      <span className="shrink-0 font-(family-name:--font-mono) font-semibold">{formatTHB(p.revenue)}</span>
+                    </div>
+                    <div className="mt-1 flex items-center gap-3">
+                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-(--bg)">
+                        <span className="block h-full rounded-full bg-(--mustard)" style={{ width: `${(p.revenue / topMax) * 100}%` }} />
+                      </span>
+                      <span className="w-16 shrink-0 text-right text-sm text-(--muted)">
+                        {fill(ui.pieces[lang], { n: String(p.qty) })}
+                      </span>
+                    </div>
                   </div>
-                  <span className="shrink-0 font-semibold tabular-nums">{formatTHB(o.total)}</span>
-                  <span className={`w-[76px] shrink-0 rounded-full border px-2 py-0.5 text-center text-xs font-medium border-(--line) bg-[#eef1ef] text-(--muted)`}>
-                    {statusLabel[o.status].th}
-                  </span>
                 </li>
               ))}
-            </ul>
-          )}
-        </Panel>
+            </ol>
+          </section>
 
-        <div className="flex flex-col gap-5">
-          <Panel
-            title="สินค้าใกล้หมด"
-            aside={
-              <Link
-                href="/demos/shop-admin/stock"
-                className="inline-flex items-center gap-0.5 text-sm font-medium text-(--brand-ink) hover:underline"
-              >
-                อัปเดตสต็อก
-                <ChevronRight className="size-4" aria-hidden />
-              </Link>
-            }
-          >
-            {low.length === 0 ? (
-              <p className="px-5 py-8 text-sm text-(--muted)">สต็อกพอทุกรายการ</p>
-            ) : (
-              <ul className="mt-2 divide-y divide-(--line) pb-2">
-                {low.map((p) => (
-                  <li key={p.sku} className="flex items-center gap-3 px-4 py-3 text-sm leading-[1.4] sm:px-5">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{p.name.th}</p>
-                      <p className="text-xs text-(--muted)">จุดสั่งซื้อ {p.reorderAt} ชิ้น</p>
-                    </div>
-                    <p className="shrink-0 text-right">
-                      <span className="text-lg font-semibold tabular-nums text-(--warn-ink)">{p.stock}</span>
-                      <span className="ml-1 text-xs text-(--muted)">ชิ้นเหลือ</span>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Panel>
-
-          <Panel title="ยอดขายตามช่องทาง" aside={<p className="text-xs text-(--muted)">30 วัน</p>}>
-            <ul className="space-y-4 px-4 pb-5 pt-4 sm:px-5">
+          <section aria-labelledby="channel-heading" className="min-w-0 rounded-lg border-[1.5px] border-(--line) bg-(--paper) p-4 sm:p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h3 id="channel-heading" className="font-bold leading-[1.3]">
+                {ui.channelHeading[lang]}
+              </h3>
+              <p className="text-sm text-(--muted)">{ui.last30[lang]}</p>
+            </div>
+            <ul className="mt-3 space-y-4">
               {channels.map(({ channel, count, revenue }) => {
                 const Icon = CHANNEL_ICON[channel];
-                const share = k.revenue30d ? Math.round((revenue / k.revenue30d) * 100) : 0;
+                const share = Math.round((revenue / channelTotal) * 100);
                 return (
-                  <li key={channel}>
-                    <div className="flex items-baseline gap-2 text-sm leading-[1.4]">
-                      <Icon className="size-4 shrink-0 self-center text-(--muted)" aria-hidden />
-                      <span className="flex-1 font-medium">{channelLabel[channel].th}</span>
-                      <span className="text-xs tabular-nums text-(--muted)">{count} บิล</span>
-                      <span className="w-[76px] text-right font-semibold tabular-nums">{formatTHB(revenue)}</span>
-                    </div>
-                    <div className="ml-6 mt-1.5 flex items-center gap-2.5">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-(--bg)">
-                        <div className="h-full rounded-full bg-(--brand)" style={{ width: `${share}%` }} />
+                  <li key={channel} className="pt-1">
+                    <div className="flex items-center gap-3">
+                      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-(--bg)">
+                        <Icon className="size-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <span className="min-w-0 truncate font-semibold">{channelLabel[channel][lang]}</span>
+                          <span className="shrink-0 font-(family-name:--font-mono) font-semibold">{formatTHB(revenue)}</span>
+                        </div>
+                        <div className="mt-1 flex items-center gap-3">
+                          <span className="h-2 flex-1 overflow-hidden rounded-full bg-(--bg)">
+                            <span className="block h-full rounded-full bg-(--wood)" style={{ width: `${share}%` }} />
+                          </span>
+                          <span className="shrink-0 text-sm text-(--muted)">{fill(ui.orderCount[lang], { n: String(count) })}</span>
+                          <span className="w-10 shrink-0 text-right text-sm font-semibold">{share}%</span>
+                        </div>
                       </div>
-                      <span className="w-9 shrink-0 text-right text-xs tabular-nums text-(--muted)">{share}%</span>
                     </div>
                   </li>
                 );
               })}
             </ul>
-          </Panel>
+          </section>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
