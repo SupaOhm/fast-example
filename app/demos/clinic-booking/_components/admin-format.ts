@@ -1,4 +1,3 @@
-import { parseISODate } from "@/lib/dates";
 import type { BookingStatus } from "@/lib/demos/clinic-booking/data";
 
 // Text/background pairs are all at least 6:1. `dot` and `block` are decorative fills.
@@ -24,17 +23,6 @@ export const STATUS_TONE: Record<BookingStatus, { pill: string; dot: string; blo
     block: "bg-[repeating-linear-gradient(135deg,#fbe6d6_0_6px,#f7dac4_6px_12px)] text-[#8f3a0c] border-[#d9822b]",
   },
 };
-
-// Thai-only date helpers still used by the customers and reports pages; new code uses `formatDate`.
-const WEEKDAY_SHORT = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
-
-export const weekdayShort = (iso: string) => WEEKDAY_SHORT[parseISODate(iso).getDay()];
-
-export const thLongDate = (iso: string) =>
-  parseISODate(iso).toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-
-export const thDayMonth = (iso: string) =>
-  parseISODate(iso).toLocaleDateString("th-TH", { day: "numeric", month: "short" });
 
 export function formatPhone(p: string): string {
   if (/^\d{10}$/.test(p)) return `${p.slice(0, 3)}-${p.slice(3, 6)}-${p.slice(6)}`;

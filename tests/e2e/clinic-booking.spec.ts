@@ -224,6 +224,26 @@ test("logging out shows the login, and logging in returns to the queue", async (
   await expect(page.getByTestId("demo-session")).toBeVisible();
 });
 
+test("customers CRUD blocks deleting customers with bookings", async ({ page }) => {
+  await page.goto("/demos/clinic-booking/admin/customers");
+  await page.getByTestId("customer-add").click();
+  await page.getByTestId("customer-name").fill("ลูกค้าใหม่ ทดสอบ");
+  await page.getByTestId("customer-phone").fill("0800000077");
+  await page.getByTestId("customer-save").click();
+  const newRow = page.getByTestId("customer-row").filter({ hasText: "ลูกค้าใหม่ ทดสอบ" });
+  await expect(newRow).toBeVisible();
+  await newRow.getByTestId("customer-delete").click();
+  await expect(newRow).toHaveCount(0);
+  await page.locator('[data-testid="customer-row"]:not([data-bookings="0"])').first().getByTestId("customer-delete").click();
+  await expect(page.getByTestId("crud-error")).toContainText("ลบไม่ได้");
+});
+
+test("reports render charts", async ({ page }) => {
+  await page.goto("/demos/clinic-booking/admin/reports");
+  await expect(page.getByTestId("revenue-chart")).toBeVisible();
+  await expect(page.getByTestId("service-chart")).toBeVisible();
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 
@@ -253,5 +273,15 @@ test.describe("in English", () => {
     await expect(page.getByTestId("demo-session")).toContainText("Viewing as clinic staff (demo)");
     await expect(page.getByRole("navigation", { name: "Main menu" })).toContainText("Customers");
     await expect(page.getByTestId("queue-row").first()).toContainText(/Khun|Dr\./);
+  });
+
+  test("customers, treatments and reports read in English", async ({ page }) => {
+    await page.goto("/demos/clinic-booking/admin/customers");
+    await page.locator('[data-testid="customer-row"]:not([data-bookings="0"])').first().getByTestId("customer-delete").click();
+    await expect(page.getByTestId("crud-error")).toContainText("Can't delete");
+    await page.goto("/demos/clinic-booking/admin/services");
+    await expect(page.getByTestId("service-row").first()).toContainText("Doctor consultation");
+    await page.goto("/demos/clinic-booking/admin/reports");
+    await expect(page.locator("main")).toContainText("Reports");
   });
 });
