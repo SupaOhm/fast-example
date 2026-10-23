@@ -105,6 +105,22 @@ export function progressStatus(startMin: number, endMin: number, nowMin: number)
   return "booked";
 }
 
+// The clock only moves a booking forward through these; "no-show" is a staff decision and is left alone.
+const FORWARD: BookingStatus[] = ["booked", "checked-in", "done"];
+
+/**
+ * The status a booking shows, on the booking page's schedule and in the admin queue alike. On the booking's own
+ * day a page left open keeps up with the clock (booked → checked-in → done), but a later status a staff member
+ * already set, or a no-show, is never pulled back. Other days show the stored status as it is.
+ */
+export function displayStatus(booking: Booking, durationMin: number, now: Date): BookingStatus {
+  const stored = FORWARD.indexOf(booking.status);
+  if (stored < 0 || booking.date !== toISODate(now)) return booking.status;
+  const start = toMinutes(booking.time);
+  const byClock = FORWARD.indexOf(progressStatus(start, start + durationMin, now.getHours() * 60 + now.getMinutes()));
+  return FORWARD[Math.max(stored, byClock)];
+}
+
 export function buildClinicSeed(today: Date): ClinicData {
   const customers: Customer[] = CUSTOMER_NAMES.map((name, i) => ({
     id: `c-${i + 1}`,

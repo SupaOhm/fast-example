@@ -135,6 +135,70 @@ export const ui = {
   toastLanded: { th: "คิวใหม่เข้าตารางของ{staff}แล้ว · {time} น.", en: "New booking in {staff}'s schedule · {time}" },
   toastSee: { th: "ดูในตาราง", en: "See it" },
   toastDismiss: { th: "ปิดข้อความ", en: "Dismiss" },
+
+  // Admin
+  demoBanner: { th: "กำลังดูในฐานะเจ้าหน้าที่คลินิก (เดโม)", en: "Viewing as clinic staff (demo)" },
+  logout: { th: "ออกจากระบบ", en: "Log out" },
+  adminHome: { th: "ลูมิ คลินิก ระบบหลังร้าน", en: "Lumi Clinic back office" },
+  adminSub: { th: "ระบบหลังร้าน สาขาทองหล่อ", en: "Back office, Thonglor" },
+  navQueue: { th: "คิววันนี้", en: "Today's queue" },
+  navCustomers: { th: "ลูกค้า", en: "Customers" },
+  navServices: { th: "บริการ", en: "Treatments" },
+  navReports: { th: "รายงาน", en: "Reports" },
+  navWaiting: { th: "รอเช็กอิน {n} คิว", en: "{n} waiting to check in" },
+  lineBookingPage: { th: "หน้าจองคิวผ่าน LINE", en: "LINE booking page" },
+  queueToday: { th: "คิววันนี้", en: "Today's queue" },
+  queueTomorrow: { th: "คิวพรุ่งนี้", en: "Tomorrow's queue" },
+  queueWeekday: { th: "คิว{day}", en: "{day}'s queue" },
+  queueCount: { th: "{n} คิว", en: "{n} bookings" },
+  queueCountOne: { th: "1 คิว", en: "1 booking" },
+  bookingsLabel: { th: "จำนวนคิว", en: "Bookings" },
+  expectedTakings: { th: "ยอดที่คาดว่าจะได้", en: "Expected takings" },
+  daysLabel: { th: "เลือกวัน", en: "Choose a day" },
+  chipToday: { th: "วันนี้", en: "Today" },
+  chipLabel: { th: "{date} {count}", en: "{date}, {count}" },
+  statusSummary: { th: "สรุปสถานะคิว", en: "Bookings by status" },
+  timelineTitle: { th: "ตารางผู้ดูแล", en: "Who's working when" },
+  queueListTitle: { th: "รายการคิวเรียงตามเวลา", en: "Bookings in time order" },
+  until: { th: "ถึง {time} น.", en: "until {time}" },
+  queueStatusLabel: { th: "สถานะคิวของ{name} เวลา {time} น.", en: "Status of {name}'s booking at {time}" },
+  viaLine: { th: "ติดต่อผ่าน LINE", en: "Contact via LINE" },
+  lineBadge: { th: "จองผ่าน LINE", en: "Booked on LINE" },
+  justBooked: { th: "เพิ่งจองผ่าน LINE", en: "Just booked on LINE" },
+  queueEmptyTitle: { th: "ยังไม่มีคิวในวันนี้", en: "No bookings on this day yet" },
+  queueEmptyBody: {
+    th: "คิวที่ลูกค้าจองผ่าน LINE จะขึ้นที่นี่ทันที ลองจองเองหนึ่งคิว แล้วกลับมาดูที่หน้านี้",
+    en: "Bookings made on LINE show up here straight away. Try booking one yourself, then come back to this page.",
+  },
+  queueEmptyCta: { th: "เปิดหน้าจองคิวผ่าน LINE", en: "Open the LINE booking page" },
+  deletedService: { th: "บริการที่ถูกลบ", en: "Deleted treatment" },
+  deletedCustomer: { th: "ลูกค้าที่ถูกลบ", en: "Deleted customer" },
+
+  // Staff login
+  loginTitle: { th: "เข้าสู่ระบบเจ้าหน้าที่", en: "Staff log in" },
+  loginBody: {
+    th: "ดูคิวประจำวัน เช็กอินลูกค้า และจัดการบริการของคลินิก",
+    en: "See the day's bookings, check customers in and manage the clinic's treatments.",
+  },
+  loginEmail: { th: "อีเมล", en: "Email" },
+  loginPassword: { th: "รหัสผ่าน", en: "Password" },
+  loginDemoNote: {
+    th: "กรอกบัญชีตัวอย่างไว้ให้แล้ว กดเข้าสู่ระบบได้เลย",
+    en: "A demo account is already filled in. Just log in.",
+  },
+  loginSubmit: { th: "เข้าสู่ระบบ", en: "Log in" },
+  loginPrivacy: {
+    th: "ระบบตัวอย่าง ข้อมูลทั้งหมดเก็บไว้ในเบราว์เซอร์นี้เท่านั้น",
+    en: "A demo system. Everything stays in this browser.",
+  },
+  loginArt: {
+    th: "คิวที่ลูกค้าจองผ่าน LINE เข้ามาอยู่ในตารางของคลินิกทันที",
+    en: "Bookings made on LINE go straight into the clinic's schedule.",
+  },
+  loginPhotoAlt: {
+    th: "ห้องทรีตเมนต์ของลูมิ คลินิก โทนชมพูอ่อน",
+    en: "A soft pink treatment room at Lumi Clinic",
+  },
 } satisfies Record<string, L>;
 
 /** How booking works on the home page; matches the three taps on the booking page. */

@@ -178,6 +178,36 @@ test("on phones the toast is a single fixed bar", async ({ page }) => {
   expect(await page.getByTestId("booking-toast").evaluate((el) => getComputedStyle(el).position)).toBe("fixed");
 });
 
+test("the admin opens without a login and highlights the booking just made", async ({ page }) => {
+  const { time } = await bookFacial(page);
+  await page.goto("/demos/clinic-booking/admin");
+  await expect(page).toHaveURL(/\/demos\/clinic-booking\/admin$/);
+  await expect(page.getByTestId("demo-session")).toContainText("กำลังดูในฐานะเจ้าหน้าที่คลินิก (เดโม)");
+  const row = page.locator('[data-testid="queue-row"][data-highlight="true"]');
+  await expect(row).toBeVisible();
+  await expect(row).toContainText("คุณลูกค้าเดโม");
+  await expect(row).toContainText(time);
+  await row.getByTestId("queue-status").selectOption("checked-in");
+  await expect(row).toHaveAttribute("data-status", "checked-in");
+});
+
+test("the queue shows today in progress", async ({ page }) => {
+  await page.goto("/demos/clinic-booking/admin");
+  await expect(page.locator('[data-testid="queue-row"][data-status="done"]').first()).toBeVisible();
+  await expect(page.locator('[data-testid="queue-row"][data-status="booked"]').first()).toBeVisible();
+});
+
+test("logging out shows the login, and logging in returns to the queue", async ({ page }) => {
+  await page.goto("/demos/clinic-booking/admin");
+  await page.getByTestId("demo-session").getByRole("button", { name: "ออกจากระบบ" }).click();
+  await expect(page).toHaveURL(/\/admin\/login$/);
+  await page.goto("/demos/clinic-booking/admin/customers");
+  await expect(page).toHaveURL(/\/admin\/login$/);
+  await page.getByTestId("login-submit").click();
+  await expect(page).toHaveURL(/\/demos\/clinic-booking\/admin$/);
+  await expect(page.getByTestId("demo-session")).toBeVisible();
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 
@@ -200,5 +230,12 @@ test.describe("in English", () => {
     const heads = page.getByTestId("schedule-lane-head");
     await expect(heads).toHaveCount(3);
     for (const head of await heads.all()) await expect(head).toContainText(/^(Khun|Dr\.) /);
+  });
+
+  test("the admin reads in English", async ({ page }) => {
+    await page.goto("/demos/clinic-booking/admin");
+    await expect(page.getByTestId("demo-session")).toContainText("Viewing as clinic staff (demo)");
+    await expect(page.getByRole("navigation", { name: "Main menu" })).toContainText("Customers");
+    await expect(page.getByTestId("queue-row").first()).toContainText(/Khun|Dr\./);
   });
 });

@@ -9,6 +9,7 @@ import {
   CLOSE,
   deleteCustomer,
   deleteService,
+  displayStatus,
   freeTimes,
   fromMinutes,
   GUEST_ID,
@@ -22,6 +23,7 @@ import {
   STAFF,
   toMinutes,
   upsertCustomer,
+  type Booking,
 } from "@/lib/demos/clinic-booking/data";
 
 const today = new Date(2026, 9, 19, 9, 0);
@@ -101,6 +103,33 @@ describe("progressStatus", () => {
     expect(progressStatus(600, 660, 600)).toBe("checked-in");
     expect(progressStatus(600, 660, 659)).toBe("checked-in");
     expect(progressStatus(600, 660, 660)).toBe("done");
+  });
+});
+
+describe("displayStatus", () => {
+  const at = (h: number, m: number) => new Date(2026, 9, 19, h, m);
+  const booking = (status: Booking["status"], date = "2026-10-19") =>
+    ({ id: "b-x", customerId: "c-1", serviceId: "s-facial", staffId: "st-2", date, time: "11:00", status }) as Booking;
+
+  it("moves today's bookings forward with the clock", () => {
+    expect(displayStatus(booking("booked"), 60, at(10, 30))).toBe("booked");
+    expect(displayStatus(booking("booked"), 60, at(11, 0))).toBe("checked-in");
+    expect(displayStatus(booking("booked"), 60, at(12, 0))).toBe("done");
+    expect(displayStatus(booking("checked-in"), 60, at(12, 15))).toBe("done");
+  });
+
+  it("never pulls back a later status a staff member set", () => {
+    expect(displayStatus(booking("checked-in"), 60, at(10, 30))).toBe("checked-in");
+    expect(displayStatus(booking("done"), 60, at(10, 30))).toBe("done");
+  });
+
+  it("leaves a no-show alone", () => {
+    expect(displayStatus(booking("no-show"), 60, at(18, 0))).toBe("no-show");
+  });
+
+  it("shows other days' stored status as it is", () => {
+    expect(displayStatus(booking("booked", "2026-10-18"), 60, at(18, 0))).toBe("booked");
+    expect(displayStatus(booking("booked", "2026-10-20"), 60, at(18, 0))).toBe("booked");
   });
 });
 

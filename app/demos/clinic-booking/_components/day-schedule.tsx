@@ -1,21 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useLang } from "@/components/demo/lang";
 import {
   BOOKING_STATUSES,
   bookingDay,
   CLOSE,
+  displayStatus,
   fromMinutes,
   isLineBooking,
   OPEN,
-  progressStatus,
   SLOT_STEP_MIN,
   STAFF,
   toMinutes,
   type Booking,
-  type BookingStatus,
   type ClinicData,
 } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
@@ -26,6 +24,7 @@ import { statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { StaffPortrait } from "./staff-portrait";
 import { clock } from "./line-phone";
+import { useMinuteTick } from "./use-minute-tick";
 
 const START = toMinutes(OPEN);
 const SPAN = toMinutes(CLOSE) - START;
@@ -33,29 +32,6 @@ const HOURS = Array.from({ length: SPAN / 60 + 1 }, (_, i) => START + i * 60);
 /** Where a minute of the day sits down the grid, as a percentage of its height. */
 const at = (min: number) => `${((min - START) / SPAN) * 100}%`;
 const cols = "grid grid-cols-[2.5rem_repeat(3,minmax(0,1fr))] sm:grid-cols-[3.25rem_repeat(3,minmax(0,1fr))]";
-
-// The clock only moves a booking forward through these; "no-show" is a staff decision and is left alone.
-const FORWARD: BookingStatus[] = ["booked", "checked-in", "done"];
-
-/**
- * What a booking shows on today's schedule. A page left open keeps up with the clock (booked → checked-in →
- * done), but a later status a staff member already set is never pulled back.
- */
-function shownStatus(b: Booking, end: number, nowMin: number, isToday: boolean): BookingStatus {
-  const stored = FORWARD.indexOf(b.status);
-  if (!isToday || stored < 0) return b.status;
-  const byClock = FORWARD.indexOf(progressStatus(toMinutes(b.time), end, nowMin));
-  return FORWARD[Math.max(stored, byClock)];
-}
-
-/** Re-reads the clock every minute, so the "now" line and the day keep moving on a page left open. */
-function useMinuteTick() {
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setTick((n) => n + 1), 60_000);
-    return () => clearInterval(id);
-  }, []);
-}
 
 /**
  * The clinic's day for the booking page: one lane per staff member, time running down.
@@ -150,7 +126,7 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
               {bookings
                 .filter((b) => b.staffId === st.id)
                 .map((b) => (
-                  <Block key={b.id} booking={b} data={data} nowMin={nowMin} isToday={Boolean(day?.isToday)} isNew={b.id === newId} />
+                  <Block key={b.id} booking={b} data={data} now={now!} isNew={b.id === newId} />
                 ))}
             </ul>
           ))}
@@ -176,21 +152,19 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
 function Block({
   booking: b,
   data,
-  nowMin,
-  isToday,
+  now,
   isNew,
 }: {
   booking: Booking;
   data: ClinicData;
-  nowMin: number;
-  isToday: boolean;
+  now: Date;
   isNew: boolean;
 }) {
   const lang = useLang();
   const service = data.services.find((s) => s.id === b.serviceId);
   const start = toMinutes(b.time);
   const duration = service?.durationMin ?? SLOT_STEP_MIN;
-  const status = shownStatus(b, start + duration, nowMin, isToday);
+  const status = displayStatus(b, duration, now);
   const customer = data.customers.find((c) => c.id === b.customerId)?.name ?? "";
   const range = fill(ui.timeRange[lang], { start: b.time, end: fromMinutes(start + duration) });
   return (
