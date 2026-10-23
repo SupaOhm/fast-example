@@ -68,6 +68,7 @@ export function Stamp({
   const Icon = STATUS_ICON[status];
   return (
     <span
+      data-testid="stamp"
       style={{ "--stamp-tilt": `${tilt}deg`, transform: `rotate(${tilt}deg)` } as React.CSSProperties}
       className={`inline-flex items-center gap-1.5 rounded-[5px] border-2 px-2 py-px text-base font-bold leading-[1.45] whitespace-nowrap ${STATUS_FACE[status]} ${fresh ? "rd-stamp-in" : ""} ${className}`}
     >

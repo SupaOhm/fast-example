@@ -18,7 +18,7 @@ import {
 } from "@/lib/demos/shop-admin/data";
 import { shopData } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { channelLabel, ui } from "./copy";
+import { byCount, channelLabel, ui } from "./copy";
 import { CHANNEL_ICON, fullDate, shortDate } from "./format";
 import { ProductIcon } from "./product-icon";
 import { SalesPanels } from "./sales-panels";
@@ -182,7 +182,7 @@ export function Overview() {
           >
             <Tape className="left-6 -rotate-3" />
             <PackageOpen className="absolute right-4 top-4 size-6 text-(--muted)" aria-hidden />
-            <BigCount template={ui.tileToPack[lang]} n={packCount} numberClass="" />
+            <BigCount template={byCount(packCount, ui.tileToPackOne, ui.tileToPack)[lang]} n={packCount} numberClass="" />
             <span className="inline-flex items-center gap-0.5 text-base font-semibold text-(--mustard-ink) group-hover:underline">
               {ui.tileToPackAction[lang]}
               <ChevronRight className="size-4 shrink-0" aria-hidden />
@@ -196,7 +196,7 @@ export function Overview() {
           >
             <Tape className="right-8 rotate-2" />
             <TriangleAlert className="absolute right-4 top-4 size-6 text-(--warn)" aria-hidden />
-            <BigCount template={ui.tileLow[lang]} n={lowCount} numberClass="text-(--warn)" />
+            <BigCount template={byCount(lowCount, ui.tileLowOne, ui.tileLow)[lang]} n={lowCount} numberClass="text-(--warn)" />
             <span className="inline-flex items-center gap-0.5 text-base font-semibold text-(--mustard-ink) group-hover:underline">
               {ui.tileLowAction[lang]}
               <ChevronRight className="size-4 shrink-0" aria-hidden />
@@ -215,7 +215,7 @@ export function Overview() {
               </span>
             </span>
             <span className="inline-flex items-center gap-1 text-base group-hover:underline">
-              {fill(ui.tileSoldTodayFoot[lang], { n: String(sold.orders) })}
+              {fill(byCount(sold.orders, ui.tileSoldTodayFootOne, ui.tileSoldTodayFoot)[lang], { n: String(sold.orders) })}
               <ChevronDown className="size-4 shrink-0 text-(--mustard)" aria-hidden />
             </span>
           </a>
@@ -243,7 +243,7 @@ export function Overview() {
               href={ORDERS_TO_PACK}
               className="flex items-center justify-center gap-1 border-t-[1.5px] border-(--line) bg-(--bg)/40 px-4 py-3 font-semibold text-(--mustard-ink) hover:underline"
             >
-              {fill(ui.queueMore[lang], { n: String(more) })}
+              {fill(byCount(more, ui.queueMoreOne, ui.queueMore)[lang], { n: String(more) })}
               <ChevronRight className="size-4" aria-hidden />
             </Link>
           )}

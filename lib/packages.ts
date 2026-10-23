@@ -172,7 +172,7 @@ export const packages: Package[] = [
     tier: "standard",
     priceTHB: 14900,
     title: { th: "เว็บแอป · Standard", en: "Web app · Standard" },
-    demoName: { th: "ร้านดี — ระบบหลังร้าน", en: "Ran Dee — shop back office" },
+    demoName: { th: "ร้านดี — ระบบหลังร้าน", en: "Raan Dee — shop back office" },
     demoPath: "/demos/shop-admin",
     fastworkUrl: APP_URL,
     tagline: l("An admin dashboard with login, tables and charts.", "แดชบอร์ดหลังบ้าน พร้อมล็อกอิน ตาราง และกราฟ"),

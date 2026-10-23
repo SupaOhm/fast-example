@@ -16,18 +16,23 @@ export const ui = {
   navOrders: { th: "คำสั่งซื้อ", en: "Orders" },
   navStock: { th: "สต็อกสินค้า", en: "Stock" },
   badgeOrders: { th: "รอแพ็ก {n} ออเดอร์", en: "{n} orders to pack" },
+  badgeOrdersOne: { th: "รอแพ็ก {n} ออเดอร์", en: "{n} order to pack" },
   badgeStock: { th: "ใกล้หมด {n} สินค้า", en: "{n} products running low" },
+  badgeStockOne: { th: "ใกล้หมด {n} สินค้า", en: "{n} product running low" },
 
   // Overview
   greeting: { th: "สวัสดี คุณนิ่ม", en: "Hello, Khun Nim" },
   todayIs: { th: "วันนี้ {date}", en: "Today is {date}" },
   todoHeading: { th: "งานวันนี้", en: "Today's to-dos" },
   tileToPack: { th: "ต้องแพ็ก {n} ออเดอร์", en: "{n} orders to pack" },
+  tileToPackOne: { th: "ต้องแพ็ก {n} ออเดอร์", en: "{n} order to pack" },
   tileToPackAction: { th: "ดูออเดอร์ที่ต้องแพ็ก", en: "See orders to pack" },
   tileLow: { th: "ใกล้หมด {n} สินค้า", en: "{n} products running low" },
+  tileLowOne: { th: "ใกล้หมด {n} สินค้า", en: "{n} product running low" },
   tileLowAction: { th: "อัปเดตสต็อก", en: "Update stock" },
   tileSoldToday: { th: "ขายแล้ววันนี้", en: "Sold today" },
   tileSoldTodayFoot: { th: "{n} ออเดอร์ · ดูยอดขาย", en: "{n} orders · see sales" },
+  tileSoldTodayFootOne: { th: "{n} ออเดอร์ · ดูยอดขาย", en: "{n} order · see sales" },
   queueHeading: { th: "คิวแพ็กของ", en: "Packing queue" },
   queueHint: {
     th: "แพ็กเสร็จแล้วกดปุ่มเดียว ระบบอัปเดตสถานะออเดอร์ให้ทันที",
@@ -39,6 +44,7 @@ export const ui = {
   undoLabel: { th: "เลิกทำออเดอร์ {id}", en: "Undo {id}" },
   queueEmpty: { th: "แพ็กครบทุกออเดอร์แล้ว", en: "Everything is packed." },
   queueMore: { th: "ดูอีก {n} ออเดอร์ในหน้าคำสั่งซื้อ", en: "See {n} more on the orders page" },
+  queueMoreOne: { th: "ดูอีก {n} ออเดอร์ในหน้าคำสั่งซื้อ", en: "See {n} more on the orders page" },
   salesHeading: { th: "ยอดขาย", en: "Sales" },
   dailySales: { th: "ยอดขายรายวัน", en: "Daily sales" },
   last30: { th: "30 วันล่าสุด", en: "Last 30 days" },
@@ -51,14 +57,15 @@ export const ui = {
   topHeading: { th: "สินค้าขายดี", en: "Best sellers" },
   topHint: { th: "ตามยอดขาย 30 วัน", en: "By sales, last 30 days" },
   pieces: { th: "{n} ชิ้น", en: "{n} pcs" },
+  piecesOne: { th: "{n} ชิ้น", en: "{n} pc" },
   channelHeading: { th: "ยอดขายตามช่องทาง", en: "Sales by channel" },
   orderCount: { th: "{n} บิล", en: "{n} orders" },
+  orderCountOne: { th: "{n} บิล", en: "{n} order" },
 
   // Orders
-  ordersSummary: {
-    th: "{n} บิลใน 30 วันล่าสุด รอแพ็ก {pack} บิล",
-    en: "{n} orders in the last 30 days, {pack} to pack",
-  },
+  ordersSummary: { th: "{n} บิลใน 30 วันล่าสุด", en: "{n} orders in the last 30 days" },
+  ordersSummaryOne: { th: "{n} บิลใน 30 วันล่าสุด", en: "{n} order in the last 30 days" },
+  ordersSummaryPack: { th: " รอแพ็ก {pack} บิล", en: ", {pack} to pack" },
   searchLabel: { th: "ค้นหาด้วยเลขที่บิลหรือชื่อลูกค้า", en: "Search by order number or customer" },
   searchPlaceholder: { th: "ค้นหาเลขที่บิล หรือชื่อลูกค้า", en: "Order number or customer name" },
   statusFilter: { th: "สถานะ", en: "Status" },
@@ -71,6 +78,7 @@ export const ui = {
   },
   clearFilters: { th: "ล้างตัวกรอง", en: "Clear filters" },
   pageRange: { th: "{from}–{to} จาก {n} บิล", en: "{from}–{to} of {n} orders" },
+  pageRangeOne: { th: "{from}–{to} จาก {n} บิล", en: "{from}–{to} of {n} order" },
   prevPage: { th: "หน้าก่อนหน้า", en: "Previous page" },
   nextPage: { th: "หน้าถัดไป", en: "Next page" },
   receiptTotal: { th: "รวม", en: "Total" },
@@ -82,8 +90,10 @@ export const ui = {
   },
   stockProducts: { th: "สินค้า", en: "Products" },
   stockItems: { th: "{n} รายการ", en: "{n} items" },
+  stockItemsOne: { th: "{n} รายการ", en: "{n} item" },
   stockValue: { th: "มูลค่าสต็อก", en: "Stock value" },
   stockUnits: { th: "รวม {n} ชิ้น", en: "{n} pieces in total" },
+  stockUnitsOne: { th: "รวม {n} ชิ้น", en: "{n} piece in total" },
   lowStock: { th: "ใกล้หมด", en: "Running low" },
   colProduct: { th: "สินค้า", en: "Product" },
   colCategory: { th: "หมวด", en: "Category" },
@@ -124,3 +134,6 @@ export const channelLabel: Record<ShopChannel, L> = {
   shopee: { th: "Shopee", en: "Shopee" },
   store: { th: "หน้าร้าน", en: "In store" },
 };
+
+/** Pick the singular template when the count is exactly 1 (English plurals; Thai text is the same). */
+export const byCount = (n: number, one: L, many: L): L => (n === 1 ? one : many);

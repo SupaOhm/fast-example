@@ -200,4 +200,49 @@ test.describe("in English", () => {
     await expect(page.getByTestId("stock-row-GF-01")).toContainText("Chiang Mai gift box");
     await expect(page.getByTestId("stock-row-NP-02")).toContainText("Running low");
   });
+
+  test("counts of one read in the singular", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    await page.getByTestId("orders-search").fill("RD-2001");
+    await expect(page.getByText(/of 1 order/)).toBeVisible();
+    await expect(page.getByText("of 1 orders")).toHaveCount(0);
+
+    await page.goto("/demos/shop-admin/stock");
+    const row = page.getByTestId("stock-row-NP-02");
+    await row.getByTestId("stock-input").fill("50");
+    await row.getByTestId("stock-save").click();
+    await page.goto("/demos/shop-admin");
+    await expect(page.getByTestId("todo-low")).toContainText("1 product running low");
+  });
+});
+
+test.describe("with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("a freshly packed row's stamp does not animate", async ({ page }) => {
+    await page.goto("/demos/shop-admin");
+    const row = page.getByTestId("pack-row").first();
+    const id = (await row.getAttribute("data-order-id"))!;
+    await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
+    const stamp = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="stamp"]`);
+    await expect(stamp).toBeVisible();
+    await expect(stamp).toHaveCSS("animation-name", "none");
+  });
+});
+
+test("a receipt stays in a status-filtered list after its status changes", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders?status=paid");
+  const first = page.getByTestId("receipt").first();
+  const id = (await first.getAttribute("data-order-id"))!;
+  await first.getByRole("combobox").selectOption("packed");
+  const same = page.locator(`[data-testid="receipt"][data-order-id="${id}"]`);
+  await expect(same).toBeVisible();
+  await expect(same).toContainText("แพ็กแล้ว");
+});
+
+test("the nav's Orders link clears a status filter", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders?status=paid");
+  await expect(page.getByLabel("สถานะ", { exact: true })).toHaveValue("paid");
+  await nav(page).getByRole("link", { name: /^คำสั่งซื้อ/ }).click();
+  await expect(page.getByLabel("สถานะ", { exact: true })).toHaveValue("all");
 });

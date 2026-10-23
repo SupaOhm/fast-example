@@ -11,7 +11,7 @@ import { isLowStock, toPack } from "@/lib/demos/shop-admin/data";
 import { shopData, shopSession } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { BrandMark } from "./brand-mark";
-import { ui } from "./copy";
+import { byCount, ui } from "./copy";
 import { LANG_SWITCH_CLASS } from "./shop-css";
 
 const NAV = [
@@ -75,10 +75,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const lowCount = data.products.filter(isLowStock).length;
   const badges: Record<string, { n: number; label: string; tone: string } | undefined> = {
     "/demos/shop-admin/orders": packCount
-      ? { n: packCount, label: fill(ui.badgeOrders[lang], { n: String(packCount) }), tone: "bg-(--mustard) text-(--ink)" }
+      ? { n: packCount, label: fill(byCount(packCount, ui.badgeOrdersOne, ui.badgeOrders)[lang], { n: String(packCount) }), tone: "bg-(--mustard) text-(--ink)" }
       : undefined,
     "/demos/shop-admin/stock": lowCount
-      ? { n: lowCount, label: fill(ui.badgeStock[lang], { n: String(lowCount) }), tone: "bg-(--warn) text-(--bg)" }
+      ? { n: lowCount, label: fill(byCount(lowCount, ui.badgeStockOne, ui.badgeStock)[lang], { n: String(lowCount) }), tone: "bg-(--warn) text-(--bg)" }
       : undefined,
   };
 
@@ -113,7 +113,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <ResetDemoButton
                 stores={[shopData]}
                 label={ui.resetData[lang]}
-                className="min-h-10 rounded-md px-2.5 text-(--bg) transition-colors hover:bg-(--bg)/10 lg:-ml-2.5"
+                className="min-h-10 rounded-md px-2.5 text-base! text-(--bg) transition-colors hover:bg-(--bg)/10 lg:-ml-2.5"
               />
               <DemoLangSwitch className={LANG_SWITCH_CLASS} />
             </div>

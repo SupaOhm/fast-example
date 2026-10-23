@@ -18,7 +18,7 @@ import {
 } from "@/lib/demos/shop-admin/data";
 import { shopData } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { channelLabel, statusLabel, ui } from "./copy";
+import { byCount, channelLabel, statusLabel, ui } from "./copy";
 import { CHANNEL_ICON, itemCount, shortDate } from "./format";
 import { ProductIcon } from "./product-icon";
 import { Stamp } from "./stamp";
@@ -85,7 +85,7 @@ function Receipt({
   const cancelled = order.status === "cancelled";
 
   return (
-    <li data-testid="receipt" className="min-w-0 [filter:drop-shadow(0_1.5px_0_var(--line))_drop-shadow(0_6px_8px_rgba(43,34,23,.09))]">
+    <li data-testid="receipt" data-order-id={order.id} className="min-w-0 [filter:drop-shadow(0_1.5px_0_var(--line))_drop-shadow(0_6px_8px_rgba(43,34,23,.09))]">
       <article
         aria-label={order.id}
         className="rd-receipt bg-(--paper) bg-[linear-gradient(90deg,rgba(43,34,23,.035),transparent_12%,transparent_88%,rgba(43,34,23,.035))] px-5 pb-7 pt-7 leading-[1.35]"
@@ -127,7 +127,7 @@ function Receipt({
         <p className="mt-3.5 flex items-baseline justify-between gap-3 border-t-[1.5px] border-dashed border-(--line) pt-3">
           <span>
             <span className="font-bold">{ui.receiptTotal[lang]}</span>
-            <span className="ml-2 text-sm text-(--muted)">{fill(ui.pieces[lang], { n: String(itemCount(order)) })}</span>
+            <span className="ml-2 text-sm text-(--muted)">{fill(byCount(itemCount(order), ui.piecesOne, ui.pieces)[lang], { n: String(itemCount(order)) })}</span>
           </span>
           <span
             className={`${MONO} text-[22px] font-semibold leading-[1.2] ${
@@ -155,17 +155,20 @@ export function OrdersTable() {
   const [status, setStatus] = useState<OrderFilter>(() => parseOrderFilter(search));
   const [seenSearch, setSeenSearch] = useState(search);
   const [page, setPage] = useState(1);
+  // Receipts restamped during this visit play the stamp-down once, and stay in a status-filtered list
+  // until the filter or the query string changes.
+  const [restamped, setRestamped] = useState<string[]>([]);
   // The same page with a new query (e.g. the nav's plain orders link from ?status=paid) starts over from it.
   if (seenSearch !== search) {
     setSeenSearch(search);
     setStatus(parseOrderFilter(search));
     setPage(1);
+    setRestamped([]);
   }
-  // Receipts restamped during this visit play the stamp-down once.
-  const [restamped, setRestamped] = useState<string[]>([]);
   const listTop = useRef<HTMLDivElement>(null);
 
-  const byStatus = status === "all" ? data.orders : data.orders.filter((o) => o.status === status);
+  const byStatus =
+    status === "all" ? data.orders : data.orders.filter((o) => o.status === status || restamped.includes(o.id));
   const rows = byStatus.filter((o) => matchesQuery(o, query));
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const current = Math.min(page, pageCount);
@@ -185,6 +188,7 @@ export function OrdersTable() {
     setQuery("");
     setStatus("all");
     setPage(1);
+    setRestamped([]);
   }
 
   function goTo(next: number) {
@@ -198,7 +202,8 @@ export function OrdersTable() {
       <header>
         <h1 className="text-[32px] font-bold leading-[1.2] lg:text-[40px]">{ui.navOrders[lang]}</h1>
         <p className="mt-1 text-base text-(--muted)">
-          {fill(ui.ordersSummary[lang], { n: String(data.orders.length), pack: String(toPack(data).length) })}
+          {fill(byCount(data.orders.length, ui.ordersSummaryOne, ui.ordersSummary)[lang], { n: String(data.orders.length) })}
+          {fill(ui.ordersSummaryPack[lang], { pack: String(toPack(data).length) })}
         </p>
       </header>
 
@@ -235,6 +240,7 @@ export function OrdersTable() {
               onChange={(e) => {
                 setStatus(e.target.value as OrderFilter);
                 setPage(1);
+                setRestamped([]);
               }}
               className={`${FIELD} cursor-pointer appearance-none py-2 pl-3 pr-10`}
             >
@@ -286,7 +292,7 @@ export function OrdersTable() {
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t-[1.5px] border-(--line) pt-4">
             <p className="text-base tabular-nums text-(--muted)">
-              {fill(ui.pageRange[lang], {
+              {fill(byCount(rows.length, ui.pageRangeOne, ui.pageRange)[lang], {
                 from: String(start + 1),
                 to: String(start + visible.length),
                 n: String(rows.length),

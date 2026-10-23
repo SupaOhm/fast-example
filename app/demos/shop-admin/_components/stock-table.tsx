@@ -7,7 +7,7 @@ import { fill, formatTHB } from "@/lib/demos/format";
 import { isLowStock, updateStock, type Product } from "@/lib/demos/shop-admin/data";
 import { shopData } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { ui } from "./copy";
+import { byCount, ui } from "./copy";
 import { ProductIcon } from "./product-icon";
 
 // updateStock throws this when the count isn't a whole number ≥ 0; anything else is shown as it comes.
@@ -186,19 +186,19 @@ export function StockTable() {
       <dl className="mt-6 grid grid-cols-2 rounded-lg border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)] sm:grid-cols-[1fr_1.4fr_1fr]">
         <div className="px-4 py-3 sm:px-5">
           <dt className="text-sm font-semibold text-(--muted)">{ui.stockProducts[lang]}</dt>
-          <Figure template={ui.stockItems[lang]} n={data.products.length} />
+          <Figure template={byCount(data.products.length, ui.stockItemsOne, ui.stockItems)[lang]} n={data.products.length} />
         </div>
         <div className="order-last col-span-2 border-t-[1.5px] border-dashed border-(--line) px-4 py-3 sm:order-none sm:col-span-1 sm:border-x-[1.5px] sm:border-t-0 sm:px-5">
           <dt className="text-sm font-semibold text-(--muted)">{ui.stockValue[lang]}</dt>
           <dd className={`${MONO} text-[28px] font-semibold leading-[1.3]`}>{formatTHB(value)}</dd>
-          <dd className="sr-only">{fill(ui.stockUnits[lang], { n: String(units) })}</dd>
+          <dd className="sr-only">{fill(byCount(units, ui.stockUnitsOne, ui.stockUnits)[lang], { n: String(units) })}</dd>
         </div>
         <div className="border-l-[1.5px] border-dashed border-(--line) px-4 py-3 sm:border-l-0 sm:px-5">
           <dt className={`flex items-center gap-1.5 text-sm font-semibold ${low ? "text-(--warn)" : "text-(--muted)"}`}>
             {low > 0 && <TriangleAlert className="size-4" aria-hidden />}
             {ui.lowStock[lang]}
           </dt>
-          <Figure template={ui.stockItems[lang]} n={low} className={low ? "text-(--warn)" : ""} />
+          <Figure template={byCount(low, ui.stockItemsOne, ui.stockItems)[lang]} n={low} className={low ? "text-(--warn)" : ""} />
         </div>
       </dl>
 
