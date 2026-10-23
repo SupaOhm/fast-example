@@ -134,8 +134,16 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
           </Link>
           <ResetDemoButton
             stores={[clinicData, clinicLastBooking]}
-            label={ui.resetData[lang]}
-            className={`h-10 rounded-full px-2.5 !text-base whitespace-nowrap lg:px-3 ${quiet}`}
+            // Phones show the short word so the brand keeps its full name; the full label stays the button's name.
+            label={
+              <>
+                <span aria-hidden className="sm:hidden">
+                  {ui.resetShort[lang]}
+                </span>
+                <span className="max-sm:sr-only">{ui.resetData[lang]}</span>
+              </>
+            }
+            className={`relative h-10 rounded-full px-2.5 !text-base whitespace-nowrap lg:px-3 ${quiet}`}
           />
           <DemoLangSwitch
             className={`grid h-10 min-w-11 place-items-center rounded-full border border-(--wine)/25 px-3 font-medium text-(--wine) transition-colors hover:bg-(--rose) ${focusRing}`}

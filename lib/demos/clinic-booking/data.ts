@@ -218,8 +218,9 @@ export const GUEST_ID = "c-guest";
 export const isLineBooking = (b: Booking) => b.id.startsWith("line-");
 
 /**
- * The 3-tap booking. The visitor books as one guest customer. There is no phone number,
- * because LINE already knows who is chatting; the latest name typed wins.
+ * The 3-tap booking. The visitor books as one guest customer. The booking asks for no phone number,
+ * because LINE already knows who is chatting; the latest name typed wins, and a phone number the
+ * clinic has added to the guest by hand is kept.
  */
 export function bookAsGuest(
   data: ClinicData,
@@ -230,6 +231,7 @@ export function bookAsGuest(
   if (!name) throw new ClinicError("name-required");
   const free = availableSlots(data, { date: input.date, staffId: input.staffId, serviceId: input.serviceId, now });
   if (!free.includes(input.time)) throw new ClinicError("slot-taken");
+  const guest = data.customers.find((c) => c.id === GUEST_ID);
   const booking: Booking = {
     id: newId("line"),
     customerId: GUEST_ID,
@@ -240,7 +242,7 @@ export function bookAsGuest(
     status: "booked",
   };
   return {
-    data: { ...data, customers: upsert(data.customers, { id: GUEST_ID, name, phone: "" }), bookings: [...data.bookings, booking] },
+    data: { ...data, customers: upsert(data.customers, { ...guest, id: GUEST_ID, name, phone: guest?.phone ?? "" }), bookings: [...data.bookings, booking] },
     booking,
   };
 }

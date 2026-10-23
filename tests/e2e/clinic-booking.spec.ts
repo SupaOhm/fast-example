@@ -114,6 +114,60 @@ test("a blank name shows an inline error and books nothing", async ({ page }) =>
   await expect(page.getByTestId("booking-confirmed")).toHaveCount(0);
 });
 
+test("a time taken while the visitor was deciding is refused with an alert, and nothing is booked", async ({ page }) => {
+  await page.goto(BOOK);
+  await page.getByTestId("service-s-facial").click();
+  const slot = page.getByTestId("slot").first();
+  const [h, m] = (await slot.getAttribute("data-time"))!.split(":").map(Number);
+  await slot.click();
+  await expect(page.getByTestId("book-confirm")).toBeVisible();
+  // The clock moves past the picked start before the visitor confirms, so the time is no longer free.
+  const later = new Date();
+  later.setHours(h, m + 1, 0, 0);
+  await page.clock.setFixedTime(later);
+  await page.getByTestId("book-confirm").click();
+  await expect(page.getByRole("alert").filter({ hasText: "เวลานี้ไม่ว่างแล้ว" })).toBeVisible();
+  await expect(page.getByTestId("booking-confirmed")).toHaveCount(0);
+});
+
+test("on phones the toast hides itself after about 6 seconds", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the desktop banner stays until it is closed");
+  await bookFacial(page);
+  const toast = page.getByTestId("booking-toast");
+  await expect(toast).toContainText("คิวใหม่");
+  const shownAt = Date.now();
+  // Hovering pauses the timer, so keep the pointer off the bar.
+  await page.mouse.move(0, 0);
+  await expect(toast).toBeEmpty({ timeout: 9000 });
+  expect(Date.now() - shownAt).toBeGreaterThan(5000);
+});
+
+test("on phones the side tabs follow the arrow, Home and End keys", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "tabs exist on phones only");
+  await page.goto(BOOK);
+  const customer = page.getByRole("tab", { name: /^ลูกค้า/ });
+  const clinic = page.getByRole("tab", { name: /^คลินิก/ });
+  await customer.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(clinic).toBeFocused();
+  await expect(clinic).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByTestId("clinic-schedule")).toBeVisible();
+  await page.keyboard.press("Home");
+  await expect(customer).toBeFocused();
+  await expect(customer).toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("End");
+  await expect(clinic).toBeFocused();
+});
+
+test("on phones the admin bar shows the clinic's full name", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the short reset label is for phones");
+  await page.goto("/demos/clinic-booking/admin");
+  const brand = page.getByRole("link", { name: "ลูมิ คลินิก ระบบหลังร้าน" }).getByText("ลูมิ คลินิก", { exact: true });
+  await expect(brand).toBeVisible();
+  expect(await brand.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await expect(page.getByTestId("reset-demo")).toHaveAccessibleName("รีเซ็ตข้อมูล");
+});
+
 test("on phones the clinic tab shows a badge when the booking lands", async ({ page }) => {
   test.skip(test.info().project.name !== "mobile", "tabs exist on phones only");
   await bookFacial(page);
@@ -244,6 +298,61 @@ test("reports render charts", async ({ page }) => {
   await expect(page.getByTestId("service-chart")).toBeVisible();
 });
 
+test.describe("after closing time (18:30)", () => {
+  test.beforeEach(async ({ page }) => {
+    const t = new Date();
+    t.setHours(18, 30, 0, 0);
+    await page.clock.setFixedTime(t);
+  });
+
+  test("the clinic side shows tomorrow, and a booking lands on tomorrow", async ({ page }) => {
+    await page.goto(BOOK);
+    await show(page, "คลินิก");
+    await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางพรุ่งนี้");
+    const tomorrow = await page.evaluate(() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(d);
+    });
+    await expect(page.locator("#schedule-day")).toHaveText(tomorrow);
+    const { time, staff } = await bookFacial(page);
+    await expect(page.getByTestId("booking-confirmed")).toContainText("พรุ่งนี้");
+    await show(page, "คลินิก");
+    await expect(page.locator("#schedule-day")).toHaveText(tomorrow);
+    const block = page.locator('[data-testid="schedule-block"][data-new="true"]');
+    await expect(block).toBeVisible();
+    await expect(block).toHaveAttribute("data-staff", staff);
+    await expect(block).toHaveAttribute("data-time", time);
+  });
+
+  test("the home page's next opening is tomorrow", async ({ page }) => {
+    await page.goto("/demos/clinic-booking");
+    await expect(page.getByTestId("next-opening")).toContainText(/คิวว่างถัดไปพรุ่งนี้ \d{2}:\d{2}/);
+  });
+});
+
+test.describe("before opening (08:00)", () => {
+  test.beforeEach(async ({ page }) => {
+    const t = new Date();
+    t.setHours(8, 0, 0, 0);
+    await page.clock.setFixedTime(t);
+  });
+
+  test("today is all still booked, with no now line, and free times are offered", async ({ page }) => {
+    await page.goto(BOOK);
+    await show(page, "คลินิก");
+    await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางวันนี้");
+    const blocks = page.getByTestId("schedule-block");
+    await expect(blocks.first()).toBeAttached();
+    expect(await blocks.count()).toBeGreaterThan(0);
+    await expect(page.locator('[data-testid="schedule-block"]:not([data-status="booked"])')).toHaveCount(0);
+    await expect(page.getByTestId("schedule-now")).toHaveCount(0);
+    await show(page, "ลูกค้า");
+    await page.getByTestId("service-s-facial").click();
+    await expect(page.getByTestId("slot").first()).toBeVisible();
+  });
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 
@@ -296,7 +405,7 @@ test.describe("in English", () => {
     await page.getByTestId("lang-switch").click();
     await expect(page.getByTestId("service-row").filter({ hasText: "Calming peel" })).toBeVisible();
     await page.getByTestId("lang-switch").click();
-    await row.getByRole("button").first().click();
+    await row.getByRole("button", { name: /^Edit / }).click();
     await page.getByTestId("service-name").fill("Gentle peel");
     await page.getByTestId("service-save").click();
     await expect(page.getByTestId("service-row").filter({ hasText: "Gentle peel" })).toBeVisible();

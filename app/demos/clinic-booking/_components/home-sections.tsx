@@ -61,6 +61,7 @@ export function Team() {
             <li key={st.id} data-testid="staff-card">
               <StaffPortrait
                 staffId={st.id}
+                width={800}
                 sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 100vw"
                 className="aspect-[4/5] rounded-[1.5rem]"
               />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLang } from "@/components/demo/lang";
+import { toISODate } from "@/lib/dates";
 import {
   BOOKING_STATUSES,
   bookingDay,
@@ -23,7 +24,7 @@ import { focusRing, STATUS_TONE } from "./admin-format";
 import { statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { StaffPortrait } from "./staff-portrait";
-import { clock } from "./line-phone";
+import { clock } from "./time-format";
 import { useMinuteTick } from "./use-minute-tick";
 
 const START = toMinutes(OPEN);
@@ -32,6 +33,15 @@ const HOURS = Array.from({ length: SPAN / 60 + 1 }, (_, i) => START + i * 60);
 /** Where a minute of the day sits down the grid, as a percentage of its height. */
 const at = (min: number) => `${((min - START) / SPAN) * 100}%`;
 const cols = "grid grid-cols-[2.5rem_repeat(3,minmax(0,1fr))] sm:grid-cols-[3.25rem_repeat(3,minmax(0,1fr))]";
+
+/**
+ * The day the schedule shows: the day of the booking made during this visit while it exists, so a time picked at
+ * 17:59 and confirmed at 18:00 still lands in view; otherwise the day the booking page offers.
+ */
+export function scheduleDay(data: ClinicData, newId: string | null, now: Date): { date: string; isToday: boolean } {
+  const landed = newId ? data.bookings.find((b) => b.id === newId) : undefined;
+  return landed ? { date: landed.date, isToday: landed.date === toISODate(now) } : bookingDay(now);
+}
 
 /**
  * The clinic's day for the booking page: one lane per staff member, time running down.
@@ -45,7 +55,7 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
   useMinuteTick();
 
   const now = hydrated ? new Date() : null;
-  const day = now ? bookingDay(now) : null;
+  const day = now ? scheduleDay(data, newId, now) : null;
   const nowMin = now ? now.getHours() * 60 + now.getMinutes() : -1;
   const showNow = Boolean(day?.isToday) && nowMin >= START && nowMin <= START + SPAN;
   const bookings = day ? data.bookings.filter((b) => b.date === day.date) : [];
@@ -89,7 +99,7 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
           <span />
           {STAFF.map((st) => (
             <div key={st.id} data-testid="schedule-lane-head" className="flex min-w-0 flex-col gap-1.5 px-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-1.5">
-              <StaffPortrait decorative staffId={st.id} width={120} sizes="40px" className="size-8 shrink-0 rounded-full sm:size-10" />
+              <StaffPortrait decorative staffId={st.id} sizes="40px" className="size-8 shrink-0 rounded-full sm:size-10" />
               <span className="min-w-0 leading-[1.3]">
                 <span className="block truncate text-[14px] font-medium sm:text-base">{st.name[lang]}</span>
                 <span className="block truncate text-[14px] text-(--muted)">{st.role[lang]}</span>

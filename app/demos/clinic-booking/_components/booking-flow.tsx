@@ -24,11 +24,12 @@ import { focusRing } from "./admin-format";
 import { BookingMotion } from "./booking-motion";
 import { BookingToast } from "./booking-toast";
 import { errorText, homeSteps, ui } from "./copy";
-import { DaySchedule } from "./day-schedule";
+import { DaySchedule, scheduleDay } from "./day-schedule";
 import { LineGlyph } from "./line-glyph";
-import { BotSay, chip, clock, FlexCard, LinePhone, MeSay, useOpenedAt } from "./line-phone";
+import { BotSay, chip, FlexCard, LinePhone, MeSay, useOpenedAt } from "./line-phone";
 import { RingMark } from "./ring-mark";
 import { StaffPortrait } from "./staff-portrait";
+import { clock } from "./time-format";
 import { useWide } from "./use-wide";
 
 type Step = 1 | 2 | 3 | 4;
@@ -196,7 +197,8 @@ export function BookingFlow() {
   const at = (i: number) => picks.stamps[i];
   const nameError = error?.code === "name-required";
   const formError = error && !nameError ? (error.code ? errorText[error.code] : ui.bookFailed)[lang] : null;
-  const clinicLabel = hydrated && !bookingDay(new Date()).isToday ? ui.sideClinicTomorrow : ui.sideClinic;
+  // Follows the schedule's own day (see `scheduleDay`), so the label and the lanes always agree.
+  const clinicLabel = hydrated && !scheduleDay(data, landedId, new Date()).isToday ? ui.sideClinicTomorrow : ui.sideClinic;
 
   // One toast at a time: a fixed bar on phones, an in-flow banner inside the schedule on wide screens, so it
   // never covers the chat's confirmation or the lanes. The server and hydration render the phone variant.
@@ -359,7 +361,7 @@ export function BookingFlow() {
                         <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2 px-4 pt-3 leading-[1.4]">
                           <dt className="text-[14px] text-(--muted)">{ui.summaryStaff[lang]}</dt>
                           <dd className="flex min-w-0 items-center justify-end gap-2 text-right">
-                            <StaffPortrait decorative staffId={picks.slot.staffId} width={96} sizes="24px" className="size-6 shrink-0 rounded-full" />
+                            <StaffPortrait decorative staffId={picks.slot.staffId} sizes="24px" className="size-6 shrink-0 rounded-full" />
                             <span className="truncate">{staffName(picks.slot.staffId, lang)}</span>
                           </dd>
                           <dt className="text-[14px] text-(--muted)">{ui.summaryDay[lang]}</dt>
@@ -431,7 +433,7 @@ export function BookingFlow() {
                       <p className="text-(--muted)">{dayText(picks.slot, lang)}</p>
                       <p className="mt-3 leading-[1.4] font-medium">{service.name[lang]}</p>
                       <p className="mt-1.5 flex items-center gap-2 leading-[1.4]">
-                        <StaffPortrait decorative staffId={picks.booking.staffId} width={96} sizes="28px" className="size-7 shrink-0 rounded-full" />
+                        <StaffPortrait decorative staffId={picks.booking.staffId} sizes="28px" className="size-7 shrink-0 rounded-full" />
                         {staffName(picks.booking.staffId, lang)}
                       </p>
                       <p className="mt-3.5 flex gap-2 border-t border-(--line) pt-3 text-[14px] leading-[1.5] text-(--muted)">
@@ -571,7 +573,7 @@ function SlotCard({
             >
               <span className="text-lg leading-[1.3] font-medium tabular-nums">{fill(ui.clockTime[lang], { time: o.time })}</span>
               <span className="flex w-full min-w-0 items-center gap-1">
-                <StaffPortrait decorative staffId={o.staffId} width={96} sizes="20px" className="size-5 shrink-0 rounded-full" />
+                <StaffPortrait decorative staffId={o.staffId} sizes="20px" className="size-5 shrink-0 rounded-full" />
                 <span className="truncate text-[14px] leading-[1.4] text-(--muted)">{staffName(o.staffId, lang)}</span>
               </span>
             </button>

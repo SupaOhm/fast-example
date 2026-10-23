@@ -3,7 +3,15 @@
 import { Check, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { addDays, toISODate } from "@/lib/dates";
-import { ClinicError, deleteCustomer, newId, upsertCustomer, type Customer } from "@/lib/demos/clinic-booking/data";
+import {
+  ClinicError,
+  deleteCustomer,
+  displayStatus,
+  GUEST_ID,
+  newId,
+  upsertCustomer,
+  type Customer,
+} from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { useLang } from "@/components/demo/lang";
 import { fill, formatDate } from "@/lib/demos/format";
@@ -40,12 +48,16 @@ export function CustomersCrud() {
     if (formOpen) nameRef.current?.focus();
   }, [formOpen]);
 
+  // Today's bookings use the status the queue shows (moved on by the clock), so one already under way is not "next".
+  const now = new Date();
+  const duration = (id: string) => data.services.find((s) => s.id === id)?.durationMin ?? 30;
   const stats = new Map<string, { count: number; next?: string; last?: string }>();
   for (const b of data.bookings) {
     const s = stats.get(b.customerId) ?? { count: 0 };
     s.count++;
     const at = `${b.date} ${b.time}`;
-    if (b.date >= today && b.status === "booked" && (!s.next || at < s.next)) s.next = at;
+    const status = b.date === today ? displayStatus(b, duration(b.serviceId), now) : b.status;
+    if (b.date >= today && status === "booked" && (!s.next || at < s.next)) s.next = at;
     if (b.status === "done" && (!s.last || b.date > s.last)) s.last = b.date;
     stats.set(b.customerId, s);
   }
@@ -58,7 +70,7 @@ export function CustomersCrud() {
 
   const when = (at: string) => {
     const [date, time] = at.split(" ");
-    const day = date === today ? ui.chipToday[lang] : date === tomorrow ? ui.whenTomorrow[lang] : formatDate(date, lang, "dayMonth");
+    const day = date === today ? ui.whenToday[lang] : date === tomorrow ? ui.whenTomorrow[lang] : formatDate(date, lang, "dayMonth");
     return fill(ui.whenAt[lang], { day, time });
   };
 
@@ -85,8 +97,10 @@ export function CustomersCrud() {
     const phone = normalizePhone(draft.phone.trim());
     const next: Errors = {};
     if (!name) next.name = ui.custNameRequired[lang];
-    if (!isThaiPhone(phone)) next.phone = ui.phoneHint[lang];
-    else {
+    // The LINE guest has no phone number (LINE already knows who is chatting), so theirs may stay empty.
+    const guestWithoutPhone = draft.id === GUEST_ID && phone === "";
+    if (!guestWithoutPhone && !isThaiPhone(phone)) next.phone = ui.phoneHint[lang];
+    else if (!guestWithoutPhone) {
       const owner = data.customers.find((c) => c.phone === phone && c.id !== draft.id);
       if (owner) next.phone = fill(ui.custPhoneTaken[lang], { name: owner.name });
     }
@@ -201,7 +215,7 @@ export function CustomersCrud() {
                 inputMode="tel"
                 value={draft.phone}
                 onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
-                aria-required
+                aria-required={draft.id !== GUEST_ID}
                 aria-invalid={!!errors.phone}
                 aria-describedby={errors.phone ? "customer-phone-error" : undefined}
                 placeholder="08x-xxx-xxxx"
@@ -296,7 +310,7 @@ export function CustomersCrud() {
                   </div>
                   <p className="hidden text-base tabular-nums md:block">{phoneText(c.phone)}</p>
                   <p className="hidden text-right text-base tabular-nums md:block">{fill(ui.custTimes[lang], { n: String(s.count) })}</p>
-                  <p className="hidden pl-4 text-base tabular-nums md:block">
+                  <p className="hidden pl-4 text-base tabular-nums first-letter:uppercase md:block">
                     {s.next ? when(s.next) : <span className="text-(--muted)">{ui.custNoNext[lang]}</span>}
                   </p>
                   <div className="row-span-2 flex items-center justify-end gap-1 md:row-span-1">

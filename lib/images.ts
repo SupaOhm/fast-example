@@ -32,5 +32,5 @@ export const PHOTOS = {
   clinicInterior: "1596740926849-2d473dee8d60",
   clinicStaffLalita: "1754715203698-70c7ad3a879d",
   clinicStaffMew: "1687293233752-ec42de2050db",
-  clinicStaffBeam: "1756699197173-5ef672a423fa",
+  clinicStaffBeam: "1734002886107-168181bcd6a1",
 } as const;

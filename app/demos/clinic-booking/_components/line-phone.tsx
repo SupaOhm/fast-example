@@ -4,20 +4,27 @@ import { BatteryFull, Camera, ChevronLeft, ImageIcon, Menu, Mic, Phone, Plus, Se
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { useLang } from "@/components/demo/lang";
+import { useHydrated } from "@/lib/use-demo-store";
 import { focusRing } from "./admin-format";
 import { ui } from "./copy";
 import { RingMark } from "./ring-mark";
+import { clock } from "./time-format";
+import { useMinuteTick } from "./use-minute-tick";
 
-/** "10:30": a 24-hour clock, the way a phone's status bar and LINE's timestamps read. */
-export const clock = (d: Date) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-
-// The moment the chat opened in this browser. The server snapshot is empty, so the
+// The moment the chat opened in this browser, for the greeting's timestamps. The server snapshot is empty, so the
 // prerendered HTML never carries a build-time clock.
 let openedAt: string | null = null;
 const noopSubscribe = () => () => {};
 const getOpenedAt = () => (openedAt ??= clock(new Date()));
 const getNoTime = () => "";
 export const useOpenedAt = () => useSyncExternalStore(noopSubscribe, getOpenedAt, getNoTime);
+
+/** The status bar's time: empty on the server, then the browser's clock, kept current each minute. */
+function useStatusBarTime() {
+  const hydrated = useHydrated();
+  useMinuteTick();
+  return hydrated ? clock(new Date()) : "";
+}
 
 /**
  * An original device: a soft-cornered slab with a thin wine-black bezel and no maker's
@@ -26,7 +33,7 @@ export const useOpenedAt = () => useSyncExternalStore(noopSubscribe, getOpenedAt
  */
 export function LinePhone({ children, chips }: { children: React.ReactNode; chips?: React.ReactNode }) {
   const lang = useLang();
-  const time = useOpenedAt();
+  const time = useStatusBarTime();
   return (
     <div className="relative mx-auto w-full max-w-[400px] rounded-[2.6rem] bg-[linear-gradient(150deg,#3b2630,#1d1216_55%,#2c1c23)] p-[7px] shadow-[0_44px_70px_-36px_rgb(107_31_58/0.6),inset_0_0_0_1px_rgb(255_255_255/0.12)] sm:p-[9px]">
       <div className="flex h-[640px] flex-col overflow-hidden rounded-[2.1rem] bg-(--chat) lg:h-[760px]">

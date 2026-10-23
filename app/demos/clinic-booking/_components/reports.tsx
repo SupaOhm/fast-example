@@ -13,13 +13,14 @@ import {
   type TooltipContentProps,
 } from "recharts";
 import { nextDays, toISODate } from "@/lib/dates";
-import { bookingsByService, revenueByDay, STAFF } from "@/lib/demos/clinic-booking/data";
+import { bookingsByService, displayStatus, revenueByDay, STAFF } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { useLang } from "@/components/demo/lang";
 import { fill, formatDate, formatTHB } from "@/lib/demos/format";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { countText, ui } from "./copy";
 import { StaffPortrait } from "./staff-portrait";
+import { useMinuteTick } from "./use-minute-tick";
 
 // The clinic palette (see layout.tsx); recharts takes plain colours, so they are written out here.
 const BAR = "#6b1f3a"; // --wine
@@ -28,7 +29,6 @@ const GRID = "#f5dde2"; // --rose-2
 const TICK = "#6b5560"; // --muted
 const INK = "#2a1d22"; // --ink
 const CURSOR = "#fbeef0"; // --rose
-
 
 function RevenueTooltip({ active, payload }: TooltipContentProps) {
   const lang = useLang();
@@ -68,10 +68,19 @@ function Panel({ title, note, className = "", children }: { title: string; note?
 
 export function Reports() {
   const lang = useLang();
-  const [data] = useDemoStore(clinicData);
-  // Reports render only after hydration (RequireSession), so "today" is the browser's day.
-  const [today] = useState(() => new Date());
+  const [stored] = useDemoStore(clinicData);
+  useMinuteTick();
+  // Below about 480px the seven day ticks only fit at 14px with one-letter weekdays, in English as in Thai.
+  const [narrowChart, setNarrowChart] = useState(false);
+  // Reports render only after hydration (RequireSession), so "today" is the browser's clock. Today's bookings
+  // count with the status the queue shows (moved on by the clock), so the queue, reports and customers agree.
+  const today = new Date();
   const todayISO = toISODate(today);
+  const duration = (id: string) => stored.services.find((s) => s.id === id)?.durationMin ?? 30;
+  const data = {
+    ...stored,
+    bookings: stored.bookings.map((b) => (b.date === todayISO ? { ...b, status: displayStatus(b, duration(b.serviceId), today) } : b)),
+  };
 
   const revenue = revenueByDay(data, today, 7);
   const revenueTotal = revenue.reduce((s, d) => s + d.revenue, 0);
@@ -150,13 +159,13 @@ export function Reports() {
             aria-label={fill(ui.repDailyChart[lang], { range, total: formatTHB(revenueTotal) })}
             className="min-w-0 px-2 pt-4 pb-3 sm:px-3"
           >
-            <ResponsiveContainer width="100%" height={260} minWidth={0}>
+            <ResponsiveContainer width="100%" height={260} minWidth={0} onResize={(w) => setNarrowChart(w < 480)}>
               <BarChart data={revenue} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} accessibilityLayer={false}>
                 <CartesianGrid vertical={false} stroke={GRID} />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(d: string) => (d === todayISO ? ui.chipToday[lang] : `${formatDate(d, lang, lang === "th" ? "weekdayNarrow" : "weekday")} ${Number(d.slice(8))}`)}
-                  tick={{ fill: TICK, fontSize: 12 }}
+                  tickFormatter={(d: string) => (d === todayISO ? ui.chipToday[lang] : `${formatDate(d, lang, lang === "th" || narrowChart ? "weekdayNarrow" : "weekday")} ${Number(d.slice(8))}`)}
+                  tick={{ fill: TICK, fontSize: 14 }}
                   tickLine={false}
                   axisLine={{ stroke: GRID }}
                   interval={0}
@@ -164,10 +173,10 @@ export function Reports() {
                 />
                 <YAxis
                   tickFormatter={(v: number) => (v >= 1000 ? `\u0E3F${v / 1000}k` : `\u0E3F${v}`)}
-                  tick={{ fill: TICK, fontSize: 12 }}
+                  tick={{ fill: TICK, fontSize: 14 }}
                   tickLine={false}
                   axisLine={false}
-                  width={48}
+                  width={56}
                 />
                 <Tooltip content={RevenueTooltip} cursor={{ fill: CURSOR }} />
                 <Bar dataKey="revenue" fill={BAR} radius={[4, 4, 0, 0]} maxBarSize={28} animationDuration={600} />
@@ -195,14 +204,14 @@ export function Reports() {
                 <YAxis
                   type="category"
                   dataKey="name"
-                  width={lang === "th" ? 112 : 136}
-                  tick={{ fill: INK, fontSize: 12 }}
+                  width={lang === "th" ? 128 : 150}
+                  tick={{ fill: INK, fontSize: 14 }}
                   tickLine={false}
                   axisLine={false}
                 />
                 <Tooltip content={ServiceTooltip} cursor={{ fill: CURSOR }} />
                 <Bar dataKey="count" fill={BAR_SOFT} radius={[0, 4, 4, 0]} maxBarSize={18} animationDuration={600}>
-                  <LabelList dataKey="count" position="right" fill={TICK} fontSize={12} />
+                  <LabelList dataKey="count" position="right" fill={TICK} fontSize={14} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -227,7 +236,7 @@ export function Reports() {
                 <tr key={st.id} className="border-t border-(--line) first:border-t-0">
                   <th scope="row" className="py-3 pr-1 pl-3 font-normal sm:px-5">
                     <span className="flex items-center gap-2 leading-[1.35] sm:gap-3">
-                      <StaffPortrait decorative staffId={st.id} width={120} sizes="36px" className="size-9 shrink-0 rounded-full" />
+                      <StaffPortrait decorative staffId={st.id} sizes="36px" className="size-9 shrink-0 rounded-full" />
                       <span>
                         <span className="block">{st.name[lang]}</span>
                         <span className="hidden text-[14px] text-(--muted) sm:block">{st.role[lang]}</span>

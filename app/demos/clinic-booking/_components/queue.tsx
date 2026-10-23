@@ -28,8 +28,8 @@ import { focusRing, formatPhone, shortName, STATUS_TONE } from "./admin-format";
 import { BookingMotion } from "./booking-motion";
 import { countText, statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
-import { clock } from "./line-phone";
 import { StaffPortrait } from "./staff-portrait";
+import { clock } from "./time-format";
 import { useMinuteTick } from "./use-minute-tick";
 
 const DAY_START = toMinutes(OPEN);
@@ -334,7 +334,7 @@ function QueueRow({
       </div>
 
       <div className="mt-1 flex min-w-0 items-center gap-2.5 leading-[1.3] [grid-area:staff] xl:mt-0">
-        {staff && <StaffPortrait decorative staffId={staff.id} width={120} sizes="36px" className="size-8 shrink-0 rounded-full xl:size-9" />}
+        {staff && <StaffPortrait decorative staffId={staff.id} sizes="36px" className="size-8 shrink-0 rounded-full xl:size-9" />}
         <span className="min-w-0">
           <span className="block truncate">{staff?.name[lang] ?? "-"}</span>
           <span className="hidden truncate text-[14px] text-(--muted) xl:block">{staff?.role[lang]}</span>
@@ -398,7 +398,7 @@ function StaffTimeline({ rows, now, highlightId }: { rows: Row[]; now: Date | nu
           return (
             <Fragment key={st.id}>
               <div className="flex min-w-0 items-center gap-3 border-t border-(--line) py-2.5 leading-[1.3]">
-                <StaffPortrait decorative staffId={st.id} width={120} sizes="40px" className="size-10 shrink-0 rounded-full" />
+                <StaffPortrait decorative staffId={st.id} sizes="40px" className="size-10 shrink-0 rounded-full" />
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{st.name[lang]}</span>
                   <span className="block truncate text-[14px] text-(--muted)">{countText(lane.length, lang)}</span>

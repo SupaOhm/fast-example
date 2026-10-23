@@ -227,6 +227,14 @@ describe("bookAsGuest", () => {
     expect(second.data.customers.filter((c) => c.id === GUEST_ID)).toEqual([{ id: GUEST_ID, name: "B", phone: "" }]);
   });
 
+  it("keeps a phone number the clinic added to the guest", () => {
+    const options = freeTimes(data, { serviceId: "s-mask", date: "2026-10-19", now });
+    const first = bookAsGuest(data, { name: "A", serviceId: "s-mask", staffId: options[0].staffId, date: "2026-10-19", time: options[0].time }, now);
+    const withPhone = upsertCustomer(first.data, { id: GUEST_ID, name: "A", phone: "0812345678" });
+    const second = bookAsGuest(withPhone, { name: "B", serviceId: "s-mask", staffId: options[1].staffId, date: "2026-10-19", time: options[1].time }, now);
+    expect(second.data.customers.filter((c) => c.id === GUEST_ID)).toEqual([{ id: GUEST_ID, name: "B", phone: "0812345678" }]);
+  });
+
   it("rejects a blank name and a taken time with error codes", () => {
     const b = data.bookings.find((x) => x.date === tomorrow)!;
     const input = { name: "A", serviceId: b.serviceId, staffId: b.staffId, date: tomorrow, time: b.time };

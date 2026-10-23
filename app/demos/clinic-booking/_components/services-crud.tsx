@@ -5,9 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { ClinicError, deleteService, newId, STAFF, upsertService, type Service } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { useLang } from "@/components/demo/lang";
-import { fill } from "@/lib/demos/format";
+import { fill, formatTHB } from "@/lib/demos/format";
 import { countText, errorText, ui } from "./copy";
-import { formatTHB } from "@/lib/demos/format";
 import type { Lang } from "@/lib/demos/lang";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { fieldClass, focusRing } from "./admin-format";
@@ -17,6 +16,8 @@ const DURATIONS = Array.from({ length: 12 }, (_, i) => (i + 1) * 15); // 15–18
 
 interface Draft {
   id?: string;
+  /** The language the name was opened in; an edit writes the name back to this language only. */
+  lang: Lang;
   name: string;
   durationMin: number;
   price: string;
@@ -48,14 +49,14 @@ export function ServicesCrud() {
     setCrudError(null);
     setSaved(null);
     setErrors({});
-    setDraft({ name: "", durationMin: 60, price: "" });
+    setDraft({ lang, name: "", durationMin: 60, price: "" });
   }
 
   function openEdit(s: Service) {
     setCrudError(null);
     setSaved(null);
     setErrors({});
-    setDraft({ id: s.id, name: s.name[lang], durationMin: s.durationMin, price: String(s.price) });
+    setDraft({ id: s.id, lang, name: s.name[lang], durationMin: s.durationMin, price: String(s.price) });
   }
 
   function save(e: React.FormEvent) {
@@ -71,10 +72,11 @@ export function ServicesCrud() {
     if (next.price) return priceRef.current?.focus();
 
     const durationMin = Math.min(180, Math.max(15, Math.round(draft.durationMin / 15) * 15));
-    // A new treatment gets the typed name in both languages; editing changes only the language being read.
+    // A new treatment gets the typed name in both languages. An edit changes only the language the form was opened
+    // in, even if the page's language was switched while editing.
     setData((d) => {
       const existing = draft.id ? d.services.find((x) => x.id === draft.id) : undefined;
-      const names = existing ? { ...existing.name, [lang]: name } : { th: name, en: name };
+      const names = existing ? { ...existing.name, [draft.lang]: name } : { th: name, en: name };
       return upsertService(d, { id: draft.id ?? newId("s"), name: names, durationMin, price });
     });
     setSaved(fill(draft.id ? ui.svcSaved[lang] : ui.svcAdded[lang], { name }));

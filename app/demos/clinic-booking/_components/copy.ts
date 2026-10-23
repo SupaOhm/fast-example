@@ -8,6 +8,7 @@ export const ui = {
   free: { th: "ฟรี", en: "Free" },
   clockTime: { th: "{time} น.", en: "{time}" },
   resetData: { th: "รีเซ็ตข้อมูล", en: "Reset data" },
+  resetShort: { th: "รีเซ็ต", en: "Reset" },
   hours: { th: "เปิดทุกวัน {open}–{close} น.", en: "Open daily, {open}–{close}" },
   bookAhead: { th: "จองผ่าน LINE ได้ตลอด 24 ชั่วโมง", en: "Book on LINE at any hour" },
   mainNav: { th: "เมนูหลัก", en: "Main menu" },
@@ -15,7 +16,7 @@ export const ui = {
   // Home
   homeLink: { th: "ลูมิ คลินิก หน้าแรก", en: "Lumi Clinic home" },
   navTreatments: { th: "ทรีตเมนต์", en: "Treatments" },
-  navTeam: { th: "ทีมแพทย์", en: "Our team" },
+  navTeam: { th: "ทีมของเรา", en: "Our team" },
   navClinic: { th: "คลินิก", en: "The clinic" },
   bookOnLine: { th: "จองผ่าน LINE", en: "Book on LINE" },
   heroKicker: { th: "คลินิกดูแลผิว ซอยทองหล่อ กรุงเทพฯ", en: "A skin clinic in Thonglor, Bangkok" },
@@ -235,15 +236,17 @@ export const ui = {
   custNoNext: { th: "ไม่มีนัด", en: "No visit booked" },
   custTimes: { th: "{n} ครั้ง", en: "{n}" },
   custMobileMeta: { th: "จอง {n} ครั้ง", en: "{n} bookings" },
-  custMobileNext: { th: "จอง {n} ครั้ง นัดถัดไป {when}", en: "{n} bookings, next {when}" },
+  custMobileNext: { th: "จอง {n} ครั้ง นัดถัดไป {when}", en: "{n} bookings. Next: {when}" },
   custEmpty: {
     th: "ไม่พบลูกค้าที่ตรงกับ “{q}” ลองค้นด้วยชื่อเล่นหรือเบอร์โทรบางส่วน",
     en: "No customer matches “{q}”. Try part of a name or phone number.",
   },
   editName: { th: "แก้ไข {name}", en: "Edit {name}" },
   deleteName: { th: "ลบ {name}", en: "Delete {name}" },
-  whenTomorrow: { th: "พรุ่งนี้", en: "Tomorrow" },
-  whenAt: { th: "{day} {time}", en: "{day}, {time}" },
+  // Day words sit mid-sentence ("Next: today at 11:30"), so English keeps them lower-case.
+  whenToday: { th: "วันนี้", en: "today" },
+  whenTomorrow: { th: "พรุ่งนี้", en: "tomorrow" },
+  whenAt: { th: "{day} {time}", en: "{day} at {time}" },
 
   // Treatments
   svcTitle: { th: "บริการ", en: "Treatments" },

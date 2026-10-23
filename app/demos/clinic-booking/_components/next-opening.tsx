@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useLang } from "@/components/demo/lang";
 import { STAFF, nextOpening } from "@/lib/demos/clinic-booking/data";
 import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { fill } from "@/lib/demos/format";
 import { useDemoStore, useHydrated } from "@/lib/use-demo-store";
 import { ui } from "./copy";
+import { useMinuteTick } from "./use-minute-tick";
 
 const box = "inline-flex min-h-11 items-center gap-3 rounded-full px-4 py-2";
 
@@ -16,11 +16,7 @@ export function NextOpening() {
   const lang = useLang();
   const [data] = useDemoStore(clinicData);
   // Re-read the clock every minute so a page left open doesn't offer a time that has passed.
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setTick((n) => n + 1), 60_000);
-    return () => clearInterval(id);
-  }, []);
+  useMinuteTick();
 
   if (!hydrated) return <span aria-hidden className={`${box} w-72 max-w-full bg-(--paper)/60`} />;
 
