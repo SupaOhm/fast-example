@@ -143,6 +143,33 @@ test("orders paginate 15 per page", async ({ page }) => {
   expect(secondPage.filter((id) => firstPage.includes(id))).toEqual([]);
 });
 
+test("the to-pack tile opens the orders filtered to packing", async ({ page }) => {
+  await page.goto("/demos/shop-admin");
+  const n = await countIn(page, "todo-pack");
+  await page.getByTestId("todo-pack").click();
+  await expect(page).toHaveURL(/\/demos\/shop-admin\/orders\?status=paid$/);
+  await expect(page.getByRole("combobox", { name: "สถานะ", exact: true })).toHaveValue("paid");
+  await expect(page.getByTestId("receipt")).toHaveCount(Math.min(n, 15));
+});
+
+test("orders are receipts with items, a total and a stamped status", async ({ page }) => {
+  await page.goto("/demos/shop-admin/orders");
+  const receipts = page.getByTestId("receipt");
+  await expect(receipts).toHaveCount(15);
+  const first = receipts.first();
+  await expect(first).toContainText(/RD-\d{4}/);
+  await expect(first).toContainText("รวม");
+  await expect(first).toContainText("฿");
+  await expect(first.getByTestId("product-icon").first()).toBeVisible();
+  await expect(first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ })).toBeVisible();
+});
+
+test("stock rows show a drawn product icon", async ({ page }) => {
+  await page.goto("/demos/shop-admin/stock");
+  await expect(page.getByTestId("stock-row-NP-02").getByTestId("product-icon")).toBeVisible();
+  await expect(page.getByTestId("stock-row-GF-01")).toContainText("กล่องของฝากรวม");
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 
@@ -162,5 +189,15 @@ test.describe("in English", () => {
     await page.goto("/demos/shop-admin");
     await page.getByTestId("demo-session").getByRole("button", { name: "Log out" }).click();
     await expect(page.getByTestId("login-submit")).toHaveText("Log in");
+  });
+
+  test("orders and stock read in English and search finds English names", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    await expect(page.getByRole("combobox", { name: /^Order status RD-\d{4}$/ }).first()).toBeVisible();
+    await page.getByTestId("orders-search").fill("Khun May");
+    await expect(page.getByTestId("receipt").first()).toContainText("Khun May");
+    await page.goto("/demos/shop-admin/stock");
+    await expect(page.getByTestId("stock-row-GF-01")).toContainText("Chiang Mai gift box");
+    await expect(page.getByTestId("stock-row-NP-02")).toContainText("Running low");
   });
 });
