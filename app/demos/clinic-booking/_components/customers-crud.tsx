@@ -119,7 +119,7 @@ export function CustomersCrud() {
           type="button"
           data-testid="customer-add"
           onClick={openNew}
-          className={`inline-flex items-center gap-2 rounded-full bg-(--rose-deep) px-4.5 py-2.5 text-[15px] text-white hover:bg-[#76323f] ${focusRing}`}
+          className={`inline-flex items-center gap-2 rounded-full bg-(--wine) px-4.5 py-2.5 text-[15px] text-white hover:bg-[#76323f] ${focusRing}`}
         >
           <Plus className="size-4" aria-hidden />
           เพิ่มลูกค้า
@@ -146,7 +146,7 @@ export function CustomersCrud() {
           onSubmit={save}
           noValidate
           aria-labelledby="customer-form-title"
-          className="mt-5 rounded-2xl border border-(--rose)/50 bg-white p-5 shadow-[0_18px_40px_-28px_rgb(142_62_77/0.5)] sm:p-6"
+          className="mt-5 rounded-2xl border border-(--accent)/50 bg-white p-5 shadow-[0_18px_40px_-28px_rgb(142_62_77/0.5)] sm:p-6"
         >
           <div className="flex items-center justify-between gap-4">
             <h2 id="customer-form-title" className="text-lg leading-[1.3] font-medium">
@@ -156,7 +156,7 @@ export function CustomersCrud() {
               type="button"
               onClick={() => setDraft(null)}
               aria-label="ปิดฟอร์ม"
-              className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-(--blush) ${focusRing}`}
+              className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-(--rose) ${focusRing}`}
             >
               <X className="size-4" aria-hidden />
             </button>
@@ -225,7 +225,7 @@ export function CustomersCrud() {
             <button
               type="submit"
               data-testid="customer-save"
-              className={`inline-flex items-center gap-2 rounded-full bg-(--rose-deep) px-5 py-2.5 text-[15px] text-white hover:bg-[#76323f] ${focusRing}`}
+              className={`inline-flex items-center gap-2 rounded-full bg-(--wine) px-5 py-2.5 text-[15px] text-white hover:bg-[#76323f] ${focusRing}`}
             >
               <Check className="size-4" aria-hidden />
               บันทึก
@@ -233,7 +233,7 @@ export function CustomersCrud() {
             <button
               type="button"
               onClick={() => setDraft(null)}
-              className={`rounded-full px-4 py-2.5 text-[15px] text-(--muted) hover:bg-(--blush) hover:text-(--ink) ${focusRing}`}
+              className={`rounded-full px-4 py-2.5 text-[15px] text-(--muted) hover:bg-(--rose) hover:text-(--ink) ${focusRing}`}
             >
               ยกเลิก
             </button>
@@ -275,7 +275,7 @@ export function CustomersCrud() {
                   <div className="flex min-w-0 items-center gap-3">
                     <span
                       aria-hidden
-                      className="grid size-10 shrink-0 place-items-center rounded-full bg-(--blush-2) text-[15px] text-(--rose-deep)"
+                      className="grid size-10 shrink-0 place-items-center rounded-full bg-(--rose-2) text-[15px] text-(--wine)"
                     >
                       {monogramOf(c.name)}
                     </span>
@@ -299,7 +299,7 @@ export function CustomersCrud() {
                       type="button"
                       onClick={() => openEdit(c)}
                       aria-label={`แก้ไข ${c.name}`}
-                      className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-(--blush) hover:text-(--ink) ${focusRing}`}
+                      className={`grid size-9 place-items-center rounded-full text-(--muted) hover:bg-(--rose) hover:text-(--ink) ${focusRing}`}
                     >
                       <Pencil className="size-4" aria-hidden />
                     </button>

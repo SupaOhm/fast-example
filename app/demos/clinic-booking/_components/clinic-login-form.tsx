@@ -30,7 +30,7 @@ export function ClinicLoginForm() {
   return (
     <div className="w-full max-w-[400px]">
       <div className="mb-7 flex items-center gap-3 lg:hidden">
-        <span aria-hidden className="grid size-11 place-items-center rounded-full bg-(--rose-deep) text-lg text-white">
+        <span aria-hidden className="grid size-11 place-items-center rounded-full bg-(--wine) text-lg text-white">
           L
         </span>
         <div className="leading-[1.3]">
@@ -75,7 +75,7 @@ export function ClinicLoginForm() {
             />
           </div>
 
-          <p className="flex items-start gap-2 rounded-xl bg-(--blush) px-3.5 py-3 text-sm leading-[1.5] text-(--rose-deep)">
+          <p className="flex items-start gap-2 rounded-xl bg-(--rose) px-3.5 py-3 text-sm leading-[1.5] text-(--wine)">
             <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
             <span>
               <span className="font-medium">บัญชีตัวอย่าง</span> กรอกไว้ให้แล้ว กดเข้าสู่ระบบได้เลย
@@ -85,7 +85,7 @@ export function ClinicLoginForm() {
           <button
             type="submit"
             data-testid="login-submit"
-            className={`flex w-full items-center justify-center gap-2 rounded-full bg-(--rose-deep) px-4 py-3 text-base font-medium text-white transition-colors hover:bg-[#76323f] ${focusRing}`}
+            className={`flex w-full items-center justify-center gap-2 rounded-full bg-(--wine) px-4 py-3 text-base font-medium text-white transition-colors hover:bg-[#76323f] ${focusRing}`}
           >
             <LogIn className="size-4" aria-hidden />
             เข้าสู่ระบบ

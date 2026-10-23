@@ -129,8 +129,8 @@ export function Queue() {
               onClick={() => setIndex(i)}
               className={`flex flex-col items-center rounded-2xl border px-1 pt-1.5 pb-2 leading-[1.25] sm:flex-row sm:items-baseline sm:justify-center sm:gap-2 sm:px-3 sm:py-2.5 ${focusRing} ${
                 selected
-                  ? "border-(--rose-deep) bg-(--rose-deep) text-white"
-                  : "border-(--line) bg-white text-(--ink) hover:border-(--rose)"
+                  ? "border-(--wine) bg-(--wine) text-white"
+                  : "border-(--line) bg-white text-(--ink) hover:border-(--accent)"
               }`}
             >
               <span className={`text-xs ${selected ? "text-white/85" : "text-(--muted)"}`}>
@@ -153,7 +153,7 @@ export function Queue() {
       <section aria-label="สรุปสถานะคิว" className="mt-5 overflow-hidden rounded-2xl border border-(--line) bg-white">
         <div aria-hidden className="flex h-1.5 gap-0.5 bg-white">
           {rows.length === 0 ? (
-            <span className="flex-1 bg-(--blush-2)" />
+            <span className="flex-1 bg-(--rose-2)" />
           ) : (
             BOOKING_STATUSES.filter((s) => counts[s] > 0).map((s) => (
               <span key={s} className={STATUS_TONE[s].dot} style={{ flexGrow: counts[s] }} />
@@ -185,7 +185,7 @@ export function Queue() {
         </h2>
         {rows.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-(--line) bg-white/60 px-6 py-12 text-center">
-            <CalendarX2 className="mx-auto size-8 text-(--rose)" aria-hidden />
+            <CalendarX2 className="mx-auto size-8 text-(--accent)" aria-hidden />
             <p className="mt-3 text-lg leading-[1.4]">ยังไม่มีคิวในวันนี้</p>
             <p className="mx-auto mt-1 max-w-sm text-[15px] leading-[1.6] text-(--muted)">
               คิวที่จองผ่าน LINE จะขึ้นที่นี่ทันที ลองจองคิวเองแล้วกลับมาดูได้
@@ -194,7 +194,7 @@ export function Queue() {
               href="/demos/clinic-booking/book"
               target="_blank"
               rel="noopener"
-              className={`mt-5 inline-flex items-center gap-2 rounded-full border border-(--rose-deep)/40 px-4 py-2 text-[15px] text-(--rose-deep) hover:bg-white ${focusRing}`}
+              className={`mt-5 inline-flex items-center gap-2 rounded-full border border-(--wine)/40 px-4 py-2 text-[15px] text-(--wine) hover:bg-white ${focusRing}`}
             >
               <ExternalLink className="size-4" aria-hidden />
               เปิดหน้าจองคิว
@@ -219,10 +219,10 @@ export function Queue() {
 function NowLine({ now }: { now: number }) {
   return (
     <li aria-label={`ตอนนี้ ${fromMinutes(now)} น.`} className="relative flex items-center gap-2 px-4 py-1 sm:px-5">
-      <span className="rounded-full bg-(--rose-deep) px-2 py-0.5 text-xs leading-[1.3] text-white tabular-nums">
+      <span className="rounded-full bg-(--wine) px-2 py-0.5 text-xs leading-[1.3] text-white tabular-nums">
         ตอนนี้ {fromMinutes(now)}
       </span>
-      <span aria-hidden className="h-px flex-1 bg-(--rose-deep)" />
+      <span aria-hidden className="h-px flex-1 bg-(--wine)" />
     </li>
   );
 }
@@ -268,7 +268,7 @@ function QueueRow({ row, onStatus }: { row: Row; onStatus: (id: string, s: Booki
         <p className="flex min-w-0 items-center gap-2 leading-[1.35]">
           <span
             aria-hidden
-            className="hidden size-8 shrink-0 place-items-center rounded-full bg-(--blush-2) text-[13px] text-(--rose-deep) sm:grid"
+            className="hidden size-8 shrink-0 place-items-center rounded-full bg-(--rose-2) text-[13px] text-(--wine) sm:grid"
           >
             {monogramOf(staff.name.th)}
           </span>
@@ -327,7 +327,7 @@ function StaffTimeline({ rows, now }: { rows: Row[]; now: number | null }) {
           return (
             <Fragment key={st.id}>
               <div className="flex items-center gap-2.5 border-t border-(--line) py-2.5 leading-[1.3]">
-                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-(--blush-2) text-[13px] text-(--rose-deep)">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-(--rose-2) text-[13px] text-(--wine)">
                   {monogramOf(st.name.th)}
                 </span>
                 <span className="min-w-0">
@@ -351,7 +351,7 @@ function StaffTimeline({ rows, now }: { rows: Row[]; now: number | null }) {
                   </div>
                 ))}
                 {now !== null && (
-                  <span className="absolute -inset-y-px z-10 w-0.5 bg-(--rose-deep)" style={{ left: pct(now) }} />
+                  <span className="absolute -inset-y-px z-10 w-0.5 bg-(--wine)" style={{ left: pct(now) }} />
                 )}
               </div>
             </Fragment>

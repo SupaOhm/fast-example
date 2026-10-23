@@ -219,7 +219,7 @@ export function Reports() {
                 <tr key={st.id} className="border-t border-(--line) first:border-t-0">
                   <th scope="row" className="py-3 pr-2 pl-4 font-normal sm:px-5">
                     <span className="flex items-center gap-3 leading-[1.35]">
-                      <span aria-hidden className="hidden size-9 shrink-0 place-items-center rounded-full bg-(--blush-2) text-sm sm:grid text-(--rose-deep)">
+                      <span aria-hidden className="hidden size-9 shrink-0 place-items-center rounded-full bg-(--rose-2) text-sm sm:grid text-(--wine)">
                         {monogramOf(st.name.th)}
                       </span>
                       <span>

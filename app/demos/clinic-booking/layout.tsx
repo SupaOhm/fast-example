@@ -1,39 +1,42 @@
 import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
 import { DemoPill } from "@/components/demo/demo-pill";
+import { LangScope } from "@/components/demo/lang";
 
-const font = Kanit({ weight: ["300", "400", "500"], subsets: ["thai", "latin"] });
+const font = Kanit({ weight: ["400", "500", "600"], subsets: ["thai", "latin"] });
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Lumi Clinic",
-    default: "ลูมิ คลินิก | Lumi Clinic",
+    default: "Lumi Clinic · ลูมิ คลินิก",
   },
-  description: "ลูมิ คลินิก คลินิกดูแลผิว (สมมติ) จองคิวผ่าน LINE เลือกบริการ ผู้ดูแล วันและเวลาได้เอง",
+  description:
+    "Lumi Clinic, a fictional skin clinic in Bangkok: book a treatment on LINE in three taps and see it land in the clinic's schedule.",
 };
 
 const palette = {
-  "--blush": "#fbeff0",
-  "--blush-2": "#f4dde0",
-  "--paper": "#fffafa",
-  "--rose": "#c86b7a",
-  "--rose-deep": "#8e3e4d",
-  "--ink": "#2b2226",
-  "--muted": "#6b5960",
-  "--line": "#ebd3d7",
+  "--rose": "#fbeef0",
+  "--rose-2": "#f5dde2",
+  "--paper": "#fffafb",
+  "--line": "#ecd3d9",
+  "--ink": "#2a1d22",
+  "--muted": "#6b5560",
+  "--wine": "#6b1f3a",
+  "--accent": "#c2185b",
   "--line-green": "#06c755",
   "--line-green-ink": "#04723a",
+  "--error": "#b3261e",
+  // The LINE chat mock on the booking page; Task 3 redraws it.
   "--chat": "#c9d6e6",
   "--chat-ink": "#46505e",
   "--bubble-me": "#a6e88e",
-  "--error": "#b3261e",
 } as React.CSSProperties;
 
 export default function ClinicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={palette} className={`${font.className} min-h-screen bg-(--blush) text-(--ink) selection:bg-(--rose)/30`}>
+    <LangScope style={palette} className={`${font.className} min-h-screen bg-(--rose) text-(--ink) selection:bg-(--accent)/20`}>
       {children}
       <DemoPill packageId="app-premium" />
-    </div>
+    </LangScope>
   );
 }

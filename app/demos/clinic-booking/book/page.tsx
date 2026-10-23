@@ -17,7 +17,7 @@ export default function BookPage() {
       <aside className="hidden max-w-xs self-center justify-self-end lg:block">
         <Link
           href="/demos/clinic-booking"
-          className="inline-flex items-center gap-1 text-[15px] text-(--rose-deep) underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1 text-[15px] text-(--wine) underline-offset-4 hover:underline"
         >
           <ChevronLeft className="size-4" aria-hidden />
           กลับหน้าคลินิก

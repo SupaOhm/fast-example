@@ -77,7 +77,7 @@ const noopSubscribe = () => () => {};
 const getOpenedAt = () => (openedAt ??= clock(new Date()));
 const getNoTime = () => "";
 
-const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--rose-deep)";
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--wine)";
 
 export function BookingFlow() {
   const [data, setData] = useDemoStore(clinicData);
@@ -226,7 +226,7 @@ export function BookingFlow() {
             {step === 5 ? (
               <FlexCard>
                 <form onSubmit={confirm} noValidate className="p-4">
-                  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-xl bg-(--blush) px-3.5 py-3 text-[13px] leading-[1.5]">
+                  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-xl bg-(--rose) px-3.5 py-3 text-[13px] leading-[1.5]">
                     <dt className="text-(--muted)">บริการ</dt>
                     <dd className="text-right">{service.name.th}</dd>
                     <dt className="text-(--muted)">ผู้ดูแล</dt>
@@ -236,7 +236,7 @@ export function BookingFlow() {
                       {shortDay(picks.date)} {picks.time} น.
                     </dd>
                     <dt className="text-(--muted)">ราคา</dt>
-                    <dd className="text-right font-medium text-(--rose-deep)">
+                    <dd className="text-right font-medium text-(--wine)">
                       {service.price === 0 ? "ฟรี" : formatTHB(service.price)}
                     </dd>
                   </dl>
@@ -295,7 +295,7 @@ export function BookingFlow() {
               <button
                 type="button"
                 onClick={restart}
-                className={`h-11 rounded-xl bg-white text-[15px] font-medium text-(--rose-deep) shadow-sm ${focusRing}`}
+                className={`h-11 rounded-xl bg-white text-[15px] font-medium text-(--wine) shadow-sm ${focusRing}`}
               >
                 จองคิวเพิ่ม
               </button>
@@ -371,7 +371,7 @@ function BehindTheScenes({
     <aside aria-label="สิ่งที่เกิดขึ้นหลังจองคิว" className="hidden max-w-xs self-center lg:block">
       <h2 className="text-[15px] text-(--muted)">หลังลูกค้ากดยืนยัน</h2>
 
-      <div className={`mt-4 rounded-2xl p-4 ${done ? "bg-white/85 shadow-[0_12px_32px_-18px_rgb(43_34_38/0.4)] backdrop-blur" : "border border-dashed border-(--rose)/40"}`}>
+      <div className={`mt-4 rounded-2xl p-4 ${done ? "bg-white/85 shadow-[0_12px_32px_-18px_rgb(43_34_38/0.4)] backdrop-blur" : "border border-dashed border-(--accent)/40"}`}>
         <p className="flex items-center gap-2 text-[13px] text-(--muted)">
           <BellRing className="size-4 text-(--line-green-ink)" aria-hidden />
           ข้อความเตือนใน LINE ก่อนวันนัด
@@ -385,15 +385,15 @@ function BehindTheScenes({
         )}
       </div>
 
-      <div className={`mt-3 rounded-2xl p-4 ${done ? "bg-white/85 shadow-[0_12px_32px_-18px_rgb(43_34_38/0.4)] backdrop-blur" : "border border-dashed border-(--rose)/40"}`}>
+      <div className={`mt-3 rounded-2xl p-4 ${done ? "bg-white/85 shadow-[0_12px_32px_-18px_rgb(43_34_38/0.4)] backdrop-blur" : "border border-dashed border-(--accent)/40"}`}>
         <p className="flex items-center gap-2 text-[13px] text-(--muted)">
-          <CalendarCheck className="size-4 text-(--rose-deep)" aria-hidden />
+          <CalendarCheck className="size-4 text-(--wine)" aria-hidden />
           คิวใหม่ในระบบหลังร้าน
         </p>
         {done ? (
           <>
             <div className="mt-2 flex items-baseline gap-3">
-              <span className="text-2xl font-light tabular-nums text-(--rose-deep)">{booking.time}</span>
+              <span className="text-2xl font-light tabular-nums text-(--wine)">{booking.time}</span>
               <span className="min-w-0 text-[15px] leading-[1.45]">
                 {customer}
                 <span className="block text-[13px] text-(--muted)">
@@ -404,7 +404,7 @@ function BehindTheScenes({
             <Link
               href="/demos/clinic-booking/admin"
               prefetch={false}
-              className="mt-3 inline-flex text-sm text-(--rose-deep) underline underline-offset-4"
+              className="mt-3 inline-flex text-sm text-(--wine) underline underline-offset-4"
             >
               เปิดระบบหลังร้าน
             </Link>
@@ -444,7 +444,7 @@ function ChatHeader() {
       >
         <ChevronLeft className="size-6" aria-hidden />
       </Link>
-      <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-(--rose-deep) text-[15px] text-white">
+      <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-(--wine) text-[15px] text-white">
         L
       </span>
       <div className="min-w-0 flex-1 leading-[1.25]">
@@ -501,7 +501,7 @@ function BotSay({ first, time, children }: { first?: boolean; time: string; chil
   return (
     <div className="flex items-start gap-2">
       {first ? (
-        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-(--rose-deep) text-sm text-white">
+        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-(--wine) text-sm text-white">
           L
         </span>
       ) : (
@@ -552,13 +552,13 @@ function ServiceCard({ services, onPick }: { services: Service[]; onPick: (id: s
               type="button"
               data-testid={`service-${s.id}`}
               onClick={() => onPick(s.id)}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-(--blush) ${focusRing} focus-visible:-outline-offset-2`}
+              className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-(--rose) ${focusRing} focus-visible:-outline-offset-2`}
             >
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] leading-[1.4]">{s.name.th}</span>
                 <span className="block text-xs text-(--muted)">{s.durationMin} นาที</span>
               </span>
-              <span className="text-[15px] font-medium text-(--rose-deep)">{s.price === 0 ? "ฟรี" : formatTHB(s.price)}</span>
+              <span className="text-[15px] font-medium text-(--wine)">{s.price === 0 ? "ฟรี" : formatTHB(s.price)}</span>
             </button>
           </li>
         ))}
@@ -581,11 +581,11 @@ function StaffCard({ service, onPick }: { service: Service; onPick: (id: string)
                 type="button"
                 data-testid={`staff-${s.id}`}
                 onClick={() => onPick(s.id)}
-                className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-(--blush) ${focusRing} focus-visible:-outline-offset-2`}
+                className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-(--rose) ${focusRing} focus-visible:-outline-offset-2`}
               >
                 <span
                   aria-hidden
-                  className="grid size-11 shrink-0 place-items-center rounded-full bg-(--blush-2) text-xl font-light text-(--rose-deep)"
+                  className="grid size-11 shrink-0 place-items-center rounded-full bg-(--rose-2) text-xl font-light text-(--wine)"
                 >
                   {monogram(s)}
                 </span>
@@ -630,7 +630,7 @@ function DateCard({
                 data-testid={`date-${i}`}
                 aria-label={`${label}${free ? ` ว่าง ${free} ช่วงเวลา` : " เต็ม"}`}
                 onClick={() => onPick(date)}
-                className={`flex h-full w-full flex-col items-center rounded-xl border px-1 py-2 text-center hover:border-(--rose) hover:bg-(--blush) ${
+                className={`flex h-full w-full flex-col items-center rounded-xl border px-1 py-2 text-center hover:border-(--accent) hover:bg-(--rose) ${
                   free ? "border-(--line)" : "border-dashed border-(--line) bg-[#faf7f8]"
                 } ${focusRing}`}
               >
@@ -660,7 +660,7 @@ function SlotCard({ slots, onPick, onBack }: { slots: string[]; onPick: (t: stri
           <button
             type="button"
             onClick={onBack}
-            className={`mt-2 text-sm text-(--rose-deep) underline underline-offset-4 ${focusRing}`}
+            className={`mt-2 text-sm text-(--wine) underline underline-offset-4 ${focusRing}`}
           >
             เลือกวันอื่น
           </button>
@@ -673,7 +673,7 @@ function SlotCard({ slots, onPick, onBack }: { slots: string[]; onPick: (t: stri
                 type="button"
                 data-testid="slot"
                 onClick={() => onPick(t)}
-                className={`h-10 w-full rounded-xl border border-(--line) text-[14px] tabular-nums hover:border-(--rose) hover:bg-(--blush) ${focusRing}`}
+                className={`h-10 w-full rounded-xl border border-(--line) text-[14px] tabular-nums hover:border-(--accent) hover:bg-(--rose) ${focusRing}`}
               >
                 {t}
               </button>
@@ -713,7 +713,7 @@ function Field({
         aria-required
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errId : undefined}
-        className={`mt-1 h-11 w-full rounded-xl border bg-white px-3.5 text-[15px] placeholder:text-[#857379] focus:border-(--rose-deep) focus:outline-none focus-visible:ring-2 focus-visible:ring-(--rose)/30 ${
+        className={`mt-1 h-11 w-full rounded-xl border bg-white px-3.5 text-[15px] placeholder:text-[#857379] focus:border-(--wine) focus:outline-none focus-visible:ring-2 focus-visible:ring-(--accent)/30 ${
           error ? "border-(--error)" : "border-(--line)"
         }`}
         {...rest}
@@ -763,7 +763,7 @@ function Receipt({ booking, customer, service, staff }: { booking: Booking; cust
           ))}
         </dl>
         <p className="mt-3.5 flex gap-2 border-t border-(--line) pt-3 text-[13px] leading-[1.55] text-(--muted)">
-          <BellRing className="mt-0.5 size-4 shrink-0 text-(--rose-deep)" aria-hidden />
+          <BellRing className="mt-0.5 size-4 shrink-0 text-(--wine)" aria-hidden />
           เราจะส่งข้อความเตือนก่อนถึงคิว 1 วัน (ตัวอย่าง)
         </p>
       </div>

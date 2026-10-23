@@ -48,7 +48,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
         <Link href={BASE} className={`order-1 flex min-w-0 items-center gap-2.5 px-4 py-2.5 lg:px-6 lg:pt-7 lg:pb-7 ${focusRing}`}>
           <span
             aria-hidden
-            className="grid size-9 shrink-0 place-items-center rounded-full bg-(--rose-deep) text-[15px] text-white lg:size-10 lg:text-base"
+            className="grid size-9 shrink-0 place-items-center rounded-full bg-(--wine) text-[15px] text-white lg:size-10 lg:text-base"
           >
             L
           </span>
@@ -70,8 +70,8 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
                     aria-current={active ? "page" : undefined}
                     className={`relative flex flex-col items-center gap-0.5 px-1 pt-2 pb-2 text-[13px] leading-[1.3] transition-colors lg:flex-row lg:gap-3 lg:rounded-xl lg:px-3 lg:py-2.5 lg:text-[15px] ${focusRing} ${
                       active
-                        ? "font-medium text-(--rose-deep) after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:rounded-full after:bg-(--rose-deep) lg:bg-(--blush) lg:after:hidden"
-                        : "text-(--muted) hover:text-(--ink) lg:hover:bg-(--blush)/60"
+                        ? "font-medium text-(--wine) after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:rounded-full after:bg-(--wine) lg:bg-(--rose) lg:after:hidden"
+                        : "text-(--muted) hover:text-(--ink) lg:hover:bg-(--rose)/60"
                     }`}
                   >
                     <span className="relative">
@@ -79,7 +79,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
                       {badge > 0 && (
                         <span
                           aria-hidden
-                          className="absolute -top-1.5 -right-2.5 grid h-4 min-w-4 place-items-center rounded-full bg-(--rose-deep) px-1 text-[10px] leading-none text-white tabular-nums lg:hidden"
+                          className="absolute -top-1.5 -right-2.5 grid h-4 min-w-4 place-items-center rounded-full bg-(--wine) px-1 text-[10px] leading-none text-white tabular-nums lg:hidden"
                         >
                           {badge}
                         </span>
@@ -90,7 +90,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
                       <>
                         <span
                           aria-hidden
-                          className="ml-auto hidden h-5 min-w-5 place-items-center rounded-full bg-(--rose-deep) px-1.5 text-xs leading-none text-white tabular-nums lg:grid"
+                          className="ml-auto hidden h-5 min-w-5 place-items-center rounded-full bg-(--wine) px-1.5 text-xs leading-none text-white tabular-nums lg:grid"
                         >
                           {badge}
                         </span>
@@ -108,7 +108,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
               href="/demos/clinic-booking/book"
               target="_blank"
               rel="noopener"
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-(--muted) hover:bg-(--blush)/60 hover:text-(--ink) ${focusRing}`}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-(--muted) hover:bg-(--rose)/60 hover:text-(--ink) ${focusRing}`}
             >
               <ExternalLink className="size-[18px]" aria-hidden />
               หน้าจองคิวผ่าน LINE ↗
@@ -118,7 +118,7 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
 
         <div className="order-2 flex items-center gap-0.5 pr-2 lg:order-3 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-1 lg:border-t lg:border-(--line) lg:p-3">
           <div className="mb-1 hidden items-center gap-3 rounded-xl px-3 py-2 lg:flex">
-            <span aria-hidden className="grid size-9 place-items-center rounded-full bg-(--blush-2) text-sm text-(--rose-deep)">
+            <span aria-hidden className="grid size-9 place-items-center rounded-full bg-(--rose-2) text-sm text-(--wine)">
               ม
             </span>
             <span className="min-w-0 leading-[1.35]">
@@ -131,19 +131,19 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
             target="_blank"
             rel="noopener"
             aria-label="เปิดหน้าจองคิวผ่าน LINE ในแท็บใหม่"
-            className={`grid size-9 place-items-center rounded-xl text-(--muted) hover:bg-(--blush)/60 hover:text-(--ink) lg:hidden ${focusRing}`}
+            className={`grid size-9 place-items-center rounded-xl text-(--muted) hover:bg-(--rose)/60 hover:text-(--ink) lg:hidden ${focusRing}`}
           >
             <ExternalLink className="size-4" aria-hidden />
           </Link>
           <ResetDemoButton
             stores={[clinicData]}
             label="รีเซ็ตข้อมูล"
-            className={`rounded-xl px-2.5 py-2 text-(--muted) hover:bg-(--blush)/60 hover:text-(--ink) lg:px-3 ${focusRing}`}
+            className={`rounded-xl px-2.5 py-2 text-(--muted) hover:bg-(--rose)/60 hover:text-(--ink) lg:px-3 ${focusRing}`}
           />
           <button
             type="button"
             onClick={logout}
-            className={`inline-flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm text-(--muted) hover:bg-(--blush)/60 hover:text-(--ink) lg:px-3 ${focusRing}`}
+            className={`inline-flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm text-(--muted) hover:bg-(--rose)/60 hover:text-(--ink) lg:px-3 ${focusRing}`}
           >
             <LogOut className="size-4" aria-hidden />
             <span className="sr-only lg:not-sr-only">ออกจากระบบ</span>

@@ -11,9 +11,9 @@ export const STATUS_LABEL: Record<BookingStatus, string> = {
 // Text/background pairs are all at least 6:1. `dot` and `block` are decorative fills.
 export const STATUS_TONE: Record<BookingStatus, { pill: string; dot: string; block: string }> = {
   booked: {
-    pill: "bg-[#fbe4e8] text-(--rose-deep)",
-    dot: "bg-(--rose)",
-    block: "bg-[#f8dbe1] text-(--rose-deep) border-(--rose)",
+    pill: "bg-[#fbe4e8] text-(--wine)",
+    dot: "bg-(--accent)",
+    block: "bg-[#f8dbe1] text-(--wine) border-(--accent)",
   },
   "checked-in": {
     pill: "bg-[#d9efe7] text-[#0d5c4c]",
@@ -53,7 +53,7 @@ export const shortName = (name: string) => name.replace(/^(พญ\.|นพ\.|ค
 // First consonant, skipping leading vowels (แพร → พ, เฟิร์น → ฟ).
 export const monogramOf = (name: string) => shortName(name).replace(/^[เแโใไ]/, "").charAt(0) || "?";
 
-export const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--rose-deep)";
+export const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--wine)";
 
 export const fieldClass =
-  "mt-1.5 block w-full rounded-xl border border-(--line) bg-white px-3.5 py-2.5 text-[15px] text-(--ink) outline-none transition-colors placeholder:text-(--muted) focus:border-(--rose-deep) focus:ring-3 focus:ring-(--rose)/20 aria-invalid:border-(--error)";
+  "mt-1.5 block w-full rounded-xl border border-(--line) bg-white px-3.5 py-2.5 text-[15px] text-(--ink) outline-none transition-colors placeholder:text-(--muted) focus:border-(--wine) focus:ring-3 focus:ring-(--accent)/20 aria-invalid:border-(--error)";
