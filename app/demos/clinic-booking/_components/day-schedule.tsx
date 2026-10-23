@@ -81,7 +81,7 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
       className="overflow-hidden rounded-[1.75rem] border border-(--line) bg-(--paper) shadow-[0_30px_60px_-40px_rgb(107_31_58/0.45)]"
     >
       <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-(--line) px-4 py-4 sm:px-6">
-        <h3 id="schedule-day" tabIndex={-1} className="rounded-sm text-xl leading-[1.35] font-medium text-(--wine) outline-none">
+        <h3 id="schedule-day" className="text-xl leading-[1.35] font-medium text-(--wine)">
           {day ? formatDate(day.date, lang, "full") : <span className="inline-block h-[1.35em] w-64 max-w-full rounded-md bg-(--rose)" />}
         </h3>
         <Link

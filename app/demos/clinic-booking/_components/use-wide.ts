@@ -19,6 +19,3 @@ export function useWide(): boolean {
     () => false,
   );
 }
-
-/** The same check for event handlers, read live. */
-export const isWide = () => window.matchMedia(WIDE).matches;

@@ -151,6 +151,26 @@ test("on desktop the toast is a banner inside the schedule, covering neither sid
   expect(toast.x).toBeGreaterThanOrEqual(card.x + card.width);
 });
 
+test("on desktop the banner stays until it is closed, and restart clears it", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop", "the phone bar hides itself after 6 s");
+  await bookFacial(page);
+  const banner = page.getByTestId("clinic-schedule").getByTestId("booking-toast");
+  await expect(banner).toContainText("คิวใหม่");
+  await page.waitForTimeout(7000);
+  await expect(banner).toContainText("คิวใหม่");
+  await page.getByTestId("booking-toast-close").click();
+  await expect(banner).toBeEmpty();
+  expect(await page.evaluate(() => document.activeElement !== document.body)).toBe(true);
+
+  await page.getByRole("button", { name: "เริ่มใหม่" }).click();
+  await page.getByTestId("service-s-mask").click();
+  await page.getByTestId("slot").first().click();
+  await page.getByTestId("book-confirm").click();
+  await expect(banner).toContainText("คิวใหม่");
+  await page.getByRole("button", { name: "เริ่มใหม่" }).click();
+  await expect(banner).toBeEmpty();
+});
+
 test("on phones the toast is a single fixed bar", async ({ page }) => {
   test.skip(test.info().project.name !== "mobile", "the fixed bar is the phone variant");
   await bookFacial(page);

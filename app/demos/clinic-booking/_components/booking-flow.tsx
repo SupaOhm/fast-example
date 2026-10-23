@@ -29,7 +29,7 @@ import { LineGlyph } from "./line-glyph";
 import { BotSay, chip, clock, FlexCard, LinePhone, MeSay, useOpenedAt } from "./line-phone";
 import { RingMark } from "./ring-mark";
 import { StaffPortrait } from "./staff-portrait";
-import { isWide, useWide } from "./use-wide";
+import { useWide } from "./use-wide";
 
 type Step = 1 | 2 | 3 | 4;
 type Side = "customer" | "clinic";
@@ -131,6 +131,7 @@ export function BookingFlow() {
     setError(null);
     setName(null);
     setPicks(EMPTY);
+    setToast(null);
   }
 
   function confirm(e: React.FormEvent) {
@@ -162,28 +163,21 @@ export function BookingFlow() {
     if (next === "clinic") setUnseen(false);
   }
 
+  /** The phone bar's "See it" (wide screens have no such button): open the clinic tab and focus it before the bar unmounts. */
   function seeSchedule() {
-    // Move focus before the toast unmounts, so it never drops to <body>: the clinic tab on phones,
-    // the schedule's heading on wide screens, where there are no tabs.
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (isWide()) {
-      document.getElementById("schedule-day")?.focus({ preventScroll: true });
-      document.getElementById("side-clinic")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    } else {
-      choose("clinic");
-      document.getElementById("tab-clinic")?.focus({ preventScroll: true });
-      tablistRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    }
+    choose("clinic");
+    document.getElementById("tab-clinic")?.focus({ preventScroll: true });
+    tablistRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     setToast(null);
   }
 
-  /** Where focus lands when the toast is closed and the control used before it has gone: the first visible of these. */
+  /**
+   * Where focus lands when the toast is closed and the control used before it has gone: the booked card's first
+   * action (always showing on wide screens, and on phones while the chat tab is open), else the open tab.
+   */
   const toastFallback = useCallback(() => {
-    const candidates = [
-      bookedActionRef.current,
-      document.getElementById(`tab-${side}`),
-      document.getElementById("schedule-day"),
-    ];
+    const candidates = [bookedActionRef.current, document.getElementById(`tab-${side}`)];
     return candidates.find((el): el is HTMLElement => Boolean(el && el.getClientRects().length > 0)) ?? null;
   }, [side]);
 
