@@ -21,6 +21,7 @@ import { fill, formatDate, formatTHB } from "@/lib/demos/format";
 import type { Lang } from "@/lib/demos/lang";
 import { useDemoStore, useHydrated } from "@/lib/use-demo-store";
 import { focusRing } from "./admin-format";
+import { BookingMotion } from "./booking-motion";
 import { BookingToast } from "./booking-toast";
 import { errorText, homeSteps, ui } from "./copy";
 import { DaySchedule } from "./day-schedule";
@@ -28,6 +29,7 @@ import { LineGlyph } from "./line-glyph";
 import { BotSay, chip, clock, FlexCard, LinePhone, MeSay, useOpenedAt } from "./line-phone";
 import { RingMark } from "./ring-mark";
 import { StaffPortrait } from "./staff-portrait";
+import { isWide, useWide } from "./use-wide";
 
 type Step = 1 | 2 | 3 | 4;
 type Side = "customer" | "clinic";
@@ -76,12 +78,18 @@ export function BookingFlow() {
   const [side, setSide] = useState<Side>("customer");
   const [unseen, setUnseen] = useState(false);
   const [toast, setToast] = useState<{ id: string; staffId: string; time: string } | null>(null);
+  // The booking made during this page visit. Only it is marked "new" on the schedule; a booking
+  // from an earlier visit (still in `clinicLastBooking` for the admin) is not replayed on reload.
+  const [landedId, setLandedId] = useState<string | null>(null);
   const greetedAt = useOpenedAt();
+  // Tabs exist below `lg` only. False on the server, so the first render matches the HTML.
+  const wide = useWide();
 
   const step = stepOf(picks);
   const logRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
   const tablistRef = useRef<HTMLDivElement>(null);
+  const bookedActionRef = useRef<HTMLButtonElement>(null);
   const lastStep = useRef<Step>(step);
 
   useEffect(() => {
@@ -138,6 +146,7 @@ export function BookingFlow() {
       );
       setData(result.data);
       clinicLastBooking.set(result.booking.id);
+      setLandedId(result.booking.id);
       tap({ booking: result.booking });
       setToast({ id: result.booking.id, staffId: slot.staffId, time: slot.time });
       setUnseen(side !== "clinic");
@@ -154,16 +163,38 @@ export function BookingFlow() {
   }
 
   function seeSchedule() {
-    choose("clinic");
-    setToast(null);
+    // Move focus before the toast unmounts, so it never drops to <body>: the clinic tab on phones,
+    // the schedule's heading on wide screens, where there are no tabs.
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    tablistRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    if (isWide()) {
+      document.getElementById("schedule-day")?.focus({ preventScroll: true });
+      document.getElementById("side-clinic")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    } else {
+      choose("clinic");
+      document.getElementById("tab-clinic")?.focus({ preventScroll: true });
+      tablistRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    setToast(null);
   }
 
+  /** Where focus lands when the toast is closed and the control used before it has gone: the first visible of these. */
+  const toastFallback = useCallback(() => {
+    const candidates = [
+      bookedActionRef.current,
+      document.getElementById(`tab-${side}`),
+      document.getElementById("schedule-day"),
+    ];
+    return candidates.find((el): el is HTMLElement => Boolean(el && el.getClientRects().length > 0)) ?? null;
+  }, [side]);
+
   function onTabKey(e: React.KeyboardEvent) {
-    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const order: Side[] = ["customer", "clinic"];
+    let next: Side;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") next = side === "customer" ? "clinic" : "customer";
+    else if (e.key === "Home") next = order[0];
+    else if (e.key === "End") next = order[order.length - 1];
+    else return;
     e.preventDefault();
-    const next: Side = side === "customer" ? "clinic" : "customer";
     choose(next);
     document.getElementById(`tab-${next}`)?.focus();
   }
@@ -198,7 +229,7 @@ export function BookingFlow() {
 
   return (
     <div className="mt-6 lg:mt-9">
-      <style>{"@keyframes lumi-pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}"}</style>
+      <BookingMotion />
       <div
         ref={tablistRef}
         role="tablist"
@@ -223,7 +254,7 @@ export function BookingFlow() {
               }`}
             >
               {(s === "customer" ? ui.tabCustomer : ui.tabClinic)[lang]}
-              {s === "clinic" && unseen && (
+              {s === "clinic" && unseen && !wide && (
                 <span data-testid="clinic-tab-badge" className="relative size-2.5 rounded-full bg-(--accent)">
                   <span className="sr-only">{ui.tabClinicBadge[lang]}</span>
                 </span>
@@ -236,7 +267,7 @@ export function BookingFlow() {
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:items-start lg:gap-12">
         <section
           id="side-customer"
-          role="tabpanel"
+          role={wide ? undefined : "tabpanel"}
           aria-labelledby="label-customer"
           className={side === "customer" ? "" : "max-lg:hidden"}
         >
@@ -250,7 +281,7 @@ export function BookingFlow() {
               aria-label={ui.chatLog[lang]}
               className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-4 pb-3 [scrollbar-width:thin]"
             >
-              <p className="mx-auto mb-4 w-fit rounded-full bg-[#4f5d72] px-3 py-0.5 text-[12px] leading-[1.5] text-white">
+              <p className="mx-auto mb-4 w-fit rounded-full bg-[#4f5d72] px-3 py-0.5 text-[14px] leading-[1.5] text-white">
                 {ui.chatDay[lang]}
               </p>
 
@@ -401,6 +432,7 @@ export function BookingFlow() {
                   </FlexCard>
                   <div className="ml-11 grid w-[calc(100%-2.75rem)] max-w-[18rem] grid-cols-2 gap-2">
                     <button
+                      ref={bookedActionRef}
                       type="button"
                       onClick={restart}
                       className={`h-11 rounded-xl bg-white font-medium text-(--wine) shadow-sm hover:bg-(--rose) ${focusRing}`}
@@ -423,14 +455,15 @@ export function BookingFlow() {
 
         <section
           id="side-clinic"
-          role="tabpanel"
+          role={wide ? undefined : "tabpanel"}
           aria-labelledby="label-clinic"
-          className={side === "clinic" ? "" : "max-lg:hidden"}
+          // On phones, room below the day so its last hour can scroll clear of the toast.
+          className={side === "clinic" ? "max-lg:pb-24" : "max-lg:hidden"}
         >
           <SideLabel id="label-clinic" icon={<RingMark className="size-5 text-white" />} tone="bg-(--wine)">
             {clinicLabel[lang]}
           </SideLabel>
-          <DaySchedule />
+          <DaySchedule newId={landedId} />
         </section>
       </div>
 
@@ -442,6 +475,7 @@ export function BookingFlow() {
         }
         onDismiss={dismissToast}
         onSee={seeSchedule}
+        fallbackFocus={toastFallback}
       />
     </div>
   );

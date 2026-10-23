@@ -10,13 +10,15 @@ import {
   fromMinutes,
   isLineBooking,
   OPEN,
+  progressStatus,
   SLOT_STEP_MIN,
   STAFF,
   toMinutes,
   type Booking,
+  type BookingStatus,
   type ClinicData,
 } from "@/lib/demos/clinic-booking/data";
-import { clinicData, clinicLastBooking } from "@/lib/demos/clinic-booking/store";
+import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { fill, formatDate } from "@/lib/demos/format";
 import { useDemoStore, useHydrated } from "@/lib/use-demo-store";
 import { focusRing, STATUS_TONE } from "./admin-format";
@@ -30,10 +32,21 @@ const SPAN = toMinutes(CLOSE) - START;
 const HOURS = Array.from({ length: SPAN / 60 + 1 }, (_, i) => START + i * 60);
 /** Where a minute of the day sits down the grid, as a percentage of its height. */
 const at = (min: number) => `${((min - START) / SPAN) * 100}%`;
-const cols = "grid grid-cols-[2.75rem_repeat(3,minmax(0,1fr))] sm:grid-cols-[3.25rem_repeat(3,minmax(0,1fr))]";
+const cols = "grid grid-cols-[2.5rem_repeat(3,minmax(0,1fr))] sm:grid-cols-[3.25rem_repeat(3,minmax(0,1fr))]";
 
-const LAND = `@keyframes lumi-land{0%{opacity:0;transform:translateY(-16px) scale(.94)}60%{opacity:1;transform:translateY(2px) scale(1.01)}100%{opacity:1;transform:none}}
-@keyframes lumi-glow{0%{box-shadow:0 0 0 0 rgb(194 24 91/.45)}100%{box-shadow:0 0 0 14px rgb(194 24 91/0)}}`;
+// The clock only moves a booking forward through these; "no-show" is a staff decision and is left alone.
+const FORWARD: BookingStatus[] = ["booked", "checked-in", "done"];
+
+/**
+ * What a booking shows on today's schedule. A page left open keeps up with the clock (booked → checked-in →
+ * done), but a later status a staff member already set is never pulled back.
+ */
+function shownStatus(b: Booking, end: number, nowMin: number, isToday: boolean): BookingStatus {
+  const stored = FORWARD.indexOf(b.status);
+  if (!isToday || stored < 0) return b.status;
+  const byClock = FORWARD.indexOf(progressStatus(toMinutes(b.time), end, nowMin));
+  return FORWARD[Math.max(stored, byClock)];
+}
 
 /** Re-reads the clock every minute, so the "now" line and the day keep moving on a page left open. */
 function useMinuteTick() {
@@ -46,13 +59,13 @@ function useMinuteTick() {
 
 /**
  * The clinic's day for the booking page: one lane per staff member, time running down.
- * Phones get a taller day (2px a minute) so a 30-minute block still fits a name and a two-line treatment.
+ * Phones get a taller day (2px a minute) so a 30-minute block still fits a name and a treatment, one line each.
+ * `newId` is the booking made during this page visit, if any; only that one is marked and animated as new.
  */
-export function DaySchedule() {
+export function DaySchedule({ newId }: { newId: string | null }) {
   const lang = useLang();
   const hydrated = useHydrated();
   const [data] = useDemoStore(clinicData);
-  const [lastId] = useDemoStore(clinicLastBooking);
   useMinuteTick();
 
   const now = hydrated ? new Date() : null;
@@ -67,9 +80,8 @@ export function DaySchedule() {
       aria-labelledby="schedule-day"
       className="overflow-hidden rounded-[1.75rem] border border-(--line) bg-(--paper) shadow-[0_30px_60px_-40px_rgb(107_31_58/0.45)]"
     >
-      <style>{LAND}</style>
       <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-(--line) px-4 py-4 sm:px-6">
-        <h3 id="schedule-day" className="text-xl leading-[1.35] font-medium text-(--wine)">
+        <h3 id="schedule-day" tabIndex={-1} className="rounded-sm text-xl leading-[1.35] font-medium text-(--wine) outline-none">
           {day ? formatDate(day.date, lang, "full") : <span className="inline-block h-[1.35em] w-64 max-w-full rounded-md bg-(--rose)" />}
         </h3>
         <Link
@@ -99,7 +111,7 @@ export function DaySchedule() {
         <div className={`${cols} pb-3`}>
           <span />
           {STAFF.map((st) => (
-            <div key={st.id} className="flex min-w-0 flex-col gap-1.5 px-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-1.5">
+            <div key={st.id} data-testid="schedule-lane-head" className="flex min-w-0 flex-col gap-1.5 px-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-1.5">
               <StaffPortrait decorative staffId={st.id} width={120} sizes="40px" className="size-8 shrink-0 rounded-full sm:size-10" />
               <span className="min-w-0 leading-[1.3]">
                 <span className="block truncate text-[14px] font-medium sm:text-base">{st.name[lang]}</span>
@@ -115,14 +127,14 @@ export function DaySchedule() {
             {HOURS.map((m) => (
               <span
                 key={m}
-                className="absolute right-1.5 -translate-y-1/2 text-[12px] leading-none text-(--muted) tabular-nums sm:right-2.5"
+                className="absolute right-1 -translate-y-1/2 text-[12px] leading-none text-(--muted) tabular-nums sm:right-2.5"
                 style={{ top: at(m) }}
               >
                 {fromMinutes(m)}
               </span>
             ))}
           </div>
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 left-[2.75rem] sm:left-[3.25rem]">
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 left-[2.5rem] sm:left-[3.25rem]">
             {HOURS.map((m) => (
               <span key={m} className="absolute inset-x-0 border-t border-(--line)" style={{ top: at(m) }} />
             ))}
@@ -137,7 +149,7 @@ export function DaySchedule() {
               {bookings
                 .filter((b) => b.staffId === st.id)
                 .map((b) => (
-                  <Block key={b.id} booking={b} data={data} isNew={b.id === lastId} />
+                  <Block key={b.id} booking={b} data={data} nowMin={nowMin} isToday={Boolean(day?.isToday)} isNew={b.id === newId} />
                 ))}
             </ul>
           ))}
@@ -145,7 +157,7 @@ export function DaySchedule() {
           {showNow && (
             <div
               data-testid="schedule-now"
-              className="pointer-events-none absolute right-0 left-[2.25rem] z-20 h-0.5 -translate-y-1/2 bg-(--accent) sm:left-[2.75rem]"
+              className="pointer-events-none absolute right-0 left-[2rem] z-20 h-0.5 -translate-y-1/2 bg-(--accent) sm:left-[2.75rem]"
               style={{ top: at(nowMin) }}
             >
               <span aria-hidden className="absolute top-1/2 left-0 size-2.5 -translate-y-1/2 rounded-full bg-(--accent)" />
@@ -160,11 +172,24 @@ export function DaySchedule() {
   );
 }
 
-function Block({ booking: b, data, isNew }: { booking: Booking; data: ClinicData; isNew: boolean }) {
+function Block({
+  booking: b,
+  data,
+  nowMin,
+  isToday,
+  isNew,
+}: {
+  booking: Booking;
+  data: ClinicData;
+  nowMin: number;
+  isToday: boolean;
+  isNew: boolean;
+}) {
   const lang = useLang();
   const service = data.services.find((s) => s.id === b.serviceId);
   const start = toMinutes(b.time);
   const duration = service?.durationMin ?? SLOT_STEP_MIN;
+  const status = shownStatus(b, start + duration, nowMin, isToday);
   const customer = data.customers.find((c) => c.id === b.customerId)?.name ?? "";
   const range = fill(ui.timeRange[lang], { start: b.time, end: fromMinutes(start + duration) });
   return (
@@ -173,10 +198,10 @@ function Block({ booking: b, data, isNew }: { booking: Booking; data: ClinicData
       data-booking-id={b.id}
       data-staff={b.staffId}
       data-time={b.time}
-      data-status={b.status}
+      data-status={status}
       data-new={isNew ? "true" : undefined}
-      className={`absolute inset-x-0.5 overflow-hidden rounded-lg border-l-[3px] px-1.5 py-0.5 text-[14px] leading-[1.3] sm:inset-x-1.5 sm:px-2 ${
-        STATUS_TONE[b.status].block
+      className={`absolute inset-x-0.5 overflow-hidden rounded-lg border-l-[3px] px-1 py-0.5 text-[14px] leading-[1.3] sm:inset-x-1.5 sm:px-2 ${
+        STATUS_TONE[status].block
       } ${
         isNew
           ? "z-10 outline-2 outline-offset-1 outline-(--accent) motion-safe:animate-[lumi-land_.65s_cubic-bezier(.2,.8,.2,1)_both,lumi-glow_1.1s_ease-out_.55s_3]"
@@ -185,7 +210,7 @@ function Block({ booking: b, data, isNew }: { booking: Booking; data: ClinicData
       style={{ top: `calc(${at(start)} + 1px)`, height: `calc(${(duration / SPAN) * 100}% - 2px)` }}
     >
       <span className="sr-only">
-        {range}, {statusLabel[b.status][lang]}
+        {range}, {statusLabel[status][lang]}
         {isNew ? `, ${ui.newFromLine[lang]}` : isLineBooking(b) ? `, ${ui.bookedOnLine[lang]}` : ""},{" "}
       </span>
       <span className="flex items-center gap-1">
@@ -194,7 +219,7 @@ function Block({ booking: b, data, isNew }: { booking: Booking; data: ClinicData
           <LineGlyph className={`hidden size-3.5 shrink-0 sm:block ${isNew ? "text-(--line-green-ink)" : "opacity-70"}`} />
         )}
       </span>
-      <span className="line-clamp-2 hyphens-auto sm:block sm:truncate">{service?.name[lang]}</span>
+      <span className="block truncate">{service?.name[lang]}</span>
       {duration >= 45 && (
         <span aria-hidden className="hidden truncate tabular-nums sm:block">
           {range}

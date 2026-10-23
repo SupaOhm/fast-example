@@ -40,6 +40,19 @@ test("the clinic's day is already in progress", async ({ page }) => {
   await expect(schedule.locator('[data-testid="schedule-block"][data-status="booked"]').first()).toBeAttached();
 });
 
+test("a page left open moves statuses on with the clock", async ({ page }) => {
+  await page.goto(BOOK);
+  await show(page, "คลินิก");
+  const block = page.locator('[data-testid="schedule-block"][data-staff="st-3"][data-time="11:00"]');
+  await expect(block).toHaveAttribute("data-status", "booked");
+  const later = new Date();
+  later.setHours(17, 45, 0, 0);
+  await page.clock.setFixedTime(later);
+  // Any re-render reads the clock again; switching the language is the quickest one.
+  await page.getByTestId("lang-switch").click();
+  await expect(block).toHaveAttribute("data-status", "done");
+});
+
 test("three taps book a facial, and it lands highlighted in that staff member's schedule", async ({ page }) => {
   const { time, staff } = await bookFacial(page);
   await expect(page.getByTestId("booking-confirmed")).toContainText(time);
@@ -50,6 +63,38 @@ test("three taps book a facial, and it lands highlighted in that staff member's 
   await expect(block).toHaveAttribute("data-staff", staff);
   await expect(block).toHaveAttribute("data-time", time);
   await expect(block).toHaveAttribute("data-status", "booked");
+});
+
+test("only a booking made during this visit is marked new, so a reload shows none", async ({ page }) => {
+  await bookFacial(page);
+  await show(page, "คลินิก");
+  await expect(page.locator('[data-testid="schedule-block"][data-new="true"]')).toHaveCount(1);
+  await page.reload();
+  await show(page, "คลินิก");
+  await expect(page.getByTestId("schedule-block").first()).toBeAttached();
+  await expect(page.locator('[data-testid="schedule-block"][data-new="true"]')).toHaveCount(0);
+});
+
+test("the toast's close button hides it and keeps focus in the page", async ({ page }) => {
+  await bookFacial(page);
+  const toast = page.getByTestId("booking-toast");
+  await expect(toast).toContainText(/คุณ|พญ\./);
+  await page.getByTestId("booking-toast-close").click();
+  await expect(toast).toBeEmpty();
+  expect(await page.evaluate(() => document.activeElement !== document.body)).toBe(true);
+});
+
+test("the page never scrolls sideways", async ({ page }) => {
+  const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  await page.goto(BOOK);
+  await expect(page.getByTestId("service-s-facial")).toBeVisible();
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await page.getByTestId("service-s-facial").click();
+  await page.getByTestId("slot").first().click();
+  await page.getByTestId("book-confirm").click();
+  await show(page, "คลินิก");
+  await expect(page.locator('[data-testid="schedule-block"][data-new="true"]')).toBeVisible();
+  expect(await overflow()).toBeLessThanOrEqual(0);
 });
 
 test("a booked time is no longer offered, and restart goes back to the first tap", async ({ page }) => {
@@ -78,6 +123,22 @@ test("on phones the clinic tab shows a badge when the booking lands", async ({ p
   await expect(page.locator('[data-testid="schedule-block"][data-new="true"]')).toBeVisible();
 });
 
+test("on phones, See it closes the toast and moves focus to the clinic tab", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the See it button exists on phones only");
+  await bookFacial(page);
+  await page.getByRole("button", { name: "ดูในตาราง" }).click();
+  await expect(page.getByTestId("booking-toast")).toBeEmpty();
+  await expect(page.getByRole("tab", { name: /^คลินิก/ })).toBeFocused();
+});
+
+test("on desktop there are no tabs, so no clinic tab badge", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop", "both sides show at once on desktop only");
+  await bookFacial(page);
+  await expect(page.getByTestId("booking-confirmed")).toBeVisible();
+  await expect(page.getByTestId("clinic-tab-badge")).toHaveCount(0);
+  await expect(page.getByRole("tabpanel")).toHaveCount(0);
+});
+
 test.describe("in English", () => {
   test.use({ locale: "en-US" });
 
@@ -91,5 +152,14 @@ test.describe("in English", () => {
     await expect(page.getByTestId("book-name")).toHaveValue("Demo guest");
     await page.getByTestId("book-confirm").click();
     await expect(page.getByTestId("booking-toast")).toContainText("schedule");
+  });
+
+  test("the schedule's lanes are headed by English names", async ({ page }) => {
+    await page.goto(BOOK);
+    const tab = page.getByRole("tab", { name: /^Clinic/ });
+    if (await tab.isVisible()) await tab.click();
+    const heads = page.getByTestId("schedule-lane-head");
+    await expect(heads).toHaveCount(3);
+    for (const head of await heads.all()) await expect(head).toContainText(/^(Khun|Dr\.) /);
   });
 });
