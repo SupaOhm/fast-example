@@ -30,7 +30,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [data] = useDemoStore(shopData);
 
-  const pending = data.orders.filter((o) => o.status === "paid" || o.status === "packing").length;
+  const pending = data.orders.filter((o) => o.status === "paid" || o.status === "packed").length;
   const lowStock = data.products.filter(isLowStock).length;
   const badges: Record<string, { n: number; label: string; tone: string } | undefined> = {
     "/demos/shop-admin/orders": pending

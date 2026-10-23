@@ -13,12 +13,12 @@ import {
   YAxis,
   type TooltipContentProps,
 } from "recharts";
-import { addDays, toISODate } from "@/lib/dates";
-import { dailySales, isLowStock, kpis, topProducts, type ShopOrder } from "@/lib/demos/shop-admin/data";
+import { channelSales, dailySales, isLowStock, kpis, topProducts } from "@/lib/demos/shop-admin/data";
 import { shopData } from "@/lib/demos/shop-admin/store";
 import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { CHANNEL_ICON, STATUS_LABEL, STATUS_STYLE, dayMonth, thLong, thShort, thWeekday } from "./format";
+import { channelLabel, statusLabel } from "./copy";
+import { CHANNEL_ICON, dayMonth, fullDate, shortDate, weekdayDate } from "./format";
 
 const BRAND = "#1f7a5a";
 const GRID = "#e3e8e4";
@@ -32,7 +32,7 @@ function SalesTooltip({ active, payload }: TooltipContentProps) {
   if (!active || !point) return null;
   return (
     <div className="rounded-lg border border-(--line) bg-white px-3 py-2 text-sm leading-[1.4] shadow-[0_8px_24px_-12px_rgba(23,32,27,0.3)]">
-      <p className="text-xs text-(--muted)">{thWeekday(point.date)}</p>
+      <p className="text-xs text-(--muted)">{weekdayDate(point.date, "th")}</p>
       <p className="font-semibold tabular-nums">{formatTHB(point.revenue)}</p>
     </div>
   );
@@ -75,17 +75,11 @@ export function Overview() {
   const topMax = top[0]?.revenue ?? 1;
   const low = data.products.filter(isLowStock).sort((a, b) => a.stock / a.reorderAt - b.stock / b.reorderAt);
   const queue = data.orders
-    .filter((o) => o.status === "paid" || o.status === "packing")
+    .filter((o) => o.status === "paid" || o.status === "packed")
     .sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id))
     .slice(0, 7);
 
-  const from = toISODate(addDays(today, -29));
-  const channels = (["LINE", "Shopee", "หน้าร้าน"] as ShopOrder["channel"][])
-    .map((channel) => {
-      const orders = data.orders.filter((o) => o.channel === channel && o.status !== "cancelled" && o.date >= from);
-      return { channel, count: orders.length, revenue: orders.reduce((s, o) => s + o.total, 0) };
-    })
-    .sort((a, b) => b.revenue - a.revenue);
+  const channels = channelSales(data, today);
 
   const tiles = [
     {
@@ -126,7 +120,7 @@ export function Overview() {
         <div>
           <h1 className="text-2xl font-semibold leading-[1.25] sm:text-[28px]">สวัสดี คุณนิ่ม</h1>
           <p className="mt-1 text-sm leading-[1.5] text-(--muted)">
-            สรุปร้าน 30 วันล่าสุด ถึง {thLong(today)}
+            สรุปร้าน 30 วันล่าสุด ถึง {fullDate(today, "th")}
           </p>
         </div>
       </div>
@@ -160,7 +154,7 @@ export function Overview() {
           className="min-w-0 lg:col-span-2"
           aside={
             <p className="text-xs leading-[1.45] text-(--muted)">
-              วันที่ขายดีที่สุด {thShort(best.date)}{" "}
+              วันที่ขายดีที่สุด {shortDate(best.date, "th")}{" "}
               <span className="font-semibold text-(--ink) tabular-nums">{formatTHB(best.revenue)}</span>
             </p>
           }
@@ -168,7 +162,7 @@ export function Overview() {
           <div
             data-testid="sales-chart"
             role="img"
-            aria-label={`กราฟยอดขายรายวัน 30 วันล่าสุด รวม ${formatTHB(k.revenue30d)} วันที่ขายดีที่สุดคือ ${thShort(best.date)} ${formatTHB(best.revenue)}`}
+            aria-label={`กราฟยอดขายรายวัน 30 วันล่าสุด รวม ${formatTHB(k.revenue30d)} วันที่ขายดีที่สุดคือ ${shortDate(best.date, "th")} ${formatTHB(best.revenue)}`}
             className="min-w-0 px-1 pb-3 pt-4 sm:px-3"
           >
             <ResponsiveContainer width="100%" height={280} minWidth={0}>
@@ -220,7 +214,7 @@ export function Overview() {
               <li key={p.sku}>
                 <div className="flex items-baseline gap-2.5 text-sm leading-[1.4]">
                   <span className="w-4 shrink-0 text-xs font-semibold tabular-nums text-(--muted)">{i + 1}</span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium">{p.name.th}</span>
                   <span className="shrink-0 font-semibold tabular-nums">{formatTHB(p.revenue)}</span>
                 </div>
                 <div className="ml-6.5 mt-1.5 flex items-center gap-2.5">
@@ -255,15 +249,15 @@ export function Overview() {
                 <li key={o.id} className="flex items-center gap-3 px-4 py-3 text-sm leading-[1.4] sm:px-5">
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">
-                      {o.customer} <span className="font-normal text-(--muted)">{o.id}</span>
+                      {o.customer.th} <span className="font-normal text-(--muted)">{o.id}</span>
                     </p>
                     <p className="text-xs text-(--muted)">
-                      {thShort(o.date)} ผ่าน {o.channel}
+                      {shortDate(o.date, "th")} ผ่าน {channelLabel[o.channel].th}
                     </p>
                   </div>
                   <span className="shrink-0 font-semibold tabular-nums">{formatTHB(o.total)}</span>
-                  <span className={`w-[76px] shrink-0 rounded-full border px-2 py-0.5 text-center text-xs font-medium ${STATUS_STYLE[o.status]}`}>
-                    {STATUS_LABEL[o.status]}
+                  <span className={`w-[76px] shrink-0 rounded-full border px-2 py-0.5 text-center text-xs font-medium border-(--line) bg-[#eef1ef] text-(--muted)`}>
+                    {statusLabel[o.status].th}
                   </span>
                 </li>
               ))}
@@ -291,7 +285,7 @@ export function Overview() {
                 {low.map((p) => (
                   <li key={p.sku} className="flex items-center gap-3 px-4 py-3 text-sm leading-[1.4] sm:px-5">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{p.name}</p>
+                      <p className="truncate font-medium">{p.name.th}</p>
                       <p className="text-xs text-(--muted)">จุดสั่งซื้อ {p.reorderAt} ชิ้น</p>
                     </div>
                     <p className="shrink-0 text-right">
@@ -313,7 +307,7 @@ export function Overview() {
                   <li key={channel}>
                     <div className="flex items-baseline gap-2 text-sm leading-[1.4]">
                       <Icon className="size-4 shrink-0 self-center text-(--muted)" aria-hidden />
-                      <span className="flex-1 font-medium">{channel}</span>
+                      <span className="flex-1 font-medium">{channelLabel[channel].th}</span>
                       <span className="text-xs tabular-nums text-(--muted)">{count} บิล</span>
                       <span className="w-[76px] text-right font-semibold tabular-nums">{formatTHB(revenue)}</span>
                     </div>

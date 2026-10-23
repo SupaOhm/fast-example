@@ -1,21 +1,26 @@
 import { addDays, toISODate } from "@/lib/dates";
+import type { L } from "@/lib/demos/lang";
 
 export interface Product {
   sku: string;
-  name: string;
-  category: string;
+  name: L;
+  category: L;
   price: number;
   stock: number;
   reorderAt: number;
 }
 
-export type ShopOrderStatus = "paid" | "packing" | "shipped" | "cancelled";
-export const SHOP_ORDER_STATUSES: ShopOrderStatus[] = ["paid", "packing", "shipped", "cancelled"];
+// "paid" orders are waiting to be packed; "packed" ones are waiting for the courier.
+export type ShopOrderStatus = "paid" | "packed" | "shipped" | "cancelled";
+export const SHOP_ORDER_STATUSES: ShopOrderStatus[] = ["paid", "packed", "shipped", "cancelled"];
+
+export type ShopChannel = "line" | "shopee" | "store";
+export const SHOP_CHANNELS: ShopChannel[] = ["line", "shopee", "store"];
 
 export interface ShopOrder {
   id: string;
-  customer: string;
-  channel: "LINE" | "Shopee" | "หน้าร้าน";
+  customer: L;
+  channel: ShopChannel;
   date: string;
   items: { sku: string; qty: number }[];
   total: number;
@@ -27,23 +32,40 @@ export interface ShopData {
   orders: ShopOrder[];
 }
 
+const CHILLI = { th: "น้ำพริก", en: "Chilli dips" };
+const SNACKS = { th: "ของทานเล่น", en: "Snacks" };
+const CURED = { th: "อาหารแปรรูป", en: "Sausages and cured pork" };
+const DRINKS = { th: "เครื่องดื่ม", en: "Tea and coffee" };
+const SWEETS = { th: "ขนม", en: "Sweets" };
+const GIFTS = { th: "ชุดของขวัญ", en: "Gift sets" };
+
 export const PRODUCTS: Product[] = [
-  { sku: "NP-01", name: "น้ำพริกหนุ่ม", category: "น้ำพริก", price: 120, stock: 48, reorderAt: 15 },
-  { sku: "NP-02", name: "น้ำพริกอ่อง", category: "น้ำพริก", price: 120, stock: 9, reorderAt: 15 },
-  { sku: "KM-01", name: "แคบหมูไร้มัน", category: "ของทานเล่น", price: 80, stock: 64, reorderAt: 20 },
-  { sku: "KM-02", name: "แคบหมูติดมัน", category: "ของทานเล่น", price: 80, stock: 37, reorderAt: 20 },
-  { sku: "SU-01", name: "ไส้อั่วสูญญากาศ", category: "อาหารแปรรูป", price: 180, stock: 22, reorderAt: 10 },
-  { sku: "SU-02", name: "แหนมหมู", category: "อาหารแปรรูป", price: 90, stock: 6, reorderAt: 12 },
-  { sku: "TE-01", name: "ชาอูหลงดอยแม่สลอง", category: "เครื่องดื่ม", price: 250, stock: 30, reorderAt: 8 },
-  { sku: "CO-01", name: "กาแฟดอยช้าง คั่วกลาง", category: "เครื่องดื่ม", price: 290, stock: 25, reorderAt: 8 },
-  { sku: "SW-01", name: "ข้าวแต๋นน้ำแตงโม", category: "ขนม", price: 60, stock: 75, reorderAt: 25 },
-  { sku: "SW-02", name: "ทองม้วนสด", category: "ขนม", price: 70, stock: 41, reorderAt: 20 },
-  { sku: "SW-03", name: "มะขามแช่อิ่ม", category: "ขนม", price: 85, stock: 18, reorderAt: 10 },
-  { sku: "GF-01", name: "กล่องของฝากรวม", category: "ชุดของขวัญ", price: 590, stock: 12, reorderAt: 5 },
+  { sku: "NP-01", name: { th: "น้ำพริกหนุ่ม", en: "Nam prik num green chilli dip" }, category: CHILLI, price: 120, stock: 48, reorderAt: 15 },
+  { sku: "NP-02", name: { th: "น้ำพริกอ่อง", en: "Nam prik ong tomato chilli dip" }, category: CHILLI, price: 120, stock: 9, reorderAt: 15 },
+  { sku: "KM-01", name: { th: "แคบหมูไร้มัน", en: "Lean pork crackling" }, category: SNACKS, price: 80, stock: 64, reorderAt: 20 },
+  { sku: "KM-02", name: { th: "แคบหมูติดมัน", en: "Classic pork crackling" }, category: SNACKS, price: 80, stock: 37, reorderAt: 20 },
+  { sku: "SU-01", name: { th: "ไส้อั่วสูญญากาศ", en: "Sai ua sausage, vacuum-packed" }, category: CURED, price: 180, stock: 22, reorderAt: 10 },
+  { sku: "SU-02", name: { th: "แหนมหมู", en: "Naem sour pork" }, category: CURED, price: 90, stock: 6, reorderAt: 12 },
+  { sku: "TE-01", name: { th: "ชาอูหลงดอยแม่สลอง", en: "Doi Mae Salong oolong tea" }, category: DRINKS, price: 250, stock: 30, reorderAt: 8 },
+  { sku: "CO-01", name: { th: "กาแฟดอยช้าง คั่วกลาง", en: "Doi Chang coffee, medium roast" }, category: DRINKS, price: 290, stock: 25, reorderAt: 8 },
+  { sku: "SW-01", name: { th: "ข้าวแต๋นน้ำแตงโม", en: "Khao taen rice crackers" }, category: SWEETS, price: 60, stock: 75, reorderAt: 25 },
+  { sku: "SW-02", name: { th: "ทองม้วนสด", en: "Thong muan rolled wafers" }, category: SWEETS, price: 70, stock: 41, reorderAt: 20 },
+  { sku: "SW-03", name: { th: "มะขามแช่อิ่ม", en: "Candied tamarind" }, category: SWEETS, price: 85, stock: 18, reorderAt: 10 },
+  { sku: "GF-01", name: { th: "กล่องของฝากรวม", en: "Chiang Mai gift box" }, category: GIFTS, price: 590, stock: 12, reorderAt: 5 },
 ];
 
-const CUSTOMERS = ["คุณเมย์", "คุณต้น", "คุณฝน", "คุณบอส", "คุณแอน", "คุณโจ้", "คุณปุ้ย", "คุณกิ๊ฟ", "คุณนิด", "คุณเอก"];
-const CHANNELS: ShopOrder["channel"][] = ["LINE", "Shopee", "หน้าร้าน"];
+const CUSTOMERS: L[] = [
+  { th: "คุณเมย์", en: "Khun May" },
+  { th: "คุณต้น", en: "Khun Ton" },
+  { th: "คุณฝน", en: "Khun Fon" },
+  { th: "คุณบอส", en: "Khun Boss" },
+  { th: "คุณแอน", en: "Khun Ann" },
+  { th: "คุณโจ้", en: "Khun Jo" },
+  { th: "คุณปุ้ย", en: "Khun Pui" },
+  { th: "คุณกิ๊ฟ", en: "Khun Gift" },
+  { th: "คุณนิด", en: "Khun Nid" },
+  { th: "คุณเอก", en: "Khun Ake" },
+];
 
 // Small deterministic PRNG so the seed is stable for tests and screenshots.
 export function mulberry32(seed: number): () => number {
@@ -74,8 +96,16 @@ export function buildShopSeed(today: Date): ShopData {
       const total = items.reduce((s, i) => s + PRODUCTS.find((p) => p.sku === i.sku)!.price * i.qty, 0);
       const r = rand();
       const status: ShopOrderStatus =
-        r < 0.05 ? "cancelled" : back > 2 ? "shipped" : r < 0.5 ? "paid" : r < 0.8 ? "packing" : "shipped";
-      orders.push({ id: `RD-${n++}`, customer: pick(CUSTOMERS), channel: pick(CHANNELS), date, items, total, status });
+        r < 0.05 ? "cancelled" : back > 2 ? "shipped" : r < 0.5 ? "paid" : r < 0.8 ? "packed" : "shipped";
+      orders.push({
+        id: `RD-${n++}`,
+        customer: pick(CUSTOMERS),
+        channel: pick(SHOP_CHANNELS),
+        date,
+        items,
+        total,
+        status,
+      });
     }
   }
   return { products: structuredClone(PRODUCTS), orders: orders.reverse() };
@@ -129,6 +159,44 @@ export function topProducts(data: ShopData, n = 5) {
     .slice(0, n);
 }
 
+/** One day's takings, cancelled orders left out. */
+export function salesOn(data: ShopData, date: string): { revenue: number; orders: number } {
+  const day = validOrders(data).filter((o) => o.date === date);
+  return { revenue: day.reduce((s, o) => s + o.total, 0), orders: day.length };
+}
+
+export function channelSales(data: ShopData, today: Date, days = 30) {
+  const from = toISODate(addDays(today, 1 - days));
+  return SHOP_CHANNELS.map((channel) => {
+    const orders = validOrders(data).filter((o) => o.channel === channel && o.date >= from);
+    return { channel, count: orders.length, revenue: orders.reduce((s, o) => s + o.total, 0) };
+  }).sort((a, b) => b.revenue - a.revenue);
+}
+
+const oldestFirst = (a: ShopOrder, b: ShopOrder) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id);
+
+/** Paid orders still waiting to be packed, oldest first. */
+export function toPack(data: ShopData): ShopOrder[] {
+  return data.orders.filter((o) => o.status === "paid").sort(oldestFirst);
+}
+
+/**
+ * The overview's packing queue. Orders packed during this visit (`keep`) hold their
+ * place, so a row doesn't jump away the moment the owner taps it.
+ */
+export function packingQueue(data: ShopData, keep: readonly string[], limit = 6): ShopOrder[] {
+  return data.orders
+    .filter((o) => o.status === "paid" || (o.status === "packed" && keep.includes(o.id)))
+    .sort(oldestFirst)
+    .slice(0, limit);
+}
+
+/** Marks a paid order as packed. Any other order is left as it is. */
+export function markPacked(data: ShopData, id: string): ShopData {
+  const order = data.orders.find((o) => o.id === id);
+  return order?.status === "paid" ? setOrderStatus(data, id, "packed") : data;
+}
+
 export function updateStock(data: ShopData, sku: string, stock: number): ShopData {
   if (!Number.isInteger(stock) || stock < 0) throw new Error("Stock must be a whole number ≥ 0");
   if (!data.products.some((p) => p.sku === sku)) throw new Error(`Unknown SKU ${sku}`);
@@ -137,4 +205,19 @@ export function updateStock(data: ShopData, sku: string, stock: number): ShopDat
 
 export function setOrderStatus(data: ShopData, id: string, status: ShopOrderStatus): ShopData {
   return { ...data, orders: data.orders.map((o) => (o.id === id ? { ...o, status } : o)) };
+}
+
+export type OrderFilter = ShopOrderStatus | "all";
+
+/** The orders page's status filter from `?status=…`, so the overview can link to a filtered list. */
+export function parseOrderFilter(search: string): OrderFilter {
+  const status = new URLSearchParams(search).get("status");
+  return SHOP_ORDER_STATUSES.find((s) => s === status) ?? "all";
+}
+
+/** Search by order number or customer name, in either language. */
+export function matchesQuery(order: ShopOrder, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return [order.id, order.customer.th, order.customer.en].some((s) => s.toLowerCase().includes(q));
 }

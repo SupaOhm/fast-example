@@ -73,15 +73,15 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
     >
       <td className="min-w-0 sm:py-3.5 sm:pl-5 sm:pr-3">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-medium leading-[1.35]">{product.name}</span>
+          <span className="font-medium leading-[1.35]">{product.name.th}</span>
           {low && <LowBadge />}
         </div>
         <p className="mt-0.5 text-xs leading-[1.4] text-(--muted)">
           {product.sku}
-          <span className="sm:hidden"> หมวด{product.category}</span>
+          <span className="sm:hidden"> หมวด{product.category.th}</span>
         </p>
       </td>
-      <td className="hidden px-3 py-3.5 text-(--muted) sm:table-cell">{product.category}</td>
+      <td className="hidden px-3 py-3.5 text-(--muted) sm:table-cell">{product.category.th}</td>
       <td className="text-right font-medium tabular-nums sm:px-3 sm:py-3.5">{formatTHB(product.price)}</td>
       <td className="hidden px-3 py-3.5 lg:table-cell">
         <StockBar product={product} />
@@ -89,7 +89,7 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
       <td className="col-span-2 sm:py-2.5 sm:pl-3 sm:pr-5">
         <form onSubmit={submit} noValidate className="flex items-center gap-2 sm:justify-end">
           <label htmlFor={inputId} className="sr-only">
-            จำนวนคงเหลือ {product.name}
+            จำนวนคงเหลือ {product.name.th}
           </label>
           <input
             id={inputId}

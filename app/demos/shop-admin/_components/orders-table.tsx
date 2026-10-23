@@ -4,6 +4,7 @@ import { ChevronDown, ChevronLeft, ChevronRight, Search, X } from "lucide-react"
 import { useState } from "react";
 import {
   SHOP_ORDER_STATUSES,
+  matchesQuery,
   setOrderStatus,
   type ShopOrder,
   type ShopOrderStatus,
@@ -11,16 +12,18 @@ import {
 import { shopData } from "@/lib/demos/shop-admin/store";
 import { formatTHB } from "@/lib/packages";
 import { useDemoStore } from "@/lib/use-demo-store";
-import { CHANNEL_ICON, STATUS_LABEL, STATUS_STYLE, itemCount, thShort } from "./format";
+import { channelLabel, statusLabel } from "./copy";
+import { CHANNEL_ICON, itemCount, shortDate } from "./format";
 
 const PAGE_SIZE = 15;
+const NEUTRAL_STATUS = "bg-[#eef1ef] text-(--muted) border-(--line)";
 
 function Channel({ channel }: { channel: ShopOrder["channel"] }) {
   const Icon = CHANNEL_ICON[channel];
   return (
     <span className="inline-flex items-center gap-1.5 text-(--muted)">
       <Icon className="size-3.5" aria-hidden />
-      {channel}
+      {channelLabel[channel].th}
     </span>
   );
 }
@@ -32,11 +35,11 @@ function StatusSelect({ order, onChange }: { order: ShopOrder; onChange: (s: Sho
         aria-label={`สถานะคำสั่งซื้อ ${order.id}`}
         value={order.status}
         onChange={(e) => onChange(e.target.value as ShopOrderStatus)}
-        className={`cursor-pointer appearance-none rounded-full border py-1 pl-3 pr-7 text-xs font-medium leading-[1.3] outline-none focus-visible:ring-2 focus-visible:ring-(--brand)/40 ${STATUS_STYLE[order.status]}`}
+        className={`cursor-pointer appearance-none rounded-full border py-1 pl-3 pr-7 text-xs font-medium leading-[1.3] outline-none focus-visible:ring-2 focus-visible:ring-(--brand)/40 ${NEUTRAL_STATUS}`}
       >
         {SHOP_ORDER_STATUSES.map((s) => (
           <option key={s} value={s}>
-            {STATUS_LABEL[s]}
+            {statusLabel[s].th}
           </option>
         ))}
       </select>
@@ -51,11 +54,8 @@ export function OrdersTable() {
   const [status, setStatus] = useState<ShopOrderStatus | "all">("all");
   const [page, setPage] = useState(1);
 
-  const q = query.trim().toLowerCase();
   const byStatus = status === "all" ? data.orders : data.orders.filter((o) => o.status === status);
-  const rows = q
-    ? byStatus.filter((o) => o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q))
-    : byStatus;
+  const rows = byStatus.filter((o) => matchesQuery(o, query));
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const current = Math.min(page, pageCount);
   const start = (current - 1) * PAGE_SIZE;
@@ -76,7 +76,7 @@ export function OrdersTable() {
     <div>
       <h1 className="text-2xl font-semibold leading-[1.25] sm:text-[28px]">คำสั่งซื้อ</h1>
       <p className="mt-1 text-sm leading-[1.5] text-(--muted)">
-        {data.orders.length} บิลใน 30 วันล่าสุด รอแพ็กหรือรอส่ง {counts.paid + counts.packing} บิล
+        {data.orders.length} บิลใน 30 วันล่าสุด รอแพ็กหรือรอส่ง {counts.paid + counts.packed} บิล
       </p>
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -115,7 +115,7 @@ export function OrdersTable() {
               <option value="all">ทั้งหมด ({data.orders.length})</option>
               {SHOP_ORDER_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {STATUS_LABEL[s]} ({counts[s]})
+                  {statusLabel[s].th} ({counts[s]})
                 </option>
               ))}
             </select>
@@ -159,8 +159,8 @@ export function OrdersTable() {
                   {visible.map((o) => (
                     <tr key={o.id} className={`hover:bg-[#f9faf9] ${o.status === "cancelled" ? "text-(--muted)" : ""}`}>
                       <td className="whitespace-nowrap px-5 py-3 font-medium tabular-nums">{o.id}</td>
-                      <td className="whitespace-nowrap px-3 py-3 text-(--muted)">{thShort(o.date)}</td>
-                      <td className="whitespace-nowrap px-3 py-3">{o.customer}</td>
+                      <td className="whitespace-nowrap px-3 py-3 text-(--muted)">{shortDate(o.date, "th")}</td>
+                      <td className="whitespace-nowrap px-3 py-3">{o.customer.th}</td>
                       <td className="whitespace-nowrap px-3 py-3">
                         <Channel channel={o.channel} />
                       </td>
@@ -182,7 +182,7 @@ export function OrdersTable() {
                 <li key={o.id} className="px-4 py-3.5 text-sm leading-[1.4]">
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="font-medium">
-                      {o.customer} <span className="font-normal tabular-nums text-(--muted)">{o.id}</span>
+                      {o.customer.th} <span className="font-normal tabular-nums text-(--muted)">{o.id}</span>
                     </p>
                     <p className={`shrink-0 font-semibold tabular-nums ${o.status === "cancelled" ? "text-(--muted) line-through" : ""}`}>
                       {formatTHB(o.total)}
@@ -190,7 +190,7 @@ export function OrdersTable() {
                   </div>
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <p className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-(--muted)">
-                      <span>{thShort(o.date)}</span>
+                      <span>{shortDate(o.date, "th")}</span>
                       <Channel channel={o.channel} />
                       <span>{itemCount(o)} ชิ้น</span>
                     </p>
