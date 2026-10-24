@@ -34,14 +34,14 @@ export function SiteFooter({ locale, t, path = "" }: { locale: Locale; t: Dictio
             href={FASTWORK_PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-sm font-bold text-lime transition hover:bg-forest-2"
+            className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest text-lime transition hover:bg-forest-2"
           >
             {t.cta.button}
             <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
       </div>
-      <div className="mx-auto max-w-6xl px-4 pt-14 sm:px-6 lg:pt-20">
+      <div className="mx-auto max-w-6xl px-4 pt-14 sm:px-6 lg:pt-20 [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-lime">
         <div className="grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.6fr)_minmax(0,2.1fr)] lg:gap-x-12">
           {/* Brand block. Trust signals (BACKLOG #3) will go under the profile row once Ohm has the real numbers. */}
           <div className="@container">
