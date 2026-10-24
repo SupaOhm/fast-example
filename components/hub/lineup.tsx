@@ -56,7 +56,7 @@ function PlanCard({ pkg, service, locale, t }: { pkg: Package; service: Service;
           rel="noopener noreferrer"
           className="rounded-full border border-(--acc)/55 px-[18px] py-2.5 text-sm font-bold text-(--acc) transition hover:border-(--acc)"
         >
-          {t.work.order} ↗<span className="sr-only"> {t.nav.newTab}</span>
+          {t.work.order} <span aria-hidden>↗</span><span className="sr-only"> {t.nav.newTab}</span>
         </a>
       </div>
       <p className="mt-2.5 text-xs text-cream-muted">{t.work.demo.replace("{name}", pkg.demoName[locale])}</p>

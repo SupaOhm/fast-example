@@ -57,7 +57,7 @@ export function SiteFooter({ locale, t, path = "" }: { locale: Locale; t: Dictio
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 items-center font-semibold underline decoration-lime decoration-2 underline-offset-[6px] transition hover:text-lime"
               >
-                {t.footer.profile} ↗<span className="sr-only"> {t.nav.newTab}</span>
+                {t.footer.profile} <span aria-hidden>↗</span><span className="sr-only"> {t.nav.newTab}</span>
               </a>
               {/* LocaleSwitch is shared with the header; here its two halves grow to a 44px tap target. */}
               <div className="[&>div>*]:flex [&>div>*]:min-h-11 [&>div>*]:items-center [&>div>*]:px-3.5">
@@ -101,7 +101,7 @@ export function SiteFooter({ locale, t, path = "" }: { locale: Locale; t: Dictio
                         <li key={pkg.id} className="border-b border-rule">
                           <a href={pkg.demoPath} className="group block min-h-11 py-3">
                             <span className="block text-sm font-semibold text-(--acc)">
-                              {pkg.tier[0].toUpperCase() + pkg.tier.slice(1)}
+                              {t.work.tiers[pkg.tier]}
                             </span>
                             <span className="sr-only"> · </span>
                             <span className="mt-0.5 block leading-snug text-cream decoration-(--acc) decoration-2 underline-offset-4 transition group-hover:underline">

@@ -20,7 +20,7 @@ export function AboutSection({ t }: { t: Dictionary }) {
             rel="noopener noreferrer"
             className="mt-6 inline-block text-sm font-semibold underline decoration-lime decoration-2 underline-offset-4 transition hover:text-lime"
           >
-            {t.about.portfolio} ↗<span className="sr-only"> {t.nav.newTab}</span>
+            {t.about.portfolio} <span aria-hidden>↗</span><span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
         <dl className="grid content-start gap-3 md:pt-3">
