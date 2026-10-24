@@ -18,7 +18,7 @@ test("opens on the overview without logging in", async ({ page }) => {
   await expect(page.getByTestId("sales-chart")).toBeVisible();
 });
 
-test("one tap packs an order: the row stamps, the tile counts down, the order is packed", async ({ page }) => {
+test("one tap packs an order: the row shows packed, the tile counts down, the order is packed", async ({ page }) => {
   await page.goto("/demos/shop-admin");
   const before = await countIn(page, "todo-pack");
   const row = page.getByTestId("pack-row").first();
@@ -149,16 +149,15 @@ test("the to-pack tile opens the orders filtered to packing", async ({ page }) =
   await page.getByTestId("todo-pack").click();
   await expect(page).toHaveURL(/\/demos\/shop-admin\/orders\?status=paid$/);
   await expect(page.getByRole("combobox", { name: "สถานะ", exact: true })).toHaveValue("paid");
-  await expect(page.getByTestId("receipt")).toHaveCount(Math.min(n, 15));
+  await expect(page.getByTestId("order-row")).toHaveCount(Math.min(n, 15));
 });
 
-test("orders are receipts with items, a total and a stamped status", async ({ page }) => {
+test("orders list items, a total and a status", async ({ page }) => {
   await page.goto("/demos/shop-admin/orders");
-  const receipts = page.getByTestId("receipt");
-  await expect(receipts).toHaveCount(15);
-  const first = receipts.first();
+  const rows = page.getByTestId("order-row");
+  await expect(rows).toHaveCount(15);
+  const first = rows.first();
   await expect(first).toContainText(/RD-\d{4}/);
-  await expect(first).toContainText("รวม");
   await expect(first).toContainText("฿");
   await expect(first.getByTestId("product-icon").first()).toBeVisible();
   await expect(first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ })).toBeVisible();
@@ -168,6 +167,26 @@ test("stock rows show a drawn product icon", async ({ page }) => {
   await page.goto("/demos/shop-admin/stock");
   await expect(page.getByTestId("stock-row-NP-02").getByTestId("product-icon")).toBeVisible();
   await expect(page.getByTestId("stock-row-GF-01")).toContainText("กล่องของฝากรวม");
+});
+
+test.describe("at laptop width", () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+
+  test("the orders panel does not scroll sideways and the first status picker is on screen", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    const first = page.getByTestId("order-row").first();
+    await expect(first).toBeVisible();
+    const panel = first.locator("xpath=ancestor::div[contains(@class,'overflow-x-auto')][1]");
+    const { scrollWidth, clientWidth } = await panel.evaluate((el) => ({
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    const box = await first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ }).boundingBox();
+    const view = page.viewportSize()!;
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(view.width);
+  });
 });
 
 test.describe("in English", () => {
@@ -195,7 +214,7 @@ test.describe("in English", () => {
     await page.goto("/demos/shop-admin/orders");
     await expect(page.getByRole("combobox", { name: /^Order status RD-\d{4}$/ }).first()).toBeVisible();
     await page.getByTestId("orders-search").fill("Khun May");
-    await expect(page.getByTestId("receipt").first()).toContainText("Khun May");
+    await expect(page.getByTestId("order-row").first()).toContainText("Khun May");
     await page.goto("/demos/shop-admin/stock");
     await expect(page.getByTestId("stock-row-GF-01")).toContainText("Chiang Mai gift box");
     await expect(page.getByTestId("stock-row-NP-02")).toContainText("Running low");
@@ -219,23 +238,23 @@ test.describe("in English", () => {
 test.describe("with reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("a freshly packed row's stamp does not animate", async ({ page }) => {
+  test("a freshly packed row's status pill does not animate", async ({ page }) => {
     await page.goto("/demos/shop-admin");
     const row = page.getByTestId("pack-row").first();
     const id = (await row.getAttribute("data-order-id"))!;
     await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
-    const stamp = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="stamp"]`);
-    await expect(stamp).toBeVisible();
-    await expect(stamp).toHaveCSS("animation-name", "none");
+    const pill = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="status-pill"]`);
+    await expect(pill).toBeVisible();
+    await expect(pill).toHaveCSS("animation-name", "none");
   });
 });
 
-test("a receipt stays in a status-filtered list after its status changes", async ({ page }) => {
+test("an order stays in a status-filtered list after its status changes", async ({ page }) => {
   await page.goto("/demos/shop-admin/orders?status=paid");
-  const first = page.getByTestId("receipt").first();
+  const first = page.getByTestId("order-row").first();
   const id = (await first.getAttribute("data-order-id"))!;
   await first.getByRole("combobox").selectOption("packed");
-  const same = page.locator(`[data-testid="receipt"][data-order-id="${id}"]`);
+  const same = page.locator(`[data-testid="order-row"][data-order-id="${id}"]`);
   await expect(same).toBeVisible();
   await expect(same).toContainText("แพ็กแล้ว");
 });
