@@ -54,12 +54,12 @@ Ohm said that all six "still look ahh":
 
 | Demo | Package | What's wrong |
 |---|---|---|
-| sale-page | Website Basic | ? |
-| company | Website Standard | ? |
-| resort | Website Premium | ? |
-| orders-api | Web app Basic | ? |
-| shop-admin | Web app Standard | ? |
-| clinic-booking | Web app Premium | ? |
+| sale-page | Website Basic | Reworked and bilingual (PR #7) |
+| company | Website Standard | Reworked and bilingual (PR #8) |
+| resort | Website Premium | Reworked and bilingual (PR #9) |
+| orders-api | Web app Basic | Reworked and bilingual (PR #10) |
+| shop-admin | Web app Standard | Reworked and bilingual (PR #11, cleaned up in #13) |
+| clinic-booking | Web app Premium | Reworked and bilingual (PR #12, demo clock in #14) |
 
 - [x] Walk through each demo with Ohm (screenshots at 1440 and 375) and fill in "What's wrong".
 - [x] Use `/frontend-design` for the redesigns. Ohm rejected bland or templated looks before.

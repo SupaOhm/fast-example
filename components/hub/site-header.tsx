@@ -20,7 +20,12 @@ export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictio
           <div className="flex items-center gap-2 sm:gap-6">
             <nav className="hidden items-center gap-6 text-sm text-cream-muted md:flex">
               {links.map(([href, label]) => (
-                <a key={href} href={href} className="transition hover:text-cream">
+                <a
+                  key={href}
+                  href={href}
+                  aria-current={href === `/${locale}/compare` && path === "/compare" ? "page" : undefined}
+                  className="transition hover:text-cream aria-[current=page]:text-cream"
+                >
                   {label}
                 </a>
               ))}
