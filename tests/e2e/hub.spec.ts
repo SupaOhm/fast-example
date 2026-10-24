@@ -174,16 +174,26 @@ test("Thai process and about read in Thai", async ({ page }) => {
   await expect(page.locator("#about dl")).toContainText("ประสบการณ์");
 });
 
-test("phones get a Compare link in the header, on one line beside the brand, language switch and Hire", async ({ page }) => {
-  test.skip(test.info().project.name !== "mobile", "the full nav shows from md");
-  for (const locale of ["en", "th"]) {
-    await page.goto(`/${locale}`);
-    const banner = page.getByRole("banner");
-    const compare = banner.locator(`a[href="/${locale}/compare"]`);
+test("phones get a section row under the header with Compare, and the full header still fits at 360", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the inline nav shows from md");
+  await page.setViewportSize({ width: 360, height: 740 });
+  for (const [path, label, current] of [
+    ["/en", "Sections", false],
+    ["/th", "เมนู", false],
+    ["/en/compare", "Sections", true],
+  ] as const) {
+    await page.goto(path);
+    const locale = path.slice(1, 3);
+    const row = page.getByRole("navigation", { name: label });
+    const compare = row.locator(`a[href="/${locale}/compare"]`);
     await expect(compare).toBeVisible();
-    await expect(banner.getByRole("link", { name: locale === "en" ? "Hire on Fastwork" : "จ้างงานบน Fastwork" })).toBeVisible();
-    const box = (await compare.boundingBox())!;
-    expect(box.height).toBeLessThan(24);
+    if (current) await expect(compare).toHaveAttribute("aria-current", "page");
+    else await expect(compare).not.toHaveAttribute("aria-current");
+    expect((await compare.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await expect(page.getByRole("banner").getByText("SupaOhm")).toBeVisible();
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: locale === "en" ? "Hire on Fastwork" : "จ้างงานบน Fastwork" }),
+    ).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
   }
 });

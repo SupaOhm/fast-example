@@ -9,9 +9,9 @@
     "process": "Process",
     "about": "About",
     "hire": "Hire on Fastwork",
-    "hireShort": "Hire",
     "newTab": "(opens in a new tab)",
-    "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย"
+    "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย",
+    "sectionsLabel": "Sections"
   },
   "hero": {
     "title": "See *exactly* what\nyou're paying for.",

@@ -9,9 +9,9 @@
     "process": "ขั้นตอน",
     "about": "เกี่ยวกับ",
     "hire": "จ้างงานบน Fastwork",
-    "hireShort": "จ้างงาน",
     "newTab": "(เปิดในแท็บใหม่)",
-    "switchLocaleLabel": "Switch to English"
+    "switchLocaleLabel": "Switch to English",
+    "sectionsLabel": "เมนู"
   },
   "hero": {
     "title": "เห็น*ชัดๆ*\nว่าจ่ายแล้วได้อะไร",
