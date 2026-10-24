@@ -7,14 +7,16 @@ Noted 2026-10-21.
 
 > **Decided 2026-10-22.** Covered with #4 in `docs/superpowers/specs/2026-10-22-demo-rework-bilingual-design.md`. The questions below are answered there.
 
+**Done:** steps 1–7 (PRs #6–#12), plus the shop admin clean-up (#13) and the clinic demo clock (#14).
+
 **Why:** Fastwork is now worldwide, so foreign buyers will land on the demos. The hub already has `/en` and `/th`; the six demos are still one language each.
 
 **Open questions**
-- [ ] URL shape: `/en/demos/<id>` + `/th/demos/<id>`, or keep `/demos/<id>` with an in-demo toggle?
-- [ ] Should a demo open in the visitor's chosen hub language (the `showcase:locale` choice)?
-- [ ] Copy: translate each demo's fake business as is, or localise it (names, prices, addresses)?
-- [ ] Thai fonts per demo: keep the current ones (Mitr for resort, Noto Sans Thai for shop-admin) and pick ones for the rest.
-- [ ] Order: start with the web demos (more text) or the app demos (more UI)?
+- [x] URL shape: `/en/demos/<id>` + `/th/demos/<id>`, or keep `/demos/<id>` with an in-demo toggle?
+- [x] Should a demo open in the visitor's chosen hub language (the `showcase:locale` choice)?
+- [x] Copy: translate each demo's fake business as is, or localise it (names, prices, addresses)?
+- [x] Thai fonts per demo: keep the current ones (Mitr for resort, Noto Sans Thai for shop-admin) and pick ones for the rest.
+- [x] Order: start with the web demos (more text) or the app demos (more UI)?
 
 ## 2. "Send an inquiry" form (contact outside Fastwork)
 
@@ -46,21 +48,23 @@ Noted 2026-10-21.
 
 > **Decided 2026-10-22.** The walkthrough is done; directions for all six demos are in `docs/superpowers/specs/2026-10-22-demo-rework-bilingual-design.md`.
 
+**Done:** steps 1–7 (PRs #6–#12), plus the shop admin clean-up (#13) and the clinic demo clock (#14).
+
 Ohm said that all six "still look ahh":
 
 | Demo | Package | What's wrong |
 |---|---|---|
-| sale-page | Website Basic | ? |
-| company | Website Standard | ? |
-| resort | Website Premium | ? |
-| orders-api | Web app Basic | ? |
-| shop-admin | Web app Standard | ? |
-| clinic-booking | Web app Premium | ? |
+| sale-page | Website Basic | Reworked and bilingual (PR #7) |
+| company | Website Standard | Reworked and bilingual (PR #8) |
+| resort | Website Premium | Reworked and bilingual (PR #9) |
+| orders-api | Web app Basic | Reworked and bilingual (PR #10) |
+| shop-admin | Web app Standard | Reworked and bilingual (PR #11, cleaned up in #13) |
+| clinic-booking | Web app Premium | Reworked and bilingual (PR #12, demo clock in #14) |
 
-- [ ] Walk through each demo with Ohm (screenshots at 1440 and 375) and fill in "What's wrong".
-- [ ] Use `/frontend-design` for the redesigns. Ohm rejected bland or templated looks before.
-- [ ] Re-run `scripts/capture-thumbs.mjs` afterwards. The hub fans and the hero wall use those screenshots.
-- [ ] Do this before #1 or together with it, so the demos are only translated once.
+- [x] Walk through each demo with Ohm (screenshots at 1440 and 375) and fill in "What's wrong".
+- [x] Use `/frontend-design` for the redesigns. Ohm rejected bland or templated looks before.
+- [x] Re-run `scripts/capture-thumbs.mjs` afterwards. The hub fans and the hero wall use those screenshots.
+- [x] Do this before #1 or together with it, so the demos are only translated once.
 - [x] **Revisit the shop admin colours.** Ohm doesn't like the kraft, wood and mustard colorway from step 6 (PR #11, 2026-10-23). Rework the palette after step 7, keeping the today-first layout. The palette lives in `app/demos/shop-admin/layout.tsx` and `_components/shop-css.ts`. Done 2026-10-24: back to the original clean look (Noto Sans Thai, white panels, green brand, clean orders table), keeping step 6's features.
 
 ## Suggested order
@@ -71,10 +75,10 @@ Ohm said that all six "still look ahh":
 
 ## Small leftovers from PR #4 and #5
 
-- [ ] The Compare nav link is hidden below `md`.
-- [ ] No test for `?service=bogus` on the compare page.
-- [ ] The plan fans have little room on some widths.
-- [ ] Mobile process artefact text is 9px.
-- [ ] Service-tile fans load their images twice.
-- [ ] The hero body copy still says "scope", which was removed from the package data.
-- [ ] On phones, turn off the plan-fan hover/focus enlargement. A tap triggers the hover and the fan grows over the text. In `app/globals.css:143-148`, put the `.group:is(:hover, :focus-within) .plan-stack` rules behind `@media (hover: hover) and (pointer: fine)` (or `md+`).
+- [x] The Compare nav link is hidden below `md`. Done 2026-10-24.
+- [x] No test for `?service=bogus` on the compare page. Done 2026-10-24.
+- [x] The plan fans have little room on some widths. Done 2026-10-24.
+- [x] Mobile process artefact text is 9px. Done 2026-10-24.
+- [x] Service-tile fans load their images twice. Not reproducible: every thumbnail URL is requested once at 1440 and 375. Done 2026-10-24.
+- [x] The hero body copy still says "scope", which was removed from the package data. Done 2026-10-24.
+- [x] On phones, turn off the plan-fan hover/focus enlargement. A tap triggers the hover and the fan grows over the text. In `app/globals.css:143-148`, put the `.group:is(:hover, :focus-within) .plan-stack` rules behind `@media (hover: hover) and (pointer: fine)` (or `md+`). Done 2026-10-24.

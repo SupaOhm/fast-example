@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { Dictionary } from "@/lib/i18n";
 
-// Syntax-coloured lines for the Build step: [text, colour class].
+// Syntax-coloured lines for the Build step: [text, colour class]. Kept short: the card is 168px wide on phones.
 const CODE: [string, string?][][] = [
-  [["export", "text-lime"], [" "], ["function", "text-sky"], [" Contact() {"]],
+  [["function", "text-sky"], [" Contact() {"]],
   [["  "], ["return", "text-lime"], [" <Form"]],
   [["    onSubmit={send}"]],
   [["  />"]],
@@ -34,7 +34,7 @@ function Artefact({ step, t }: { step: number; t: Dictionary }) {
     );
   if (step === 2)
     return (
-      <div className="p-2.5 font-mono text-[9px] leading-[1.55] sm:p-3 sm:text-[11px] whitespace-pre text-cream-muted">
+      <div className="p-2.5 font-mono text-[10px] leading-[1.55] sm:p-3 sm:text-[11px] whitespace-pre text-cream-muted">
         {CODE.map((line, i) => (
           <div key={i}>
             {line.map(([text, cls], j) => (

@@ -173,3 +173,28 @@ test("Thai process and about read in Thai", async ({ page }) => {
   await expect(page.locator("#process ol > li").nth(3)).toContainText("โลโก้ใหญ่ขึ้นอีกนิด?");
   await expect(page.locator("#about dl")).toContainText("ประสบการณ์");
 });
+
+test("phones get a section row under the header with Compare, and the full header still fits at 360", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the inline nav shows from md");
+  await page.setViewportSize({ width: 360, height: 740 });
+  for (const [path, label, current] of [
+    ["/en", "Sections", false],
+    ["/th", "เมนู", false],
+    ["/en/compare", "Sections", true],
+    ["/th/compare", "เมนู", true],
+  ] as const) {
+    await page.goto(path);
+    const locale = path.slice(1, 3);
+    const row = page.getByRole("navigation", { name: label });
+    const compare = row.locator(`a[href="/${locale}/compare"]`);
+    await expect(compare).toBeVisible();
+    if (current) await expect(compare).toHaveAttribute("aria-current", "page");
+    else await expect(compare).not.toHaveAttribute("aria-current");
+    expect((await compare.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await expect(page.getByRole("banner").getByText("SupaOhm")).toBeVisible();
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: locale === "en" ? "Hire on Fastwork" : "จ้างงานบน Fastwork" }),
+    ).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
+  }
+});

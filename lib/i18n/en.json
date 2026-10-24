@@ -10,11 +10,12 @@
     "about": "About",
     "hire": "Hire on Fastwork",
     "newTab": "(opens in a new tab)",
-    "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย"
+    "switchLocaleLabel": "เปลี่ยนเป็นภาษาไทย",
+    "sectionsLabel": "Sections"
   },
   "hero": {
     "title": "See *exactly* what\nyou're paying for.",
-    "body": "Each package I offer on Fastwork has a working example you can open and use, so the scope and quality are clear before you order.",
+    "body": "Each package I offer on Fastwork has a working example you can open and use, so you can see what you'll get before you order.",
     "ctaWork": "Browse the work ↓",
     "ctaPrice": "Packages from {price}",
     "pauseMotion": "Pause motion",

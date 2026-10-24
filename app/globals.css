@@ -132,6 +132,14 @@
 .plan-stack > * {
   transform: translateX(calc(-50% + var(--o) * var(--dx))) translateY(calc(var(--ao) * 8px)) rotate(calc(var(--o) * var(--rot)));
 }
+/* 768–1279: three narrow columns and only the 24px page gutter beside the last one, so the fan sits inside its card
+   and grows less on hover; the full spread ran off the right edge (measured in .superpowers/sdd/hubfix-fan-measure.mjs). */
+@media (min-width: 768px) and (max-width: 1279.98px) {
+  .plan-stack {
+    --dx: 8%;
+    --rot: 3.5deg;
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   .plan-stack,
   .plan-stack > * {
@@ -140,13 +148,31 @@
       translate 0.45s cubic-bezier(0.3, 0.7, 0.2, 1),
       scale 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
   }
-  .group:is(:hover, :focus-within) .plan-stack {
-    --dx: 17%;
-    --rot: 8deg;
-    scale: 1.12;
+  /* Real hover devices only: on a phone a tap counts as hover and the fan grew over the text. Keyboard focus still spreads it. */
+  @media (hover: hover) and (pointer: fine) {
+    .group:is(:hover, :focus-within) .plan-stack {
+      --dx: 17%;
+      --rot: 8deg;
+      scale: 1.12;
+    }
+    .group:is(:hover, :focus-within) .plan-stack > * {
+      translate: 0 -10px;
+    }
   }
-  .group:is(:hover, :focus-within) .plan-stack > * {
-    translate: 0 -10px;
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) and (max-width: 1279.98px) {
+    .group:is(:hover, :focus-within) .plan-stack {
+      --dx: 10%;
+      --rot: 4.5deg;
+      scale: 1;
+    }
+  }
+  /* 1280–1439: a little less than the full spread, which still ran 1px past the edge at 1280. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1280px) and (max-width: 1439.98px) {
+    .group:is(:hover, :focus-within) .plan-stack {
+      --dx: 15%;
+      --rot: 7deg;
+      scale: 1.08;
+    }
   }
 }
 
