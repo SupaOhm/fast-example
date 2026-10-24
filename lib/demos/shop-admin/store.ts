@@ -1,4 +1,4 @@
-import { createDemoStore } from "@/lib/demo-store";
+import { createDemoStore, pruneDemoKeys } from "@/lib/demo-store";
 import { toISODate } from "@/lib/dates";
 import { buildShopSeed, type ShopData } from "./data";
 
@@ -10,7 +10,7 @@ export const shopSession = createDemoStore<boolean>("shop-admin:session:v2", tru
 // visitor returning on a later day gets a fresh seed instead of a saved
 // dataset whose fixed calendar dates have drifted out of the "today"/30-day
 // windows. "v2" drops data saved before names became bilingual.
-export const shopData = createDemoStore<ShopData>(
-  `shop-admin:data:v2:${toISODate(new Date())}`,
-  buildShopSeed(new Date()),
-);
+const dataKey = `shop-admin:data:v2:${toISODate(new Date())}`;
+export const shopData = createDemoStore<ShopData>(dataKey, buildShopSeed(new Date()));
+// Earlier days' data and the v1 keys are never read again.
+pruneDemoKeys("shop-admin:", ["shop-admin:session:v2", dataKey]);

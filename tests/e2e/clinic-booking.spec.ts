@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const BOOK = "/demos/clinic-booking/book";
 const STAFF_TH: Record<string, string> = { "st-1": "พญ. ลลิตา", "st-2": "คุณมิว", "st-3": "คุณบีม" };
+const STAFF_IDS = Object.keys(STAFF_TH);
 
 test.use({ locale: "th-TH" });
 
@@ -70,6 +71,29 @@ test("coming back after closing the same day shows the day at 10:30, not the aft
   await show(page, "คลินิก");
   await expect(page.getByTestId("demo-clock-note")).toBeVisible();
   await expect(block).toHaveAttribute("data-status", "booked");
+});
+
+test("when a treatment has no times left today, the bot says it's fully booked and offers no slots", async ({ page }) => {
+  // At 17:59 the hour-long facial only fits at 18:00, so booking that time for each free staff member fills the day.
+  const late = new Date();
+  late.setHours(17, 59, 0, 0);
+  await page.clock.setFixedTime(late);
+  const full = page.getByText("ทรีตเมนต์นี้เต็มแล้วสำหรับวันนั้นค่ะ กดย้อนกลับเพื่อเลือกทรีตเมนต์อื่นได้เลย");
+  let booked = 0;
+  for (;;) {
+    await page.goto(BOOK);
+    await page.getByTestId("service-s-facial").click();
+    const slot = page.getByTestId("slot").first();
+    await expect(slot.or(full)).toBeVisible();
+    if (await full.isVisible()) break;
+    expect(await slot.getAttribute("data-time")).toBe("18:00");
+    expect(++booked).toBeLessThanOrEqual(STAFF_IDS.length);
+    await slot.click();
+    await page.getByTestId("book-confirm").click();
+    await expect(page.getByTestId("booking-confirmed")).toBeVisible();
+  }
+  expect(booked).toBeGreaterThan(0);
+  await expect(page.getByTestId("slot")).toHaveCount(0);
 });
 
 test("three taps book a facial, and it lands highlighted in that staff member's schedule", async ({ page }) => {

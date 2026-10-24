@@ -98,3 +98,25 @@ export function createDemoStore<T>(key: string, seed: T, options: DemoStoreOptio
 
   return { get, getSeed: () => seed, set, reset, subscribe };
 }
+
+/**
+ * Removes this demo's stored keys that a newer build or an earlier day left behind (old versions, past days), so
+ * localStorage doesn't grow with every visit. `prefix` is the demo's key prefix (e.g. "clinic:"); `keep` lists the
+ * keys still in use, as passed to `createDemoStore`. Guarded like the stores: it does nothing on the server or with
+ * storage blocked.
+ */
+export function pruneDemoKeys(prefix: string, keep: string[]) {
+  try {
+    const storage = globalThis.localStorage;
+    if (!storage) return;
+    const live = new Set(keep.map((k) => PREFIX + k));
+    const stale: string[] = [];
+    for (let i = 0; i < storage.length; i++) {
+      const k = storage.key(i);
+      if (k?.startsWith(PREFIX + prefix) && !live.has(k)) stale.push(k);
+    }
+    stale.forEach((k) => storage.removeItem(k));
+  } catch {
+    // ignore
+  }
+}
