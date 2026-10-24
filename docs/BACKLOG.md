@@ -61,6 +61,7 @@ Ohm said that all six "still look ahh":
 - [ ] Use `/frontend-design` for the redesigns. Ohm rejected bland or templated looks before.
 - [ ] Re-run `scripts/capture-thumbs.mjs` afterwards. The hub fans and the hero wall use those screenshots.
 - [ ] Do this before #1 or together with it, so the demos are only translated once.
+- [ ] **Revisit the shop admin colours.** Ohm doesn't like the kraft, wood and mustard colorway from step 6 (PR #11, 2026-10-23). Rework the palette after step 7, keeping the today-first layout. The palette lives in `app/demos/shop-admin/layout.tsx` and `_components/shop-css.ts`.
 
 ## Suggested order
 

@@ -10,7 +10,8 @@ export function ResetDemoButton({
   onReset,
 }: {
   stores: Pick<DemoStore<unknown>, "reset">[];
-  label?: string;
+  /** Usually plain text. A node lets a caller show a shorter label on small screens; it must keep the full name readable by screen readers. */
+  label?: React.ReactNode;
   className?: string;
   onReset?: () => void;
 }) {

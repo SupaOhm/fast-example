@@ -9,7 +9,7 @@ describe("images", () => {
   });
 
   it("has a well-formed id for every photo slot", () => {
-    expect(Object.keys(PHOTOS).length).toBe(26);
+    expect(Object.keys(PHOTOS).length).toBe(29);
     for (const id of Object.values(PHOTOS)) expect(id).toMatch(/^\d{10,13}-[0-9a-f]{12}$/);
   });
 });

@@ -3,11 +3,14 @@ import type { Lang } from "./lang";
 
 export { formatTHB } from "@/lib/packages";
 
-export type DateStyle = "dayMonth" | "dayMonthYear" | "weekdayDayMonth" | "weekday" | "full";
+export type DateStyle = "day" | "dayMonth" | "dayMonthYear" | "weekdayDayMonth" | "weekday" | "weekdayNarrow" | "weekdayLong" | "full";
 
 const OPTIONS: Record<DateStyle, Intl.DateTimeFormatOptions> = {
+  day: { day: "numeric" },
   dayMonth: { day: "numeric", month: "short" },
   weekday: { weekday: "short" },
+  weekdayNarrow: { weekday: "narrow" },
+  weekdayLong: { weekday: "long" },
   dayMonthYear: { day: "numeric", month: "short", year: "numeric" },
   weekdayDayMonth: { weekday: "short", day: "numeric", month: "short" },
   full: { weekday: "long", day: "numeric", month: "long", year: "numeric" },

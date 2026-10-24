@@ -1,4 +1,4 @@
-// A generic chat-bubble mark used next to LINE actions (not the LINE logo).
+// The LINE chat glyph (its speech-bubble outline), shown next to LINE actions because this demo books through LINE.
 export function LineGlyph({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden className={className} fill="currentColor">

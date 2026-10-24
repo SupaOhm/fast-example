@@ -30,4 +30,7 @@ export const PHOTOS = {
   resortAbout: "1759372945658-1e9f56e751bd",
   clinicHero: "1595871151608-bc7abd1caca3",
   clinicInterior: "1596740926849-2d473dee8d60",
+  clinicStaffLalita: "1754715203698-70c7ad3a879d",
+  clinicStaffMew: "1687293233752-ec42de2050db",
+  clinicStaffBeam: "1734002886107-168181bcd6a1",
 } as const;

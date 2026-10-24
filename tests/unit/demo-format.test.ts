@@ -23,6 +23,14 @@ describe("formatDate", () => {
     expect(formatDate(d, "en", "weekday")).toBe("Wed");
   });
 
+  it("writes a long or narrow weekday and a bare day number", () => {
+    expect(formatDate(d, "th", "weekdayLong")).toBe("วันพุธ");
+    expect(formatDate(d, "en", "weekdayLong")).toBe("Wednesday");
+    expect(formatDate(d, "th", "day")).toBe("21");
+    expect(formatDate(d, "th", "weekdayNarrow")).toBe("พ");
+    expect(formatDate(d, "en", "day")).toBe("21");
+  });
+
   it("accepts ISO date strings as local dates", () => {
     expect(formatDate("2026-10-21", "en", "dayMonthYear")).toBe("21 Oct 2026");
     expect(formatDate("2026-10-21", "th", "dayMonthYear")).toBe("21 ต.ค. 2569");
