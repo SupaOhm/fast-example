@@ -55,6 +55,23 @@ test("a page left open moves statuses on with the clock", async ({ page }) => {
   await expect(block).toHaveAttribute("data-status", "done");
 });
 
+test("coming back after closing the same day shows the day at 10:30, not the afternoon's saved statuses", async ({ page }) => {
+  const afternoon = new Date();
+  afternoon.setHours(17, 45, 0, 0);
+  await page.clock.setFixedTime(afternoon);
+  await page.goto(BOOK);
+  await show(page, "คลินิก");
+  const block = page.locator('[data-testid="schedule-block"][data-staff="st-3"][data-time="11:00"]');
+  await expect(block).toHaveAttribute("data-status", "done");
+  const evening = new Date();
+  evening.setHours(20, 0, 0, 0);
+  await page.clock.setFixedTime(evening);
+  await page.reload();
+  await show(page, "คลินิก");
+  await expect(page.getByTestId("demo-clock-note")).toBeVisible();
+  await expect(block).toHaveAttribute("data-status", "booked");
+});
+
 test("three taps book a facial, and it lands highlighted in that staff member's schedule", async ({ page }) => {
   const { time, staff } = await bookFacial(page);
   await expect(page.getByTestId("booking-confirmed")).toContainText(time);
