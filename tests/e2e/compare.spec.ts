@@ -60,7 +60,7 @@ test("header and hero link to the compare page", async ({ page }) => {
 
 test("language switch stays on the compare page and keeps the service", async ({ page }) => {
   await page.goto("/en/compare?service=app");
-  await page.getByRole("link", { name: "เปลี่ยนเป็นภาษาไทย" }).click();
+  await page.getByRole("banner").getByRole("link", { name: "เปลี่ยนเป็นภาษาไทย" }).click();
   await expect(page).toHaveURL(/\/th\/compare\?service=app$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("เปรียบเทียบแพ็กเกจ");
   await expect(page.getByTestId("cell-login-app-premium")).toContainText("ระบบบัญชีและการเข้าสู่ระบบ");

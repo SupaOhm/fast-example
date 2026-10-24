@@ -36,7 +36,7 @@ export default async function HubPage({ params }: Props) {
         <ProcessSection t={t} />
         <AboutSection t={t} />
       </main>
-      <SiteFooter t={t} />
+      <SiteFooter locale={locale} t={t} path="" />
     </>
   );
 }

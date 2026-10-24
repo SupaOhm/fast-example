@@ -34,13 +34,13 @@ Noted 2026-10-21.
 
 ## 3. Better footer
 
-**Now:** a lime "Have a project in mind?" band with one Fastwork button, then a single line of small print (`components/hub/site-footer.tsx`).
+**Now:** the lime "Have a project in mind?" band, then a forest footer with the SupaOhm brand block (tagline, Fastwork profile, language switch), quick links, the six demos by service and tier, and the small print (`components/hub/site-footer.tsx`).
 
 **Wanted** (all four, chosen 2026-10-21)
-- [ ] Site links: Work, Compare, Process, About, plus the six demos grouped by package
-- [ ] Trust signals: Fastwork rating and review count, typical response time, availability. **Need from Ohm:** the real numbers. Nothing invented.
-- [ ] The EN | ไทย switch and the Fastwork profile link repeated at the bottom
-- [ ] Visual polish: give it a stronger design than the plain line it is now
+- [x] Site links: Work, Compare, Process, About, plus the six demos grouped by package. Done 2026-10-24.
+- [ ] Trust signals: Fastwork rating and review count, typical response time, availability. **Need from Ohm:** the real numbers. Nothing invented. Waiting on Ohm's real numbers; the brand block has room for them.
+- [x] The EN | ไทย switch and the Fastwork profile link repeated at the bottom. Done 2026-10-24.
+- [x] Visual polish: give it a stronger design than the plain line it is now. Done 2026-10-24.
 
 **Depends on #2:** the CTA band changes if the inquiry form ships.
 

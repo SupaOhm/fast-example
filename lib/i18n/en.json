@@ -95,6 +95,10 @@
     "button": "Hire me on Fastwork"
   },
   "footer": {
-    "note": "All businesses, people and reviews in the demos are fictional."
+    "note": "All businesses, people and reviews in the demos are fictional.",
+    "tagline": "Websites and web apps built with Next.js. Every order goes through Fastwork.",
+    "profile": "My Fastwork profile",
+    "siteLabel": "Quick links",
+    "demosLabel": "Live demos"
   }
 }

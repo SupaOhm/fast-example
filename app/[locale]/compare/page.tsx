@@ -50,7 +50,7 @@ export default async function ComparePage({ params }: Props) {
           </div>
         </div>
       </main>
-      <SiteFooter t={t} />
+      <SiteFooter locale={locale} t={t} path="/compare" />
     </>
   );
 }
