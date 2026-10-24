@@ -74,7 +74,7 @@ function Items({ order }: { order: ShopOrder }) {
         ))}
         {extra > 0 && <span className="text-sm font-medium tabular-nums text-(--muted)">+{extra}</span>}
       </span>
-      <span className="whitespace-nowrap tabular-nums text-(--muted)">
+      <span className="whitespace-nowrap leading-none tabular-nums text-(--muted)">
         {fill(byCount(count, ui.piecesOne, ui.pieces)[lang], { n: String(count) })}
       </span>
     </span>
@@ -251,7 +251,7 @@ export function OrdersTable() {
         </div>
       </div>
 
-      <div className={`mt-4 overflow-hidden ${PANEL}`}>
+      <div className={`mt-4 overflow-x-auto ${PANEL}`}>
         {rows.length === 0 ? (
           <div data-testid="orders-empty" className="px-6 py-14 text-center">
             <p className="font-semibold leading-[1.4]">{ui.emptyTitle[lang]}</p>

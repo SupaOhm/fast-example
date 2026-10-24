@@ -44,7 +44,7 @@ function DemoSessionBanner() {
       data-testid="demo-session"
       className="flex items-center justify-between gap-3 border-b border-[#c5e3d4] bg-(--brand-soft) px-4 py-0.5 text-base leading-[1.4] text-(--brand-ink) lg:col-span-2 lg:px-6"
     >
-      <p className="flex min-w-0 items-center gap-2 font-medium">
+      <p className="flex min-w-0 items-center gap-2 text-sm font-medium sm:text-base">
         <Eye className="hidden size-4 shrink-0 sm:block" aria-hidden />
         <span>{ui.demoBanner[lang]}</span>
       </p>
