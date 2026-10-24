@@ -335,7 +335,7 @@ for (const [label, h, m] of [
       await show(page, "คลินิก");
       const note = page.getByTestId("demo-clock-note");
       await expect(note).toBeVisible();
-      await expect(note).toHaveText("คลินิกปิดอยู่ตอนนี้ เดโมนี้จึงแสดงคลินิกตอน 10:30 น.");
+      await expect(note).toHaveText("ตอนนี้อยู่นอกเวลาจองคิว เดโมนี้จึงแสดงคลินิกตอน 10:30 น.");
       await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางวันนี้");
       const today = await page.evaluate(() =>
         new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date()),

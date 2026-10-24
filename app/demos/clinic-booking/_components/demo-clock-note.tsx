@@ -6,7 +6,7 @@ import { DEMO_TIME } from "@/lib/demos/clinic-booking/data";
 import { fill } from "@/lib/demos/format";
 import { ui } from "./copy";
 
-/** A calm line saying the demo runs at `DEMO_TIME` because the clinic is closed. Callers show it only while `isDemo`. */
+/** A calm line saying the demo runs at `DEMO_TIME` because it is outside booking hours. Callers show it only while `isDemo`. */
 export function DemoClockNote({ className = "" }: { className?: string }) {
   const lang = useLang();
   return (
