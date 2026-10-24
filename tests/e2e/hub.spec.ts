@@ -77,10 +77,10 @@ test("Thai lineup uses Thai labels", async ({ page }) => {
 test("locale switch goes to Thai and back", async ({ page }) => {
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("See exactly what you're paying for.");
-  await page.getByRole("link", { name: "เปลี่ยนเป็นภาษาไทย" }).click();
+  await page.getByRole("banner").getByRole("link", { name: "เปลี่ยนเป็นภาษาไทย" }).click();
   await expect(page).toHaveURL(/\/th/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("เห็นชัดๆ");
-  await page.getByRole("link", { name: "Switch to English" }).click();
+  await page.getByRole("banner").getByRole("link", { name: "Switch to English" }).click();
   await expect(page).toHaveURL(/\/en/);
 });
 
