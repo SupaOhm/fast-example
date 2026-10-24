@@ -79,7 +79,7 @@ export function LinePhone({ children, chips }: { children: React.ReactNode; chip
             <Plus className="size-5" />
             <Camera className="size-5" />
             <ImageIcon className="size-5" />
-            <span className="flex h-9 flex-1 items-center justify-between rounded-full bg-[#f1f2f4] px-3.5 text-sm">
+            <span className="flex h-9 flex-1 items-center justify-between rounded-full bg-[#f1f2f4] px-3.5 text-sm text-[#646a73]">
               {ui.chatComposer[lang]}
               <Smile className="size-4.5" />
             </span>

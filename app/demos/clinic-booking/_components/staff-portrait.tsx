@@ -12,7 +12,7 @@ import { ui } from "./copy";
 // circles by a further shared factor, with the face lifted to just above the middle, so a 20px avatar is a face.
 const PHOTO: Record<string, { id: string; x: number; y: number; zoom: number }> = {
   "st-1": { id: PHOTOS.clinicStaffLalita, x: 49, y: 24, zoom: 1.1 },
-  "st-2": { id: PHOTOS.clinicStaffMew, x: 50, y: 25, zoom: 1.6 },
+  "st-2": { id: PHOTOS.clinicStaffMew, x: 51, y: 18, zoom: 1.05 },
   "st-3": { id: PHOTOS.clinicStaffBeam, x: 51, y: 35, zoom: 1.4 },
 };
 
@@ -20,7 +20,7 @@ const SMALL_ZOOM = 2.2;
 const SMALL_FACE_Y = 44;
 
 /** The one width fetched for every small avatar (the photos are not optimised, so `sizes` picks nothing). */
-export const SMALL = 120;
+const SMALL = 120;
 
 /** A staff member's photo, filling a box the caller sizes and shapes through `className`. */
 export function StaffPortrait({

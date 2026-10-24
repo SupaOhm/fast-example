@@ -361,11 +361,11 @@ export function ApiConsole({
         </div>
       </section>
 
-      <aside aria-label={ui.lineAsideLabel[lang]} className="min-w-0 py-4 xl:col-start-2 xl:row-span-5 xl:row-start-1 xl:py-0">
+      <section aria-label={ui.lineAsideLabel[lang]} className="min-w-0 py-4 xl:col-start-2 xl:row-span-5 xl:row-start-1 xl:py-0">
         <p className="mx-auto mb-3 max-w-[300px] text-base leading-[1.4] font-semibold">{ui.lineAsideHeading[lang]}</p>
         <LinePreview messages={sent.map((m) => ({ id: m.id, n: m.n, time: clock[lang].format(m.at) }))} />
         <p className="mx-auto mt-3 max-w-[300px] text-sm leading-[1.55] text-(--muted)">{ui.lineAsideNote[lang]}</p>
-      </aside>
+      </section>
 
       <section aria-label={ui.curl[lang]} className="min-w-0 overflow-hidden rounded-2xl bg-(--code-bg) text-(--code-text) xl:col-start-1">
         <div className="flex items-center justify-between border-b border-white/10 px-4 py-2 text-sm">

@@ -15,7 +15,7 @@ import {
   type Tier,
 } from "@/lib/packages";
 
-export interface CompareLabels {
+interface CompareLabels {
   services: string;
   plansFrom: string;
   tryDemo: string;

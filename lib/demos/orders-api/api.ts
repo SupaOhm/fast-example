@@ -35,7 +35,7 @@ export interface ApiResponse {
   notification?: LineNotification;
 }
 
-export interface ApiResult {
+interface ApiResult {
   orders: Order[];
   response: ApiResponse;
 }

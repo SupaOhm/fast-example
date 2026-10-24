@@ -83,9 +83,10 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
               onClick={() => open(i)}
               className={`group relative block w-full overflow-hidden rounded-md bg-(--sand-2) ${i === 0 ? "aspect-[4/3]" : "aspect-[4/5]"} lg:aspect-auto lg:h-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--sea)`}
             >
+              {/* The caption below names the button, so the photo's alt stays empty and it isn't read twice. */}
               <Image
                 src={unsplash(item.id, 900)}
-                alt={item.alt[lang]}
+                alt=""
                 fill
                 sizes="(min-width: 1024px) 31vw, 50vw"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"

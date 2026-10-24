@@ -68,7 +68,7 @@ test("compare button links to the compare page for the shown service", async ({ 
 test("Thai lineup uses Thai labels", async ({ page }) => {
   await page.goto("/th");
   await expect(page.getByRole("tab", { name: /เว็บไซต์/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByTestId("plan-web-basic").getByRole("link", { name: "ลองเดโม่" })).toHaveAttribute(
+  await expect(page.getByTestId("plan-web-basic").getByRole("link", { name: "ลองเดโม" })).toHaveAttribute(
     "href",
     "/demos/sale-page",
   );
@@ -197,4 +197,22 @@ test("phones get a section row under the header with Compare, and the full heade
     ).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
   }
+});
+
+test("hub pages carry absolute language links, a canonical and a share card", async ({ page }) => {
+  await page.goto("/th/compare");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://devbyohm.com/th/compare");
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute("href", "https://devbyohm.com/en/compare");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://devbyohm.com/thumbs/web-premium.jpg");
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute("content", "th_TH");
+  const image = await page.request.get("/thumbs/web-premium.jpg");
+  expect(image.ok()).toBe(true);
+});
+
+test("robots.txt points to a sitemap that lists the hub in both languages and every demo", async ({ request }) => {
+  expect(await (await request.get("/robots.txt")).text()).toContain("Sitemap: https://devbyohm.com/sitemap.xml");
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  for (const path of ["/en", "/th", "/en/compare", "/th/compare"]) expect(sitemap).toContain(`<loc>https://devbyohm.com${path}</loc>`);
+  for (const pkg of [...packagesByService("web"), ...packagesByService("app")])
+    expect(sitemap).toContain(`<loc>https://devbyohm.com${pkg.demoPath}</loc>`);
 });

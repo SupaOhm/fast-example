@@ -22,6 +22,8 @@ Noted 2026-10-21.
 
 **Why:** some buyers, especially foreign ones, don't want to go through Fastwork. The idea is a form under "Have a project in mind?" next to the Fastwork button.
 
+**Parked 2026-10-25:** Ohm will come back to this later.
+
 **Blocking: Fastwork policy.** Fastwork doesn't allow sellers to pull buyers off the platform, and the Fastwork listings link to this site. The standing rule so far has been *no off-platform contact details anywhere* (`tests/e2e/hub.spec.ts` checks for this).
 
 **Open questions**
@@ -38,7 +40,7 @@ Noted 2026-10-21.
 
 **Wanted** (all four, chosen 2026-10-21)
 - [x] Site links: Work, Compare, Process, About, plus the six demos grouped by package. Done 2026-10-24.
-- [ ] Trust signals: Fastwork rating and review count, typical response time, availability. **Need from Ohm:** the real numbers. Nothing invented. Waiting on Ohm's real numbers; the brand block has room for them.
+- [x] ~~Trust signals: Fastwork rating and review count, typical response time, availability.~~ Dropped 2026-10-25: Ohm said they aren't needed.
 - [x] The EN | ไทย switch and the Fastwork profile link repeated at the bottom. Done 2026-10-24.
 - [x] Visual polish: give it a stronger design than the plain line it is now. Done 2026-10-24.
 
@@ -86,3 +88,4 @@ Ohm said that all six "still look ahh":
 ## Small items
 
 - [x] **Back button on the compare page.** `/{locale}/compare` has no way back to the hub except the header nav or the browser's back button. Add a clear "← Back" link near the top of the page, going to the hub's work section (`/{locale}#work`) and keeping the selected service (`?service=`). It needs copy in both languages, a 44px tap target on phones and an e2e test. Added 2026-10-24. Done 2026-10-24: "← Back to the work" / "← กลับไปหน้าผลงาน" above the heading; the hub's work tabs now read `?service=`.
+- [ ] **Major tool upgrades.** TypeScript 7, ESLint 10 and `@types/node` 26 are out. Ohm chose "not now" on 2026-10-25: the current versions are supported and the audit found no vulnerabilities. Do them in their own branch, with the full suite, when there's a reason to.

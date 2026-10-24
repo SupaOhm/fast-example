@@ -76,8 +76,6 @@ export const SERVICES = [
   },
 ] as const;
 
-export type ServiceId = (typeof SERVICES)[number]["id"];
-
 export const processSteps: L[] = [
   { th: "ส่งแบบหรือตัวอย่างชิ้นงาน", en: "Send a drawing or a sample part" },
   { th: "รับใบเสนอราคาใน 48 ชม.", en: "Get a quote within 48 hours" },

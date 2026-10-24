@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { getDictionary } from "@/lib/i18n";
+import { shareMetadata } from "@/lib/site";
+
+const description = "Websites and web apps with live demos. รับทำเว็บไซต์และเว็บแอป พร้อมเดโมให้ลอง";
 
 export const metadata: Metadata = {
   title: "SupaOhm | Choose your language · เลือกภาษา",
-  description: "Websites and web apps with live demos. รับทำเว็บไซต์และเว็บแอป พร้อมเดโม่ให้ลอง",
-  alternates: { languages: { en: "/en", th: "/th", "x-default": "/" } },
+  description,
+  alternates: { canonical: "/", languages: { en: "/en", th: "/th", "x-default": "/" } },
+  // devbyohm.com is the link people share, so its card names the site rather than the language choice.
+  ...shareMetadata({ title: getDictionary("en").meta.title, description, path: "/", locale: "en" }),
 };
 
 const CHOICES = [

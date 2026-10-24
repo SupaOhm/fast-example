@@ -10,7 +10,7 @@ const OPENING = 3;
 /** Events shown, without a timer, under reduced motion. */
 const STILL = 4;
 
-export interface StoryFrame {
+interface StoryFrame {
   /** 0 before hydration, then 1, 2, … as the story loops. Part of every React key. */
   round: number;
   /** Events below this index were already on screen when the round began, so they don't animate in. */
@@ -95,7 +95,7 @@ function subscribeReduced(fn: () => void) {
 }
 
 /** True when the visitor asked for reduced motion. False on the server and during hydration. */
-export function useReducedMotion(): boolean {
+function useReducedMotion(): boolean {
   return useSyncExternalStore(
     subscribeReduced,
     () => window.matchMedia(REDUCE).matches,

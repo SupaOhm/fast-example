@@ -5,7 +5,7 @@ import { useLang } from "@/components/demo/lang";
 import type { L } from "@/lib/demos/lang";
 import type { clients } from "@/lib/demos/company/content";
 
-export type ClientLogoId = (typeof clients)[number]["logo"];
+type ClientLogoId = (typeof clients)[number]["logo"];
 
 /*
  * Client wordmarks, drawn in one colour (currentColor). Each is the client's own brand mark, so the
