@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, PackageOpen, TriangleAlert, Undo2 } from "lucide-react";
+import { ChevronDown, ChevronRight, PackageOpen, TriangleAlert, Undo2, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "@/components/demo/lang";
@@ -22,29 +22,34 @@ import { byCount, channelLabel, ui } from "./copy";
 import { CHANNEL_ICON, fullDate, shortDate } from "./format";
 import { ProductIcon } from "./product-icon";
 import { SalesPanels } from "./sales-panels";
-import { Stamp } from "./stamp";
+import { PANEL } from "./shop-css";
+import { StatusPill } from "./status-pill";
 
 const ORDERS_TO_PACK = "/demos/shop-admin/orders?status=paid";
 
 /** Renders a `{n}` template with the number set large, keeping the words around it as they are. */
-function BigCount({ template, n, numberClass }: { template: string; n: number; numberClass: string }) {
+function BigCount({ template, n, numberClass = "text-(--ink)" }: { template: string; n: number; numberClass?: string }) {
   const [before, after = ""] = template.split("{n}");
   return (
-    <span className="block pr-8 text-lg font-semibold leading-[1.25]">
+    <span className="block pr-8 text-base font-medium leading-[1.35] text-(--muted)">
       {before}
-      <span className={`my-1 block text-[44px] font-bold leading-none tabular-nums lg:my-0 lg:inline lg:px-1 lg:text-[56px] ${numberClass}`}>{n}</span>
+      <span
+        className={`my-1 block text-[34px] font-semibold leading-[1.15] tabular-nums lg:my-0 lg:inline lg:px-1.5 lg:text-[40px] ${numberClass}`}
+      >
+        {n}
+      </span>
       {after}
     </span>
   );
 }
 
-/** A strip of packing tape holding a paper tile to the counter. */
-function Tape({ className = "" }: { className?: string }) {
+/** The tile's call to action; the icon flows with the words, so it stays beside the last one when they wrap. */
+function TileAction({ children, icon: Icon }: { children: React.ReactNode; icon: typeof ChevronRight }) {
   return (
-    <span
-      aria-hidden
-      className={`absolute -top-2.5 h-5 w-16 bg-(--mustard)/75 shadow-[0_1px_1px_rgba(43,34,23,.15)] ${className}`}
-    />
+    <span className="text-base font-medium leading-[1.4] text-(--brand-ink) group-hover:underline">
+      {children}
+      <Icon className="ml-0.5 inline size-4 align-[-0.15em]" aria-hidden />
+    </span>
   );
 }
 
@@ -67,19 +72,19 @@ function PackRow({
     <li
       data-testid="pack-row"
       data-order-id={order.id}
-      className={`grid gap-x-6 gap-y-3 px-4 py-4 transition-colors sm:px-5 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto_11.5rem] lg:items-center ${
-        packed ? "bg-(--bg)/45" : ""
+      className={`grid gap-x-6 gap-y-3 px-4 py-4 transition-colors sm:px-5 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto_11rem] lg:items-center ${
+        packed ? "bg-(--bg)/60" : ""
       }`}
     >
       <div className="min-w-0 leading-[1.35]">
         <p className="flex flex-wrap items-baseline gap-x-2">
-          <span className="font-(family-name:--font-mono) text-base font-semibold">{order.id}</span>
           <span className="font-semibold">{order.customer[lang]}</span>
+          <span className="tabular-nums text-(--muted)">{order.id}</span>
         </p>
         <p className="mt-1 flex items-center gap-1.5 text-sm text-(--muted)">
           <ChannelIcon className="size-4 shrink-0" aria-hidden />
           {channelLabel[order.channel][lang]}
-          <span aria-hidden className="mx-0.5 h-3.5 w-px bg-(--line)" />
+          <span aria-hidden>·</span>
           {shortDate(order.date, lang)}
         </p>
       </div>
@@ -91,25 +96,25 @@ function PackRow({
             <li key={item.sku} className="flex items-center gap-2.5 leading-[1.3]">
               <ProductIcon sku={item.sku} className="size-8" />
               <span className="min-w-0 truncate">{product?.name[lang] ?? item.sku}</span>
-              <span className="shrink-0 text-base tabular-nums text-(--muted)">×{item.qty}</span>
+              <span className="shrink-0 tabular-nums text-(--muted)">×{item.qty}</span>
             </li>
           );
         })}
       </ul>
 
-      <div className="flex items-center justify-between gap-4 border-t border-dashed border-(--line) pt-3 lg:contents">
-        <p className="font-(family-name:--font-mono) text-base font-semibold lg:text-right">{formatTHB(order.total)}</p>
+      <div className="flex items-center justify-between gap-4 lg:contents">
+        <p className="font-semibold tabular-nums lg:text-right">{formatTHB(order.total)}</p>
 
-        <div aria-live="polite" className="flex min-h-11 items-center justify-end gap-3">
+        <div aria-live="polite" className="flex min-h-11 items-center justify-end gap-2">
           {packed ? (
             <>
-              <Stamp status="packed" fresh tilt={-7} />
+              <StatusPill status="packed" fresh />
               <button
                 type="button"
                 id={`undo-${order.id}`}
                 onClick={() => onUndo(order.id)}
                 aria-label={fill(ui.undoLabel[lang], { id: order.id })}
-                className="inline-flex min-h-11 items-center gap-1 rounded-md px-1.5 text-base font-semibold underline decoration-(--line) decoration-2 underline-offset-4 hover:decoration-(--ink)"
+                className="inline-flex min-h-11 items-center gap-1 rounded-lg px-2 text-base font-medium text-(--brand-ink) transition-colors hover:bg-(--brand-soft)"
               >
                 <Undo2 className="size-4" aria-hidden />
                 {ui.undo[lang]}
@@ -121,7 +126,7 @@ function PackRow({
               id={`pack-${order.id}`}
               onClick={() => onPack(order.id)}
               aria-label={fill(ui.markPackedLabel[lang], { id: order.id })}
-              className="min-h-11 rounded-md border-2 border-(--ink) bg-(--mustard) px-4 font-bold text-(--ink) shadow-[0_3px_0_var(--ink)] transition-[box-shadow] motion-safe:transition-[transform,box-shadow] motion-safe:hover:-translate-y-px hover:shadow-[0_4px_0_var(--ink)] motion-safe:active:translate-y-[3px] active:shadow-none"
+              className="min-h-11 rounded-lg bg-(--brand) px-4 text-base font-semibold text-white transition-colors hover:bg-(--brand-ink)"
             >
               {ui.markPacked[lang]}
             </button>
@@ -160,94 +165,80 @@ export function Overview() {
     focusLater(`pack-${id}`);
   }
 
-  const tileBase =
-    "group relative flex flex-col justify-between gap-4 rounded-lg p-4 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 sm:p-5";
+  const tile = `${PANEL} group relative flex flex-col justify-between gap-4 p-4 transition-colors hover:border-(--brand)/45 sm:p-5`;
 
   return (
     <div>
       <header>
-        <h1 className="text-[32px] font-bold leading-[1.2] lg:text-[40px]">{ui.greeting[lang]}</h1>
+        <h1 className="text-2xl font-semibold leading-[1.25] sm:text-[28px]">{ui.greeting[lang]}</h1>
         <p className="mt-1 text-base text-(--muted)">{fill(ui.todayIs[lang], { date: fullDate(today, lang) })}</p>
       </header>
 
       <section aria-labelledby="todo-heading" className="mt-6">
-        <h2 id="todo-heading" className="text-lg font-bold leading-[1.3]">
+        <h2 id="todo-heading" className="text-lg font-semibold leading-[1.3]">
           {ui.todoHeading[lang]}
         </h2>
-        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 lg:grid-cols-[1fr_1fr_1.3fr] lg:gap-5">
-          <Link
-            href={ORDERS_TO_PACK}
-            data-testid="todo-pack"
-            className={`${tileBase} border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]`}
-          >
-            <Tape className="left-6 -rotate-3" />
-            <PackageOpen className="absolute right-4 top-4 size-6 text-(--muted)" aria-hidden />
-            <BigCount template={byCount(packCount, ui.tileToPackOne, ui.tileToPack)[lang]} n={packCount} numberClass="" />
-            <span className="inline-flex items-center gap-0.5 text-base font-semibold text-(--mustard-ink) group-hover:underline">
-              {ui.tileToPackAction[lang]}
-              <ChevronRight className="size-4 shrink-0" aria-hidden />
-            </span>
+        <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-5">
+          <Link href={ORDERS_TO_PACK} data-testid="todo-pack" className={tile}>
+            <PackageOpen className="absolute right-4 top-4 size-5 text-(--muted) sm:right-5 sm:top-5" aria-hidden />
+            <BigCount template={byCount(packCount, ui.tileToPackOne, ui.tileToPack)[lang]} n={packCount} />
+            <TileAction icon={ChevronRight}>{ui.tileToPackAction[lang]}</TileAction>
           </Link>
 
-          <Link
-            href="/demos/shop-admin/stock"
-            data-testid="todo-low"
-            className={`${tileBase} border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]`}
-          >
-            <Tape className="right-8 rotate-2" />
-            <TriangleAlert className="absolute right-4 top-4 size-6 text-(--warn)" aria-hidden />
-            <BigCount template={byCount(lowCount, ui.tileLowOne, ui.tileLow)[lang]} n={lowCount} numberClass="text-(--warn)" />
-            <span className="inline-flex items-center gap-0.5 text-base font-semibold text-(--mustard-ink) group-hover:underline">
-              {ui.tileLowAction[lang]}
-              <ChevronRight className="size-4 shrink-0" aria-hidden />
-            </span>
+          <Link href="/demos/shop-admin/stock" data-testid="todo-low" className={tile}>
+            <TriangleAlert
+              className={`absolute right-4 top-4 size-5 sm:right-5 sm:top-5 ${lowCount > 0 ? "text-(--warn)" : "text-(--muted)"}`}
+              aria-hidden
+            />
+            <BigCount
+              template={byCount(lowCount, ui.tileLowOne, ui.tileLow)[lang]}
+              n={lowCount}
+              numberClass={lowCount > 0 ? "text-(--warn-ink)" : undefined}
+            />
+            <TileAction icon={ChevronRight}>{ui.tileLowAction[lang]}</TileAction>
           </Link>
 
-          <a
-            href="#sales"
-            data-testid="todo-sold"
-            className={`${tileBase} rd-wood col-span-2 bg-(--wood) text-(--bg) shadow-[0_3px_0_#120d07] lg:col-span-1`}
-          >
-            <span className="text-base font-semibold">{ui.tileSoldToday[lang]}</span>
-            <span className="block rounded-md border border-(--mustard)/35 bg-black/25 px-3.5 py-2.5 text-right shadow-[inset_0_2px_6px_rgba(0,0,0,.45)]">
-              <span className="font-(family-name:--font-mono) text-[34px] font-semibold leading-[1.1] text-(--mustard) lg:text-[40px]">
+          <a href="#sales" data-testid="todo-sold" className={`${tile} col-span-2 lg:col-span-1`}>
+            <Wallet className="absolute right-4 top-4 size-5 text-(--muted) sm:right-5 sm:top-5" aria-hidden />
+            <span className="block pr-8 leading-[1.35]">
+              <span className="block text-base font-medium text-(--muted)">{ui.tileSoldToday[lang]}</span>
+              <span className="mt-1 block text-[34px] font-semibold leading-[1.15] tabular-nums lg:text-[40px]">
                 {formatTHB(sold.revenue)}
               </span>
             </span>
-            <span className="inline-flex items-center gap-1 text-base group-hover:underline">
+            <TileAction icon={ChevronDown}>
               {fill(byCount(sold.orders, ui.tileSoldTodayFootOne, ui.tileSoldTodayFoot)[lang], { n: String(sold.orders) })}
-              <ChevronDown className="size-4 shrink-0 text-(--mustard)" aria-hidden />
-            </span>
+            </TileAction>
           </a>
         </div>
       </section>
 
-      <section aria-labelledby="queue-heading" className="mt-10">
-        <h2 id="queue-heading" className="text-[22px] font-bold leading-[1.3]">
-          {ui.queueHeading[lang]}
-        </h2>
-        <p className="mt-1 text-base text-(--muted)">{ui.queueHint[lang]}</p>
+      <section aria-labelledby="queue-heading" className={`${PANEL} mt-8 overflow-hidden`}>
+        <header className="px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
+          <h2 id="queue-heading" className="text-lg font-semibold leading-[1.3]">
+            {ui.queueHeading[lang]}
+          </h2>
+          <p className="mt-0.5 text-sm leading-[1.5] text-(--muted)">{ui.queueHint[lang]}</p>
+        </header>
 
-        <div className="mt-4 overflow-hidden rounded-lg border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]">
-          {queue.length === 0 ? (
-            <p className="px-5 py-10 text-center text-lg font-semibold">{ui.queueEmpty[lang]}</p>
-          ) : (
-            <ul className="divide-y-[1.5px] divide-dashed divide-(--line)">
-              {queue.map((o) => (
-                <PackRow key={o.id} order={o} products={data.products} onPack={pack} onUndo={undo} />
-              ))}
-            </ul>
-          )}
-          {more > 0 && (
-            <Link
-              href={ORDERS_TO_PACK}
-              className="flex items-center justify-center gap-1 border-t-[1.5px] border-(--line) bg-(--bg)/40 px-4 py-3 font-semibold text-(--mustard-ink) hover:underline"
-            >
-              {fill(byCount(more, ui.queueMoreOne, ui.queueMore)[lang], { n: String(more) })}
-              <ChevronRight className="size-4" aria-hidden />
-            </Link>
-          )}
-        </div>
+        {queue.length === 0 ? (
+          <p className="border-t border-(--line) px-5 py-10 text-center text-base text-(--muted)">{ui.queueEmpty[lang]}</p>
+        ) : (
+          <ul className="divide-y divide-(--line) border-t border-(--line)">
+            {queue.map((o) => (
+              <PackRow key={o.id} order={o} products={data.products} onPack={pack} onUndo={undo} />
+            ))}
+          </ul>
+        )}
+        {more > 0 && (
+          <Link
+            href={ORDERS_TO_PACK}
+            className="flex items-center justify-center gap-1 border-t border-(--line) px-4 py-3 text-base font-medium text-(--brand-ink) transition-colors hover:bg-(--bg)"
+          >
+            {fill(byCount(more, ui.queueMoreOne, ui.queueMore)[lang], { n: String(more) })}
+            <ChevronRight className="size-4" aria-hidden />
+          </Link>
+        )}
       </section>
 
       <SalesPanels data={data} today={today} />

@@ -219,14 +219,14 @@ test.describe("in English", () => {
 test.describe("with reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("a freshly packed row's stamp does not animate", async ({ page }) => {
+  test("a freshly packed row's status pill does not animate", async ({ page }) => {
     await page.goto("/demos/shop-admin");
     const row = page.getByTestId("pack-row").first();
     const id = (await row.getAttribute("data-order-id"))!;
     await row.getByRole("button", { name: `แพ็กออเดอร์ ${id} แล้ว` }).click();
-    const stamp = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="stamp"]`);
-    await expect(stamp).toBeVisible();
-    await expect(stamp).toHaveCSS("animation-name", "none");
+    const pill = page.locator(`[data-testid="pack-row"][data-order-id="${id}"] [data-testid="status-pill"]`);
+    await expect(pill).toBeVisible();
+    await expect(pill).toHaveCSS("animation-name", "none");
   });
 });
 

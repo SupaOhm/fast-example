@@ -20,12 +20,6 @@ const NAV = [
   { href: "/demos/shop-admin/stock", label: ui.navStock, icon: Package },
 ] as const;
 
-// Dark wood counter: faint horizontal grain over --wood.
-const WOOD_GRAIN = {
-  backgroundImage:
-    "repeating-linear-gradient(180deg, rgba(241,230,210,.025) 0 1px, transparent 1px 9px), repeating-linear-gradient(180deg, rgba(0,0,0,.12) 0 2px, transparent 2px 37px)",
-} as React.CSSProperties;
-
 // Client wrapper: the stores hold functions, so they cannot be passed from a server layout.
 export function AdminFrame({ children }: { children: React.ReactNode }) {
   return (
@@ -35,7 +29,7 @@ export function AdminFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** The mustard strip across the top: who you're signed in as, and the only way out. */
+/** The slim strip across the top: who you're signed in as, and the only way out. */
 function DemoSessionBanner() {
   const lang = useLang();
   const router = useRouter();
@@ -48,7 +42,7 @@ function DemoSessionBanner() {
   return (
     <div
       data-testid="demo-session"
-      className="flex items-center justify-between gap-3 border-b-2 border-(--wood) bg-(--mustard) px-4 py-1.5 text-sm leading-[1.4] text-(--ink) lg:col-span-2 lg:px-6"
+      className="flex items-center justify-between gap-3 border-b border-[#c5e3d4] bg-(--brand-soft) px-4 py-1 text-sm leading-[1.4] text-(--brand-ink) lg:col-span-2 lg:px-6"
     >
       <p className="flex min-w-0 items-center gap-2 font-medium">
         <Eye className="hidden size-4 shrink-0 sm:block" aria-hidden />
@@ -57,7 +51,7 @@ function DemoSessionBanner() {
       <button
         type="button"
         onClick={logout}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-md border-[1.5px] border-(--ink) px-2 py-1 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-(--mustard) sm:px-2.5"
+        className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-base font-medium transition-colors hover:bg-white/70 sm:px-2.5"
       >
         <LogOut className="hidden size-4 sm:block" aria-hidden />
         {ui.logout[lang]}
@@ -75,52 +69,52 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const lowCount = data.products.filter(isLowStock).length;
   const badges: Record<string, { n: number; label: string; tone: string } | undefined> = {
     "/demos/shop-admin/orders": packCount
-      ? { n: packCount, label: fill(byCount(packCount, ui.badgeOrdersOne, ui.badgeOrders)[lang], { n: String(packCount) }), tone: "bg-(--mustard) text-(--ink)" }
+      ? { n: packCount, label: fill(byCount(packCount, ui.badgeOrdersOne, ui.badgeOrders)[lang], { n: String(packCount) }), tone: "bg-(--ink) text-white" }
       : undefined,
     "/demos/shop-admin/stock": lowCount
-      ? { n: lowCount, label: fill(byCount(lowCount, ui.badgeStockOne, ui.badgeStock)[lang], { n: String(lowCount) }), tone: "bg-(--warn) text-(--bg)" }
+      ? { n: lowCount, label: fill(byCount(lowCount, ui.badgeStockOne, ui.badgeStock)[lang], { n: String(lowCount) }), tone: "bg-(--warn) text-white" }
       : undefined,
   };
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
+    <div className="min-h-screen lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
       <DemoSessionBanner />
 
-      <aside
-        style={WOOD_GRAIN}
-        className="rd-wood sticky top-0 z-30 bg-(--wood) text-(--bg) shadow-[0_6px_14px_-8px_rgba(43,34,23,.6)] lg:static lg:shadow-[inset_-6px_0_10px_-6px_rgba(0,0,0,.5)]"
-      >
+      <aside className="sticky top-0 z-30 border-b border-(--line) bg-(--panel)/95 backdrop-blur lg:static lg:border-b-0 lg:border-r lg:bg-(--panel) lg:backdrop-blur-none">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:items-stretch">
-          <Link href="/demos/shop-admin" className="flex min-w-0 items-center gap-2.5 px-4 pb-1.5 pt-2.5 lg:gap-3 lg:px-5 lg:pb-7 lg:pt-7">
-            <BrandMark className="size-10 lg:size-12" />
+          <Link href="/demos/shop-admin" className="flex min-w-0 items-center gap-2.5 px-4 py-2.5 lg:px-5 lg:pb-6 lg:pt-6">
+            <BrandMark className="size-8 text-[15px] lg:size-10 lg:text-lg" />
             <span className="min-w-0 leading-[1.25]">
-              <span className="block truncate text-lg font-bold lg:text-[22px]">{ui.brand[lang]}</span>
-              <span className="hidden text-sm text-(--mustard) lg:block">{ui.backOffice[lang]}</span>
+              <span className="block truncate text-base font-semibold lg:text-lg">{ui.brand[lang]}</span>
+              <span className="hidden text-sm text-(--muted) lg:block">{ui.backOffice[lang]}</span>
             </span>
           </Link>
 
-          <div className="flex items-center gap-1 pr-3 lg:order-3 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-3 lg:border-t lg:border-(--bg)/15 lg:px-5 lg:pb-24 lg:pt-5">
-            <div className="hidden items-center gap-3 lg:flex">
-              <span aria-hidden className="grid size-10 place-items-center rounded-full bg-(--mustard) text-(--ink)">
-                <UserRound className="size-5" />
+          <div className="flex items-center gap-1 pr-3 lg:order-3 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-2 lg:border-t lg:border-(--line) lg:px-3 lg:pb-24 lg:pt-3">
+            <div className="hidden items-center gap-3 rounded-lg px-2 py-2 lg:flex">
+              <span aria-hidden className="grid size-9 place-items-center rounded-full bg-(--brand-soft) text-(--brand-ink)">
+                <UserRound className="size-[18px]" />
               </span>
               <span className="min-w-0 leading-[1.3]">
-                <span className="block font-semibold">{ui.ownerName[lang]}</span>
-                <span className="block text-sm text-(--mustard)">{ui.ownerRole[lang]}</span>
+                <span className="block font-medium">{ui.ownerName[lang]}</span>
+                <span className="block truncate text-sm text-(--muted)">{ui.ownerRole[lang]}</span>
               </span>
             </div>
             <div className="flex items-center gap-1 lg:justify-between">
               <ResetDemoButton
                 stores={[shopData]}
                 label={ui.resetData[lang]}
-                className="min-h-10 rounded-md px-2.5 text-base! text-(--bg) transition-colors hover:bg-(--bg)/10 lg:-ml-2.5"
+                className="min-h-10 rounded-lg px-2.5 text-base! text-(--muted) transition-colors hover:bg-(--bg) hover:text-(--ink)"
               />
               <DemoLangSwitch className={LANG_SWITCH_CLASS} />
             </div>
           </div>
 
-          <nav aria-label={ui.mainNav[lang]} className="col-span-2 px-2 pt-1 lg:order-2 lg:px-4 lg:pt-0">
-            <ul className="flex gap-1 lg:flex-col lg:gap-1.5">
+          <nav
+            aria-label={ui.mainNav[lang]}
+            className="col-span-2 border-t border-(--line) px-2 py-1.5 lg:order-2 lg:flex-1 lg:border-t-0 lg:px-3 lg:py-0"
+          >
+            <ul className="flex gap-1 lg:flex-col">
               {NAV.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href;
                 const badge = badges[href];
@@ -129,19 +123,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href={href}
                       aria-current={active ? "page" : undefined}
-                      className={`flex min-h-11 items-center justify-center gap-1.5 rounded-t-lg px-1 text-base font-semibold leading-[1.25] transition-colors lg:min-h-12 lg:justify-start lg:gap-3 lg:rounded-lg lg:px-3.5 ${
-                        active
-                          ? "bg-(--bg) text-(--ink) lg:bg-(--mustard) lg:shadow-[inset_0_-2px_0_rgba(43,34,23,.25)]"
-                          : "text-(--bg) hover:bg-(--bg)/10"
+                      className={`flex min-h-10 items-center justify-center gap-1.5 rounded-lg px-1.5 text-base font-medium leading-[1.25] transition-colors lg:min-h-11 lg:justify-start lg:gap-3 lg:px-3 ${
+                        active ? "bg-(--brand-soft) text-(--brand-ink)" : "text-(--muted) hover:bg-(--bg) hover:text-(--ink)"
                       }`}
                     >
-                      <Icon className="hidden size-5 shrink-0 lg:block" aria-hidden />
+                      <Icon className="hidden size-[18px] shrink-0 lg:block" aria-hidden />
                       <span className="truncate">{label[lang]}</span>
                       {badge && (
                         <span
-                          className={`grid h-6 min-w-6 shrink-0 place-items-center rounded-full px-1.5 text-sm font-bold leading-none tabular-nums lg:ml-auto ${
-                            active && href === "/demos/shop-admin/orders" ? "bg-(--ink) text-(--mustard)" : badge.tone
-                          }`}
+                          className={`grid h-6 min-w-6 shrink-0 place-items-center rounded-full px-1.5 text-sm font-semibold leading-none tabular-nums lg:ml-auto ${badge.tone}`}
                         >
                           <span aria-hidden>{badge.n}</span>
                           <span className="sr-only"> ({badge.label})</span>
@@ -157,7 +147,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <main className="min-w-0 px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pt-8">
-        <div className="mx-auto w-full max-w-[1120px]">{children}</div>
+        <div className="mx-auto w-full max-w-[1180px]">{children}</div>
       </main>
     </div>
   );

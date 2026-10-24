@@ -21,17 +21,14 @@ import { useDemoStore } from "@/lib/use-demo-store";
 import { byCount, channelLabel, statusLabel, ui } from "./copy";
 import { CHANNEL_ICON, itemCount, shortDate } from "./format";
 import { ProductIcon } from "./product-icon";
-import { Stamp } from "./stamp";
+import { StatusPill } from "./status-pill";
 
 const PAGE_SIZE = 15;
 
 const FIELD =
-  "min-h-11 w-full rounded-md border-[1.5px] border-(--line) bg-(--paper) text-base leading-[1.3] text-(--ink) transition-colors hover:border-(--muted) focus:border-(--ink)";
+  "min-h-11 w-full rounded-md border-[1.5px] border-(--line) bg-(--panel) text-base leading-[1.3] text-(--ink) transition-colors hover:border-(--muted) focus:border-(--ink)";
 
-const MONO = "font-(family-name:--font-mono)";
-
-/** Each receipt is stamped at its own slight angle, the same one every time. */
-const tiltFor = (id: string) => ((Number(id.replace(/\D/g, "")) * 7) % 9) - 6;
+const MONO = "tabular-nums";
 
 /**
  * The status stamp is the picker: a native `<select>` lies over it, invisible, so a tap
@@ -49,9 +46,9 @@ function StampPicker({
   const lang = useLang();
   return (
     <span className="relative inline-flex min-h-11 shrink-0 items-center rounded-md px-1.5 transition-colors hover:bg-(--bg)/70 has-[select:focus-visible]:outline-2 has-[select:focus-visible]:outline-offset-2 has-[select:focus-visible]:outline-(--ink)">
-      <Stamp key={order.status} status={order.status} fresh={fresh} tilt={tiltFor(order.id)}>
+      <StatusPill key={order.status} status={order.status} fresh={fresh}>
         <ChevronDown className="-mr-0.5 size-4 shrink-0 opacity-80" strokeWidth={2.4} aria-hidden />
-      </Stamp>
+      </StatusPill>
       <select
         aria-label={fill(ui.orderStatusLabel[lang], { id: order.id })}
         value={order.status}
@@ -88,7 +85,7 @@ function Receipt({
     <li data-testid="receipt" data-order-id={order.id} className="min-w-0 [filter:drop-shadow(0_1.5px_0_var(--line))_drop-shadow(0_6px_8px_rgba(43,34,23,.09))]">
       <article
         aria-label={order.id}
-        className="rd-receipt bg-(--paper) bg-[linear-gradient(90deg,rgba(43,34,23,.035),transparent_12%,transparent_88%,rgba(43,34,23,.035))] px-5 pb-7 pt-7 leading-[1.35]"
+        className="rd-receipt bg-(--panel) bg-[linear-gradient(90deg,rgba(43,34,23,.035),transparent_12%,transparent_88%,rgba(43,34,23,.035))] px-5 pb-7 pt-7 leading-[1.35]"
       >
         <header className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -143,7 +140,7 @@ function Receipt({
 }
 
 const PAGE_BUTTON =
-  "grid size-11 place-items-center rounded-md border-[1.5px] border-(--ink) bg-(--paper) transition-colors hover:bg-(--ink) hover:text-(--paper) disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-transparent disabled:text-(--muted) disabled:opacity-60";
+  "grid size-11 place-items-center rounded-md border-[1.5px] border-(--ink) bg-(--panel) transition-colors hover:bg-(--ink) hover:text-white disabled:cursor-not-allowed disabled:border-(--line) disabled:bg-transparent disabled:text-(--muted) disabled:opacity-60";
 
 export function OrdersTable() {
   const lang = useLang();
@@ -262,14 +259,14 @@ export function OrdersTable() {
         <div className="mt-6 [filter:drop-shadow(0_1.5px_0_var(--line))_drop-shadow(0_6px_8px_rgba(43,34,23,.09))]">
           <div
             data-testid="orders-empty"
-            className="rd-receipt mx-auto max-w-md bg-(--paper) px-6 pb-10 pt-10 text-center leading-[1.4]"
+            className="rd-receipt mx-auto max-w-md bg-(--panel) px-6 pb-10 pt-10 text-center leading-[1.4]"
           >
             <p className="text-lg font-bold">{ui.emptyTitle[lang]}</p>
             <p className="mt-1.5 text-base text-(--muted)">{ui.emptyHint[lang]}</p>
             <button
               type="button"
               onClick={clear}
-              className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-md border-[1.5px] border-(--ink) px-4 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-(--paper)"
+              className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-md border-[1.5px] border-(--ink) px-4 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-white"
             >
               <X className="size-4" aria-hidden />
               {ui.clearFilters[lang]}

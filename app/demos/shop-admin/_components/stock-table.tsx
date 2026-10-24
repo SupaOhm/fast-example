@@ -13,7 +13,7 @@ import { ProductIcon } from "./product-icon";
 // updateStock throws this when the count isn't a whole number ≥ 0; anything else is shown as it comes.
 const STOCK_ERROR = "Stock must be a whole number ≥ 0";
 
-const MONO = "font-(family-name:--font-mono)";
+const MONO = "tabular-nums";
 
 /** A `{n}` template with the number set large and the words around it left as the copy has them. */
 function Figure({ template, n, className = "" }: { template: string; n: number; className?: string }) {
@@ -30,7 +30,7 @@ function Figure({ template, n, className = "" }: { template: string; n: number; 
 function LowBadge() {
   const lang = useLang();
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-[4px] bg-(--warn) px-1.5 py-px text-sm font-semibold leading-[1.4] text-(--paper)">
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-[4px] bg-(--warn) px-1.5 py-px text-sm font-semibold leading-[1.4] text-white">
       <TriangleAlert className="size-3.5" aria-hidden />
       {ui.lowStock[lang]}
     </span>
@@ -45,7 +45,7 @@ function StockBar({ product }: { product: Product }) {
   const low = isLowStock(product);
   return (
     <div aria-hidden className="relative h-2.5 w-full max-w-40 rounded-full bg-(--bg) shadow-[inset_0_0_0_1px_var(--line)]">
-      <div className={`h-full rounded-full ${low ? "bg-(--warn)" : "bg-(--mustard)"}`} style={{ width: `${pct}%` }} />
+      <div className={`h-full rounded-full ${low ? "bg-(--warn)" : "bg-(--brand)"}`} style={{ width: `${pct}%` }} />
       <div className="absolute -inset-y-1.5 w-0.5 rounded-full bg-(--ink)" style={{ left: `${tick}%` }} />
     </div>
   );
@@ -136,20 +136,20 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : hintId}
-            className={`min-h-11 w-20 rounded-md border-[1.5px] bg-(--paper) px-2.5 text-right text-base font-semibold tabular-nums transition-colors ${
+            className={`min-h-11 w-20 rounded-md border-[1.5px] bg-(--panel) px-2.5 text-right text-base font-semibold tabular-nums transition-colors ${
               error ? "border-(--warn)" : "border-(--line) hover:border-(--muted) focus:border-(--ink)"
             }`}
           />
           <button
             type="submit"
             data-testid="stock-save"
-            className="min-h-11 rounded-md border-[1.5px] border-(--ink) px-3.5 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-(--paper)"
+            className="min-h-11 rounded-md border-[1.5px] border-(--ink) px-3.5 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-white"
           >
             {ui.save[lang]}
           </button>
           <span id={hintId} className="order-first text-sm leading-[1.4] text-(--muted) sm:order-none sm:col-span-2 sm:text-right">
             {saved ? (
-              <span className="inline-flex items-center gap-1 font-semibold text-(--ok)">
+              <span className="inline-flex items-center gap-1 font-semibold text-(--brand-ink)">
                 <Check className="size-4" strokeWidth={2.6} aria-hidden />
                 {ui.saved[lang]}
               </span>
@@ -183,7 +183,7 @@ export function StockTable() {
         <p className="mt-1 max-w-[60ch] text-base text-(--muted)">{ui.stockIntro[lang]}</p>
       </header>
 
-      <dl className="mt-6 grid grid-cols-2 rounded-lg border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)] sm:grid-cols-[1fr_1.4fr_1fr]">
+      <dl className="mt-6 grid grid-cols-2 rounded-lg border-[1.5px] border-(--line) bg-(--panel) shadow-[0_2px_0_var(--line)] sm:grid-cols-[1fr_1.4fr_1fr]">
         <div className="px-4 py-3 sm:px-5">
           <dt className="text-sm font-semibold text-(--muted)">{ui.stockProducts[lang]}</dt>
           <Figure template={byCount(data.products.length, ui.stockItemsOne, ui.stockItems)[lang]} n={data.products.length} />
@@ -202,7 +202,7 @@ export function StockTable() {
         </div>
       </dl>
 
-      <div className="mt-6 overflow-hidden rounded-lg border-[1.5px] border-(--line) bg-(--paper) shadow-[0_2px_0_var(--line)]">
+      <div className="mt-6 overflow-hidden rounded-lg border-[1.5px] border-(--line) bg-(--panel) shadow-[0_2px_0_var(--line)]">
         <table className="block w-full sm:table">
           <thead className="hidden border-b-[1.5px] border-(--line) bg-(--bg)/50 text-left text-(--muted) sm:table-header-group">
             <tr>
