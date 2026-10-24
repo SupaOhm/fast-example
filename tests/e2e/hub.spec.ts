@@ -173,3 +173,17 @@ test("Thai process and about read in Thai", async ({ page }) => {
   await expect(page.locator("#process ol > li").nth(3)).toContainText("โลโก้ใหญ่ขึ้นอีกนิด?");
   await expect(page.locator("#about dl")).toContainText("ประสบการณ์");
 });
+
+test("phones get a Compare link in the header, on one line beside the brand, language switch and Hire", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "the full nav shows from md");
+  for (const locale of ["en", "th"]) {
+    await page.goto(`/${locale}`);
+    const banner = page.getByRole("banner");
+    const compare = banner.locator(`a[href="/${locale}/compare"]`);
+    await expect(compare).toBeVisible();
+    await expect(banner.getByRole("link", { name: locale === "en" ? "Hire on Fastwork" : "จ้างงานบน Fastwork" })).toBeVisible();
+    const box = (await compare.boundingBox())!;
+    expect(box.height).toBeLessThan(24);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
+  }
+});

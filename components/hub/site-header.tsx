@@ -12,13 +12,23 @@ export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictio
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-forest/85 text-cream backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-        <a href={`/${locale}`} className="font-display text-lg font-extrabold tracking-tight">
-          SupaOhm
+        {/* Narrow phones: brand and Hire go short so Compare fits on one line (measured: the full row needs 450px in Thai).
+            The full words stay in the accessible names. */}
+        <a href={`/${locale}`} className="font-display text-lg font-extrabold tracking-tight whitespace-nowrap">
+          <span aria-hidden className="min-[450px]:hidden">
+            SO
+          </span>
+          <span className="max-[450px]:sr-only">SupaOhm</span>
         </a>
         <div className="flex items-center gap-2 sm:gap-6">
-          <nav className="hidden items-center gap-6 text-sm text-cream-muted md:flex">
+          {/* Below md only Compare shows: it's a separate page, the others are anchors on the hub. */}
+          <nav className="flex items-center gap-6 text-sm text-cream-muted">
             {links.map(([href, label]) => (
-              <a key={href} href={href} className="transition hover:text-cream">
+              <a
+                key={href}
+                href={href}
+                className={`${href.endsWith("/compare") ? "" : "hidden md:inline "}whitespace-nowrap transition hover:text-cream`}
+              >
                 {label}
               </a>
             ))}
@@ -30,7 +40,10 @@ export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictio
             rel="noopener noreferrer"
             className="rounded-md bg-lime px-3 py-2 text-sm font-bold whitespace-nowrap text-forest transition hover:bg-cream"
           >
-            {t.nav.hire}
+            <span aria-hidden className="min-[400px]:hidden">
+              {t.nav.hireShort}
+            </span>
+            <span className="max-[400px]:sr-only">{t.nav.hire}</span>
             <span className="sr-only"> {t.nav.newTab}</span>
           </a>
         </div>
