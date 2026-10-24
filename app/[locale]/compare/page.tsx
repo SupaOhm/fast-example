@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { BackToWork } from "@/components/compare/back-to-work";
 import { CompareView } from "@/components/compare/compare-view";
 import { RememberLocale } from "@/components/hub/remember-locale";
 import { SiteFooter } from "@/components/hub/site-footer";
@@ -29,8 +30,9 @@ export default async function ComparePage({ params }: Props) {
       <RememberLocale locale={locale} />
       <SiteHeader locale={locale} t={t} path="/compare" />
       <main className="bg-forest text-cream">
-        <div className="mx-auto max-w-6xl px-4 pt-14 pb-20 sm:px-6 lg:pt-20 lg:pb-28">
-          <h1 className="display-heading font-display text-4xl leading-none font-extrabold tracking-[-0.04em] sm:text-6xl">
+        <div className="mx-auto max-w-6xl px-4 pt-8 pb-20 sm:px-6 lg:pt-12 lg:pb-28">
+          <BackToWork locale={locale} label={t.compare.back} />
+          <h1 className="mt-6 display-heading font-display text-4xl leading-none font-extrabold tracking-[-0.04em] sm:text-6xl">
             {t.compare.heading}
           </h1>
           <p className="mt-4 max-w-xl leading-relaxed text-cream-muted">{t.compare.intro}</p>
