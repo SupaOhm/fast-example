@@ -20,6 +20,7 @@ import { useDemoStore } from "@/lib/use-demo-store";
 import { isThaiPhone, normalizePhone } from "@/lib/validation";
 import { fieldClass, focusRing, formatPhone, monogramOf } from "./admin-format";
 import { CrudError, Saved } from "./crud-parts";
+import { useClinicNow } from "./use-clinic-now";
 
 interface Draft {
   id?: string;
@@ -33,8 +34,9 @@ type Errors = Partial<Record<"name" | "phone", string>>;
 export function CustomersCrud() {
   const lang = useLang();
   const [data, setData] = useDemoStore(clinicData);
-  // Rendered only after hydration (RequireSession), so these are the browser's dates.
-  const [[today, tomorrow]] = useState(() => [toISODate(new Date()), toISODate(addDays(new Date(), 1))]);
+  // Rendered only after hydration (RequireSession), so this is the clinic's clock in the browser.
+  const { now } = useClinicNow();
+  const [[today, tomorrow]] = useState(() => [toISODate(now), toISODate(addDays(now, 1))]);
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [errors, setErrors] = useState<Errors>({});
@@ -49,7 +51,6 @@ export function CustomersCrud() {
   }, [formOpen]);
 
   // Today's bookings use the status the queue shows (moved on by the clock), so one already under way is not "next".
-  const now = new Date();
   const duration = (id: string) => data.services.find((s) => s.id === id)?.durationMin ?? 30;
   const stats = new Map<string, { count: number; next?: string; last?: string }>();
   for (const b of data.bookings) {

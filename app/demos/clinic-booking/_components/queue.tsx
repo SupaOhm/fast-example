@@ -29,8 +29,9 @@ import { BookingMotion } from "./booking-motion";
 import { countText, statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { StaffPortrait } from "./staff-portrait";
+import { DemoClockNote } from "./demo-clock-note";
 import { clock } from "./time-format";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
 const DAY_START = toMinutes(OPEN);
 const DAY_END = toMinutes(CLOSE);
@@ -56,13 +57,12 @@ export function Queue() {
   const lang = useLang();
   const [data, setData] = useDemoStore(clinicData);
   const [lastId] = useDemoStore(clinicLastBooking);
-  useMinuteTick();
-  // The queue renders only after hydration (RequireSession), so this is the browser's clock.
-  const now = new Date();
+  // The queue renders only after hydration (RequireSession), so this is the clinic's clock in the browser.
+  const { now, isDemo } = useClinicNow();
   const nowMin = now.getHours() * 60 + now.getMinutes();
   // The seven days shown, and the one to open on: the day of the booking just made on LINE, if it is one of them.
   const [{ days, firstIndex }] = useState(() => {
-    const list = nextDays(new Date(), 7);
+    const list = nextDays(now, 7);
     const justBooked = data.bookings.find((b) => b.id === lastId);
     const i = justBooked ? list.indexOf(justBooked.date) : -1;
     return { days: list, firstIndex: Math.max(i, 0) };
@@ -131,6 +131,7 @@ export function Queue() {
         <div className="min-w-0">
           <h1 className="text-[1.75rem] leading-[1.25] font-medium text-(--wine) sm:text-[2.25rem]">{title}</h1>
           <p className="mt-1.5 text-(--muted)">{formatDate(date, lang, "full")}</p>
+          {isDemo && <DemoClockNote className="mt-1" />}
         </div>
         <dl className="flex gap-8 sm:gap-10">
           <div>

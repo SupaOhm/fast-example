@@ -35,7 +35,26 @@ test.describe("in English", () => {
     await page.goto("/demos/clinic-booking");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Lumi Clinic");
     await expect(page.getByTestId("next-opening")).toContainText(/Next free time today \d{2}:\d{2}/);
+    await expect(page.getByTestId("demo-clock-note")).toHaveCount(0);
     await expect(page.getByTestId("staff-card").first()).toContainText("Dr. Lalita");
     await expect(page.locator("main")).toContainText("Brightening facial");
   });
+});
+
+test.describe("outside opening hours", () => {
+  test.use({ locale: "th-TH" });
+
+  for (const [h, m] of [
+    [18, 30],
+    [8, 0],
+  ] as const) {
+    test(`at ${h}:${String(m).padStart(2, "0")} the hero still offers a time today`, async ({ page }) => {
+      const t = new Date();
+      t.setHours(h, m, 0, 0);
+      await page.clock.setFixedTime(t);
+      await page.goto("/demos/clinic-booking");
+      await expect(page.getByTestId("next-opening")).toContainText(/คิวว่างถัดไปวันนี้ \d{2}:\d{2}/);
+      await expect(page.getByTestId("demo-clock-note")).toHaveText("ตอนนี้อยู่นอกเวลาจองคิว เดโมนี้จึงแสดงคลินิกตอน 10:30 น.");
+    });
+  }
 });

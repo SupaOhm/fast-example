@@ -38,6 +38,8 @@ test("the clinic's day is already in progress", async ({ page }) => {
   await expect(schedule.locator('[data-testid="schedule-block"][data-status="done"]').first()).toBeAttached();
   await expect(schedule.locator('[data-testid="schedule-block"][data-status="checked-in"]').first()).toBeAttached();
   await expect(schedule.locator('[data-testid="schedule-block"][data-status="booked"]').first()).toBeAttached();
+  // Open hours use the real clock, so there is no demo note.
+  await expect(page.getByTestId("demo-clock-note")).toHaveCount(0);
 });
 
 test("a page left open moves statuses on with the clock", async ({ page }) => {
@@ -51,6 +53,23 @@ test("a page left open moves statuses on with the clock", async ({ page }) => {
   // Any re-render reads the clock again; switching the language is the quickest one.
   await page.getByTestId("lang-switch").click();
   await expect(block).toHaveAttribute("data-status", "done");
+});
+
+test("coming back after closing the same day shows the day at 10:30, not the afternoon's saved statuses", async ({ page }) => {
+  const afternoon = new Date();
+  afternoon.setHours(17, 45, 0, 0);
+  await page.clock.setFixedTime(afternoon);
+  await page.goto(BOOK);
+  await show(page, "คลินิก");
+  const block = page.locator('[data-testid="schedule-block"][data-staff="st-3"][data-time="11:00"]');
+  await expect(block).toHaveAttribute("data-status", "done");
+  const evening = new Date();
+  evening.setHours(20, 0, 0, 0);
+  await page.clock.setFixedTime(evening);
+  await page.reload();
+  await show(page, "คลินิก");
+  await expect(page.getByTestId("demo-clock-note")).toBeVisible();
+  await expect(block).toHaveAttribute("data-status", "booked");
 });
 
 test("three taps book a facial, and it lands highlighted in that staff member's schedule", async ({ page }) => {
@@ -249,6 +268,7 @@ test("the queue shows today in progress", async ({ page }) => {
   await page.goto("/demos/clinic-booking/admin");
   await expect(page.locator('[data-testid="queue-row"][data-status="done"]').first()).toBeVisible();
   await expect(page.locator('[data-testid="queue-row"][data-status="booked"]').first()).toBeVisible();
+  await expect(page.getByTestId("demo-clock-note")).toHaveCount(0);
 });
 
 test("a status set by hand stays put after a reload, in the queue and the booking page's schedule", async ({ page }) => {
@@ -298,58 +318,63 @@ test("reports render charts", async ({ page }) => {
   await expect(page.getByTestId("service-chart")).toBeVisible();
 });
 
-test.describe("after closing time (18:30)", () => {
-  test.beforeEach(async ({ page }) => {
-    const t = new Date();
-    t.setHours(18, 30, 0, 0);
-    await page.clock.setFixedTime(t);
-  });
-
-  test("the clinic side shows tomorrow, and a booking lands on tomorrow", async ({ page }) => {
-    await page.goto(BOOK);
-    await show(page, "คลินิก");
-    await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางพรุ่งนี้");
-    const tomorrow = await page.evaluate(() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 1);
-      return new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(d);
+// Outside booking hours the demo runs at 10:30 today, with a note, so every visitor sees the day in progress.
+for (const [label, h, m] of [
+  ["after closing time (18:30)", 18, 30],
+  ["before opening (08:00)", 8, 0],
+] as const) {
+  test.describe(label, () => {
+    test.beforeEach(async ({ page }) => {
+      const t = new Date();
+      t.setHours(h, m, 0, 0);
+      await page.clock.setFixedTime(t);
     });
-    await expect(page.locator("#schedule-day")).toHaveText(tomorrow);
-    const { time, staff } = await bookFacial(page);
-    await expect(page.getByTestId("booking-confirmed")).toContainText("พรุ่งนี้");
-    await show(page, "คลินิก");
-    await expect(page.locator("#schedule-day")).toHaveText(tomorrow);
-    const block = page.locator('[data-testid="schedule-block"][data-new="true"]');
-    await expect(block).toBeVisible();
-    await expect(block).toHaveAttribute("data-staff", staff);
-    await expect(block).toHaveAttribute("data-time", time);
-  });
 
-  test("the home page's next opening is tomorrow", async ({ page }) => {
-    await page.goto("/demos/clinic-booking");
-    await expect(page.getByTestId("next-opening")).toContainText(/คิวว่างถัดไปพรุ่งนี้ \d{2}:\d{2}/);
-  });
-});
+    test("the clinic side shows today at 10:30 with a note, and a booking lands on today", async ({ page }) => {
+      await page.goto(BOOK);
+      await show(page, "คลินิก");
+      const note = page.getByTestId("demo-clock-note");
+      await expect(note).toBeVisible();
+      await expect(note).toHaveText("ตอนนี้อยู่นอกเวลาจองคิว เดโมนี้จึงแสดงคลินิกตอน 10:30 น.");
+      await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางวันนี้");
+      const today = await page.evaluate(() =>
+        new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date()),
+      );
+      await expect(page.locator("#schedule-day")).toHaveText(today);
+      const schedule = page.getByTestId("clinic-schedule");
+      await expect(schedule.getByTestId("schedule-now")).toContainText("10:30");
+      await expect(schedule.locator('[data-testid="schedule-block"][data-status="done"]').first()).toBeAttached();
+      await expect(schedule.locator('[data-testid="schedule-block"][data-status="checked-in"]').first()).toBeAttached();
 
-test.describe("before opening (08:00)", () => {
+      const { time, staff } = await bookFacial(page);
+      await expect(page.getByTestId("booking-confirmed")).toContainText("วันนี้");
+      await show(page, "คลินิก");
+      await expect(page.locator("#schedule-day")).toHaveText(today);
+      const block = page.locator('[data-testid="schedule-block"][data-new="true"]');
+      await expect(block).toBeVisible();
+      await expect(block).toHaveAttribute("data-staff", staff);
+      await expect(block).toHaveAttribute("data-time", time);
+    });
+
+    test("the home page's next opening is today", async ({ page }) => {
+      await page.goto("/demos/clinic-booking");
+      await expect(page.getByTestId("next-opening")).toContainText(/คิวว่างถัดไปวันนี้ \d{2}:\d{2}/);
+    });
+  });
+}
+
+test.describe("late at night (21:00)", () => {
   test.beforeEach(async ({ page }) => {
     const t = new Date();
-    t.setHours(8, 0, 0, 0);
+    t.setHours(21, 0, 0, 0);
     await page.clock.setFixedTime(t);
   });
 
-  test("today is all still booked, with no now line, and free times are offered", async ({ page }) => {
-    await page.goto(BOOK);
-    await show(page, "คลินิก");
-    await expect(page.locator("#label-clinic")).toHaveText("มุมคลินิก · ตารางวันนี้");
-    const blocks = page.getByTestId("schedule-block");
-    await expect(blocks.first()).toBeAttached();
-    expect(await blocks.count()).toBeGreaterThan(0);
-    await expect(page.locator('[data-testid="schedule-block"]:not([data-status="booked"])')).toHaveCount(0);
-    await expect(page.getByTestId("schedule-now")).toHaveCount(0);
-    await show(page, "ลูกค้า");
-    await page.getByTestId("service-s-facial").click();
-    await expect(page.getByTestId("slot").first()).toBeVisible();
+  test("the admin queue shows today in progress at 10:30, with the note", async ({ page }) => {
+    await page.goto("/demos/clinic-booking/admin");
+    await expect(page.getByTestId("demo-clock-note")).toBeVisible();
+    await expect(page.locator('[data-testid="queue-row"][data-status="done"]').first()).toBeVisible();
+    await expect(page.locator('[data-testid="queue-row"][data-status="booked"]').first()).toBeVisible();
   });
 });
 

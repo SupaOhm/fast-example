@@ -132,6 +132,7 @@ export const ui = {
   scheduleLegend: { th: "สถานะคิว", en: "Booking status" },
   scheduleLanes: { th: "คิวของแต่ละคน", en: "Each person's bookings" },
   nowAt: { th: "ตอนนี้ {time} น.", en: "Now {time}" },
+  demoClock: { th: "ตอนนี้อยู่นอกเวลาจองคิว เดโมนี้จึงแสดงคลินิกตอน {time} น.", en: "It's outside booking hours right now, so this demo shows the clinic at {time}" },
   bookedOnLine: { th: "จองผ่าน LINE", en: "Booked on LINE" },
   newFromLine: { th: "คิวใหม่จาก LINE", en: "New from LINE" },
   toastLanded: { th: "คิวใหม่เข้าตารางของ{staff}แล้ว · {time} น.", en: "New booking in {staff}'s schedule · {time}" },

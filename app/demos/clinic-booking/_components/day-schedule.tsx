@@ -24,8 +24,9 @@ import { focusRing, STATUS_TONE } from "./admin-format";
 import { statusLabel, ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { StaffPortrait } from "./staff-portrait";
+import { DemoClockNote } from "./demo-clock-note";
 import { clock } from "./time-format";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
 const START = toMinutes(OPEN);
 const SPAN = toMinutes(CLOSE) - START;
@@ -52,9 +53,9 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
   const lang = useLang();
   const hydrated = useHydrated();
   const [data] = useDemoStore(clinicData);
-  useMinuteTick();
+  const clinic = useClinicNow();
 
-  const now = hydrated ? new Date() : null;
+  const now = hydrated ? clinic.now : null;
   const day = now ? scheduleDay(data, newId, now) : null;
   const nowMin = now ? now.getHours() * 60 + now.getMinutes() : -1;
   const showNow = Boolean(day?.isToday) && nowMin >= START && nowMin <= START + SPAN;
@@ -67,9 +68,12 @@ export function DaySchedule({ newId, banner }: { newId: string | null; banner?: 
       className="overflow-hidden rounded-[1.75rem] border border-(--line) bg-(--paper) shadow-[0_30px_60px_-40px_rgb(107_31_58/0.45)]"
     >
       <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-(--line) px-4 py-4 sm:px-6">
-        <h3 id="schedule-day" className="text-xl leading-[1.35] font-medium text-(--wine)">
-          {day ? formatDate(day.date, lang, "full") : <span className="inline-block h-[1.35em] w-64 max-w-full rounded-md bg-(--rose)" />}
-        </h3>
+        <div className="min-w-0">
+          <h3 id="schedule-day" className="text-xl leading-[1.35] font-medium text-(--wine)">
+            {day ? formatDate(day.date, lang, "full") : <span className="inline-block h-[1.35em] w-64 max-w-full rounded-md bg-(--rose)" />}
+          </h3>
+          {hydrated && clinic.isDemo && <DemoClockNote className="mt-1" />}
+        </div>
         <Link
           href="/demos/clinic-booking/admin"
           prefetch={false}
