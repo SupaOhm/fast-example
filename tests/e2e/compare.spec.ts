@@ -23,6 +23,17 @@ test("?service=app opens the web app plans", async ({ page }) => {
   await expect(page.getByTestId("cell-form-web-basic")).toHaveCount(0);
 });
 
+test("?service=bogus falls back to websites without errors", async ({ page }) => {
+  const errors: Error[] = [];
+  page.on("pageerror", (e) => errors.push(e));
+  await page.goto("/en/compare?service=bogus");
+  await expect(page.getByRole("tab", { name: /Websites/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tab", { name: /Web apps/ })).toHaveAttribute("aria-selected", "false");
+  await expect(page.getByTestId("cell-form-web-basic")).toBeVisible();
+  await expect(page.getByTestId("cell-login-app-standard")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("switching service updates the URL", async ({ page }) => {
   await page.goto("/en/compare");
   await page.getByRole("tab", { name: /Web apps/ }).click();
