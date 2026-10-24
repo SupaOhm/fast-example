@@ -38,6 +38,7 @@
     }
   },
   "compare": {
+    "back": "Back to the work",
     "heading": "Compare plans",
     "intro": "Pick a service to see its three plans side by side.",
     "metaTitle": "Compare plans | SupaOhm",

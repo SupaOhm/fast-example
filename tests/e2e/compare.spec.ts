@@ -72,3 +72,23 @@ test("no off-platform contact details on the compare page", async ({ page }) => 
     expect(await page.content()).not.toMatch(/mailto:|tel:|line\.me/);
   }
 });
+
+test("the back link returns to the hub's work section on the service picked here", async ({ page }) => {
+  await page.goto("/en/compare");
+  const back = page.getByRole("link", { name: "Back to the work" });
+  await expect(back).toHaveAttribute("href", "/en#work");
+  expect((await back.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await page.getByRole("tab", { name: /Web apps/ }).click();
+  await expect(page).toHaveURL(/\?service=app/);
+  await back.click();
+  await expect(page).toHaveURL(/\/en\?service=app#work$/);
+  await expect(page.locator("#tab-work-app")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#panel-work-app")).toBeVisible();
+});
+
+test("without a picked service the back link opens the hub on websites, and it reads in Thai", async ({ page }) => {
+  await page.goto("/th/compare");
+  await page.getByRole("link", { name: "กลับไปหน้าผลงาน" }).click();
+  await expect(page).toHaveURL(/\/th#work$/);
+  await expect(page.locator("#tab-work-web")).toHaveAttribute("aria-selected", "true");
+});
