@@ -149,16 +149,15 @@ test("the to-pack tile opens the orders filtered to packing", async ({ page }) =
   await page.getByTestId("todo-pack").click();
   await expect(page).toHaveURL(/\/demos\/shop-admin\/orders\?status=paid$/);
   await expect(page.getByRole("combobox", { name: "สถานะ", exact: true })).toHaveValue("paid");
-  await expect(page.getByTestId("receipt")).toHaveCount(Math.min(n, 15));
+  await expect(page.getByTestId("order-row")).toHaveCount(Math.min(n, 15));
 });
 
-test("orders are receipts with items, a total and a stamped status", async ({ page }) => {
+test("orders list items, a total and a status", async ({ page }) => {
   await page.goto("/demos/shop-admin/orders");
-  const receipts = page.getByTestId("receipt");
-  await expect(receipts).toHaveCount(15);
-  const first = receipts.first();
+  const rows = page.getByTestId("order-row");
+  await expect(rows).toHaveCount(15);
+  const first = rows.first();
   await expect(first).toContainText(/RD-\d{4}/);
-  await expect(first).toContainText("รวม");
   await expect(first).toContainText("฿");
   await expect(first.getByTestId("product-icon").first()).toBeVisible();
   await expect(first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ })).toBeVisible();
@@ -195,7 +194,7 @@ test.describe("in English", () => {
     await page.goto("/demos/shop-admin/orders");
     await expect(page.getByRole("combobox", { name: /^Order status RD-\d{4}$/ }).first()).toBeVisible();
     await page.getByTestId("orders-search").fill("Khun May");
-    await expect(page.getByTestId("receipt").first()).toContainText("Khun May");
+    await expect(page.getByTestId("order-row").first()).toContainText("Khun May");
     await page.goto("/demos/shop-admin/stock");
     await expect(page.getByTestId("stock-row-GF-01")).toContainText("Chiang Mai gift box");
     await expect(page.getByTestId("stock-row-NP-02")).toContainText("Running low");
@@ -230,12 +229,12 @@ test.describe("with reduced motion", () => {
   });
 });
 
-test("a receipt stays in a status-filtered list after its status changes", async ({ page }) => {
+test("an order stays in a status-filtered list after its status changes", async ({ page }) => {
   await page.goto("/demos/shop-admin/orders?status=paid");
-  const first = page.getByTestId("receipt").first();
+  const first = page.getByTestId("order-row").first();
   const id = (await first.getAttribute("data-order-id"))!;
   await first.getByRole("combobox").selectOption("packed");
-  const same = page.locator(`[data-testid="receipt"][data-order-id="${id}"]`);
+  const same = page.locator(`[data-testid="order-row"][data-order-id="${id}"]`);
   await expect(same).toBeVisible();
   await expect(same).toContainText("แพ็กแล้ว");
 });

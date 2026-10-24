@@ -81,7 +81,12 @@ export const ui = {
   pageRangeOne: { th: "{from}–{to} จาก {n} บิล", en: "{from}–{to} of {n} order" },
   prevPage: { th: "หน้าก่อนหน้า", en: "Previous page" },
   nextPage: { th: "หน้าถัดไป", en: "Next page" },
-  receiptTotal: { th: "รวม", en: "Total" },
+  colOrder: { th: "เลขที่", en: "Order" },
+  colDate: { th: "วันที่", en: "Date" },
+  colCustomer: { th: "ลูกค้า", en: "Customer" },
+  colChannel: { th: "ช่องทาง", en: "Channel" },
+  colItems: { th: "สินค้า", en: "Items" },
+  colTotal: { th: "ยอดรวม", en: "Total" },
 
   // Stock
   stockIntro: {

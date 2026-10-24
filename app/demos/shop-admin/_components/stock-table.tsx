@@ -9,20 +9,19 @@ import { shopData } from "@/lib/demos/shop-admin/store";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { byCount, ui } from "./copy";
 import { ProductIcon } from "./product-icon";
+import { PANEL } from "./shop-css";
 
 // updateStock throws this when the count isn't a whole number ≥ 0; anything else is shown as it comes.
 const STOCK_ERROR = "Stock must be a whole number ≥ 0";
 
-const MONO = "tabular-nums";
-
-/** A `{n}` template with the number set large and the words around it left as the copy has them. */
+/** A `{n}` template with the number set in semibold and the words around it smaller. */
 function Figure({ template, n, className = "" }: { template: string; n: number; className?: string }) {
   const [before, after = ""] = template.split("{n}");
   return (
-    <dd className={`text-base font-semibold leading-[1.3] ${className}`}>
+    <dd className={`text-lg font-semibold leading-[1.3] ${className}`}>
       {before}
-      <span className="text-[28px] font-bold tabular-nums">{n}</span>
-      {after}
+      <span className="tabular-nums">{n}</span>
+      <span className="text-base font-medium">{after}</span>
     </dd>
   );
 }
@@ -30,23 +29,23 @@ function Figure({ template, n, className = "" }: { template: string; n: number; 
 function LowBadge() {
   const lang = useLang();
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-[4px] bg-(--warn) px-1.5 py-px text-sm font-semibold leading-[1.4] text-white">
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-(--warn-soft) px-2 py-0.5 text-sm font-semibold leading-[1.3] text-(--warn-ink)">
       <TriangleAlert className="size-3.5" aria-hidden />
       {ui.lowStock[lang]}
     </span>
   );
 }
 
-// The bar runs to 4× the reorder point; the ink tick marks where to reorder.
+// The bar runs to 4× the reorder point; the tick marks where to reorder.
 function StockBar({ product }: { product: Product }) {
   const max = Math.max(product.reorderAt * 4, product.stock);
   const pct = (product.stock / max) * 100;
   const tick = (product.reorderAt / max) * 100;
   const low = isLowStock(product);
   return (
-    <div aria-hidden className="relative h-2.5 w-full max-w-40 rounded-full bg-(--bg) shadow-[inset_0_0_0_1px_var(--line)]">
+    <div aria-hidden className="relative h-2 w-full max-w-45 rounded-full bg-(--bg)">
       <div className={`h-full rounded-full ${low ? "bg-(--warn)" : "bg-(--brand)"}`} style={{ width: `${pct}%` }} />
-      <div className="absolute -inset-y-1.5 w-0.5 rounded-full bg-(--ink)" style={{ left: `${tick}%` }} />
+      <div className="absolute -inset-y-1 w-0.5 rounded-full bg-(--ink)/45" style={{ left: `${tick}%` }} />
     </div>
   );
 }
@@ -88,19 +87,19 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
     <tr
       data-testid={`stock-row-${product.sku}`}
       className={`grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 px-4 py-4 sm:table-row sm:p-0 ${
-        low ? "bg-(--warn)/[.06] shadow-[inset_4px_0_0_var(--warn)] sm:shadow-none" : ""
+        low ? "bg-(--warn-soft)/45" : ""
       }`}
     >
-      <td className={`min-w-0 sm:py-3 sm:pl-5 sm:pr-3 ${low ? "sm:shadow-[inset_4px_0_0_var(--warn)]" : ""}`}>
+      <td className="min-w-0 sm:py-3 sm:pl-5 sm:pr-3">
         <div className="flex items-center gap-3">
           <ProductIcon sku={product.sku} className="size-10 shrink-0" />
           <div className="min-w-0 leading-[1.35]">
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="font-semibold">{product.name[lang]}</span>
+              <span className="font-medium">{product.name[lang]}</span>
               {low && <LowBadge />}
             </p>
             <p className="mt-0.5 flex flex-wrap gap-x-3 text-sm text-(--muted)">
-              <span className={MONO}>{product.sku}</span>
+              <span className="tabular-nums">{product.sku}</span>
               <span className="md:hidden lg:inline xl:hidden">{product.category[lang]}</span>
             </p>
           </div>
@@ -136,14 +135,14 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : hintId}
-            className={`min-h-11 w-20 rounded-md border-[1.5px] bg-(--panel) px-2.5 text-right text-base font-semibold tabular-nums transition-colors ${
-              error ? "border-(--warn)" : "border-(--line) hover:border-(--muted) focus:border-(--ink)"
+            className={`min-h-11 w-20 rounded-lg border bg-(--panel) px-2.5 text-right text-base font-semibold tabular-nums transition-colors ${
+              error ? "border-(--warn)" : "border-(--line) hover:border-(--muted) focus:border-(--brand)"
             }`}
           />
           <button
             type="submit"
             data-testid="stock-save"
-            className="min-h-11 rounded-md border-[1.5px] border-(--ink) px-3.5 text-base font-semibold transition-colors hover:bg-(--ink) hover:text-white"
+            className="min-h-11 rounded-lg border border-(--brand) bg-(--panel) px-3.5 text-base font-semibold text-(--brand-ink) transition-colors hover:bg-(--brand-soft)"
           >
             {ui.save[lang]}
           </button>
@@ -159,7 +158,7 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
           </span>
         </form>
         {error && (
-          <p id={errorId} role="alert" className="mt-1.5 text-sm font-semibold leading-[1.4] text-(--warn) sm:text-right">
+          <p id={errorId} role="alert" className="mt-1.5 text-sm font-semibold leading-[1.4] text-(--warn-ink) sm:text-right">
             {errorText}
           </p>
         )}
@@ -174,37 +173,34 @@ export function StockTable() {
   const low = data.products.filter(isLowStock).length;
   const units = data.products.reduce((s, p) => s + p.stock, 0);
   const value = data.products.reduce((s, p) => s + p.stock * p.price, 0);
-  const th = "whitespace-nowrap py-2.5 text-sm font-semibold";
+  const th = "whitespace-nowrap py-3 text-sm font-medium";
 
   return (
     <div>
       <header>
-        <h1 className="text-[32px] font-bold leading-[1.2] lg:text-[40px]">{ui.navStock[lang]}</h1>
+        <h1 className="text-2xl font-semibold leading-[1.25] sm:text-[28px]">{ui.navStock[lang]}</h1>
         <p className="mt-1 max-w-[60ch] text-base text-(--muted)">{ui.stockIntro[lang]}</p>
       </header>
 
-      <dl className="mt-6 grid grid-cols-2 rounded-lg border-[1.5px] border-(--line) bg-(--panel) shadow-[0_2px_0_var(--line)] sm:grid-cols-[1fr_1.4fr_1fr]">
-        <div className="px-4 py-3 sm:px-5">
-          <dt className="text-sm font-semibold text-(--muted)">{ui.stockProducts[lang]}</dt>
+      <dl className="mt-5 grid grid-cols-2 overflow-hidden rounded-xl border border-(--line) bg-(--line) [gap:1px] sm:grid-cols-3">
+        <div className="bg-(--panel) px-4 py-3 sm:px-5">
+          <dt className="text-sm leading-[1.4] text-(--muted)">{ui.stockProducts[lang]}</dt>
           <Figure template={byCount(data.products.length, ui.stockItemsOne, ui.stockItems)[lang]} n={data.products.length} />
         </div>
-        <div className="order-last col-span-2 border-t-[1.5px] border-dashed border-(--line) px-4 py-3 sm:order-none sm:col-span-1 sm:border-x-[1.5px] sm:border-t-0 sm:px-5">
-          <dt className="text-sm font-semibold text-(--muted)">{ui.stockValue[lang]}</dt>
-          <dd className={`${MONO} text-[28px] font-semibold leading-[1.3]`}>{formatTHB(value)}</dd>
-          <dd className="sr-only">{fill(byCount(units, ui.stockUnitsOne, ui.stockUnits)[lang], { n: String(units) })}</dd>
+        <div className={`px-4 py-3 sm:px-5 ${low ? "bg-(--warn-soft)" : "bg-(--panel)"} sm:order-last`}>
+          <dt className={`text-sm leading-[1.4] ${low ? "text-(--warn-ink)" : "text-(--muted)"}`}>{ui.lowStock[lang]}</dt>
+          <Figure template={byCount(low, ui.stockItemsOne, ui.stockItems)[lang]} n={low} className={low ? "text-(--warn-ink)" : ""} />
         </div>
-        <div className="border-l-[1.5px] border-dashed border-(--line) px-4 py-3 sm:border-l-0 sm:px-5">
-          <dt className={`flex items-center gap-1.5 text-sm font-semibold ${low ? "text-(--warn)" : "text-(--muted)"}`}>
-            {low > 0 && <TriangleAlert className="size-4" aria-hidden />}
-            {ui.lowStock[lang]}
-          </dt>
-          <Figure template={byCount(low, ui.stockItemsOne, ui.stockItems)[lang]} n={low} className={low ? "text-(--warn)" : ""} />
+        <div className="col-span-2 bg-(--panel) px-4 py-3 sm:col-span-1 sm:px-5">
+          <dt className="text-sm leading-[1.4] text-(--muted)">{ui.stockValue[lang]}</dt>
+          <dd className="text-lg font-semibold tabular-nums leading-[1.3]">{formatTHB(value)}</dd>
+          <dd className="sr-only">{fill(byCount(units, ui.stockUnitsOne, ui.stockUnits)[lang], { n: String(units) })}</dd>
         </div>
       </dl>
 
-      <div className="mt-6 overflow-hidden rounded-lg border-[1.5px] border-(--line) bg-(--panel) shadow-[0_2px_0_var(--line)]">
-        <table className="block w-full sm:table">
-          <thead className="hidden border-b-[1.5px] border-(--line) bg-(--bg)/50 text-left text-(--muted) sm:table-header-group">
+      <div className={`mt-4 overflow-hidden ${PANEL}`}>
+        <table className="block w-full leading-[1.4] sm:table">
+          <thead className="hidden border-b border-(--line) bg-[#f9faf9] text-left text-(--muted) sm:table-header-group">
             <tr>
               <th scope="col" className={`${th} pl-5 pr-3`}>{ui.colProduct[lang]}</th>
               <th scope="col" className={`${th} hidden px-3 md:table-cell lg:hidden xl:table-cell`}>{ui.colCategory[lang]}</th>
@@ -213,7 +209,7 @@ export function StockTable() {
               <th scope="col" className={`${th} pl-3 pr-5 text-right`}>{ui.colOnHand[lang]}</th>
             </tr>
           </thead>
-          <tbody className="block divide-y-[1.5px] divide-dashed divide-(--line) sm:table-row-group">
+          <tbody className="block divide-y divide-(--line) sm:table-row-group">
             {data.products.map((p) => (
               <StockRow key={p.sku} product={p} onSave={(stock) => setData((d) => updateStock(d, p.sku, stock))} />
             ))}
