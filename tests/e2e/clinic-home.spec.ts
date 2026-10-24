@@ -58,3 +58,18 @@ test.describe("outside opening hours", () => {
     });
   }
 });
+
+test("opening the clinic clears its out-of-date saved data, and leaves other demos alone", async ({ page }) => {
+  await page.goto("/demos/clinic-booking");
+  await page.evaluate(() => {
+    for (const k of ["demo:clinic:session", "demo:clinic:data:2026-01-01", "demo:clinic:data:v2:2026-01-01", "demo:shop-admin:session"])
+      localStorage.setItem(k, "false");
+  });
+  await page.reload();
+  await expect(page.getByTestId("next-opening")).toBeVisible();
+  const keys = await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith("demo:")).sort());
+  expect(keys).not.toContain("demo:clinic:session");
+  expect(keys).not.toContain("demo:clinic:data:2026-01-01");
+  expect(keys).not.toContain("demo:clinic:data:v2:2026-01-01");
+  expect(keys).toContain("demo:shop-admin:session");
+});

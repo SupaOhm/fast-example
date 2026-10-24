@@ -1,4 +1,4 @@
-import { createDemoStore } from "@/lib/demo-store";
+import { createDemoStore, pruneDemoKeys } from "@/lib/demo-store";
 import { toISODate } from "@/lib/dates";
 import { buildClinicSeed, clinicNow, type ClinicData } from "./data";
 
@@ -12,9 +12,12 @@ export const clinicSession = createDemoStore<boolean>("clinic:session:v2", true)
 // hours has later bookings already done, which would contradict a 10:30 "now" after closing. "v2" drops data
 // saved before service and staff names became bilingual.
 const seedClock = clinicNow(new Date());
+const dataKey = `clinic:data:v2:${toISODate(seedClock.now)}`;
 export const clinicData = createDemoStore<ClinicData>(
-  `clinic:data:v2:${toISODate(seedClock.now)}${seedClock.isDemo ? ":demo" : ""}`,
+  `${dataKey}${seedClock.isDemo ? ":demo" : ""}`,
   buildClinicSeed(seedClock.now),
 );
 /** The booking the visitor just made on the LINE page, so the schedule and admin can highlight it. */
 export const clinicLastBooking = createDemoStore<string | null>("clinic:last-booking", null);
+// Earlier days' data and the v1 keys are never read again.
+pruneDemoKeys("clinic:", ["clinic:session:v2", dataKey, `${dataKey}:demo`, "clinic:last-booking"]);

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createDemoStore } from "@/lib/demo-store";
+import { createDemoStore, pruneDemoKeys } from "@/lib/demo-store";
 
 afterEach(() => {
   localStorage.clear();
@@ -125,5 +125,42 @@ describe("createDemoStore initial option", () => {
       },
     });
     expect(store.get()).toBe("seed");
+  });
+});
+
+describe("pruneDemoKeys", () => {
+  it("removes the demo's old and past-day keys, keeping the live ones and other demos' keys", () => {
+    for (const k of [
+      "demo:clinic:session",
+      "demo:clinic:session:v2",
+      "demo:clinic:data:2026-10-20",
+      "demo:clinic:data:v2:2026-10-23",
+      "demo:clinic:data:v2:2026-10-24",
+      "demo:clinic:data:v2:2026-10-24:demo",
+      "demo:lang",
+      "demo:shop-admin:session",
+      "other:clinic:x",
+    ])
+      localStorage.setItem(k, "1");
+    pruneDemoKeys("clinic:", ["clinic:session:v2", "clinic:data:v2:2026-10-24", "clinic:data:v2:2026-10-24:demo"]);
+    expect(Object.keys(localStorage).sort()).toEqual([
+      "demo:clinic:data:v2:2026-10-24",
+      "demo:clinic:data:v2:2026-10-24:demo",
+      "demo:clinic:session:v2",
+      "demo:lang",
+      "demo:shop-admin:session",
+      "other:clinic:x",
+    ]);
+  });
+
+  it("does nothing without storage, or when storage throws", () => {
+    vi.stubGlobal("localStorage", undefined);
+    expect(() => pruneDemoKeys("clinic:", [])).not.toThrow();
+    vi.unstubAllGlobals();
+    vi.spyOn(Storage.prototype, "key").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    localStorage.setItem("demo:clinic:old", "1");
+    expect(() => pruneDemoKeys("clinic:", [])).not.toThrow();
   });
 });
