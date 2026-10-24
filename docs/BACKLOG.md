@@ -88,3 +88,4 @@ Ohm said that all six "still look ahh":
 ## Small items
 
 - [x] **Back button on the compare page.** `/{locale}/compare` has no way back to the hub except the header nav or the browser's back button. Add a clear "← Back" link near the top of the page, going to the hub's work section (`/{locale}#work`) and keeping the selected service (`?service=`). It needs copy in both languages, a 44px tap target on phones and an e2e test. Added 2026-10-24. Done 2026-10-24: "← Back to the work" / "← กลับไปหน้าผลงาน" above the heading; the hub's work tabs now read `?service=`.
+- [ ] **Major tool upgrades.** TypeScript 7, ESLint 10 and `@types/node` 26 are out. Ohm chose "not now" on 2026-10-25: the current versions are supported and the audit found no vulnerabilities. Do them in their own branch, with the full suite, when there's a reason to.

@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/hub/site-footer";
 import { SiteHeader } from "@/components/hub/site-header";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { serviceTiles } from "@/lib/packages";
+import { shareMetadata } from "@/lib/site";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t.compare.metaTitle,
     description: t.compare.metaDescription,
     alternates: { canonical: `/${locale}/compare`, languages: { th: "/th/compare", en: "/en/compare", "x-default": "/en/compare" } },
+    ...shareMetadata({ title: t.compare.metaTitle, description: t.compare.metaDescription, path: `/${locale}/compare`, locale }),
   };
 }
 

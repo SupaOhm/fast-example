@@ -8,6 +8,7 @@ import { WorkSection } from "@/components/hub/work-section";
 import { SiteFooter } from "@/components/hub/site-footer";
 import { SiteHeader } from "@/components/hub/site-header";
 import { getDictionary, isLocale } from "@/lib/i18n";
+import { shareMetadata } from "@/lib/site";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t.meta.title,
     description: t.meta.description,
     alternates: { canonical: `/${locale}`, languages: { th: "/th", en: "/en", "x-default": "/" } },
+    ...shareMetadata({ title: t.meta.title, description: t.meta.description, path: `/${locale}`, locale }),
   };
 }
 
