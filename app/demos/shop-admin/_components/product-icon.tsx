@@ -4,9 +4,9 @@
  */
 
 const INK = "#2b2217";
-const PAPER = "#fbf7ef";
-const KRAFT = "#dcc49a";
-const MUSTARD = "#e2b04a";
+const CREAM = "#fbf7ef";
+const TAN = "#dcc49a";
+const AMBER = "#e2b04a";
 const GOLD = "#edc76a";
 const WARN = "#a3361f";
 const OK = "#3d6b2f";
@@ -26,13 +26,13 @@ const line = { stroke: INK, strokeWidth: 1.8, strokeLinejoin: "round", strokeLin
 function Jar({ fill }: { fill: string }) {
   return (
     <>
-      <rect x="11" y="17" width="26" height="26" rx="6" fill={PAPER} />
+      <rect x="11" y="17" width="26" height="26" rx="6" fill={CREAM} />
       <path d="M12 25h24v12a5 5 0 0 1-5 5H17a5 5 0 0 1-5-5z" fill={fill} />
       <rect x="11" y="29" width="26" height="8" fill={RICE} />
       <path d="M21 33c2-2.6 5.2-2.6 7.6-.4" fill="none" stroke={fill} strokeWidth="2.4" strokeLinecap="round" />
       <path d="M28.4 32.4l1.8-1.6" stroke={OK} strokeWidth="1.6" strokeLinecap="round" />
       <rect x="11" y="17" width="26" height="26" rx="6" fill="none" {...line} />
-      <rect x="9.5" y="10" width="29" height="8" rx="2.5" fill={MUSTARD} {...line} />
+      <rect x="9.5" y="10" width="29" height="8" rx="2.5" fill={AMBER} {...line} />
       <path d="M12 14h24" stroke={INK} strokeWidth="1" strokeDasharray="1.6 1.6" opacity=".6" />
     </>
   );
@@ -41,12 +41,12 @@ function Jar({ fill }: { fill: string }) {
 function CracklingBag({ seal, fatty }: { seal: string; fatty?: boolean }) {
   return (
     <>
-      <path d="M12 14h24l3 27.5a2 2 0 0 1-2 2.5H11a2 2 0 0 1-2-2.5z" fill={KRAFT} {...line} />
+      <path d="M12 14h24l3 27.5a2 2 0 0 1-2 2.5H11a2 2 0 0 1-2-2.5z" fill={TAN} {...line} />
       <rect x="11" y="7.5" width="26" height="7" rx="1.2" fill={seal} {...line} />
-      <path d="M14 9.5v3M17.5 9.5v3M21 9.5v3M24.5 9.5v3M28 9.5v3M31.5 9.5v3M35 9.5v3" stroke={PAPER} strokeWidth="1.1" opacity=".75" />
-      <rect x="14.5" y="20" width="19" height="17" rx="6" fill={PAPER} {...line} strokeWidth={1.4} />
+      <path d="M14 9.5v3M17.5 9.5v3M21 9.5v3M24.5 9.5v3M28 9.5v3M31.5 9.5v3M35 9.5v3" stroke={CREAM} strokeWidth="1.1" opacity=".75" />
+      <rect x="14.5" y="20" width="19" height="17" rx="6" fill={CREAM} {...line} strokeWidth={1.4} />
       <path d="M17.5 27.5c.4-2.6 3-3.6 4.6-1.8 1.3-1.9 4.3-1.3 4.4 1.2 2-.6 3.6 1.4 2.4 3.3-1 1.6-3 1.4-3.8.6-1.4 1.6-4 1.4-4.8-.2-1.8.6-3.2-1-2.8-3.1z" fill={PORK} stroke={BROWN} strokeWidth="1.2" strokeLinejoin="round" />
-      {fatty && <path d="M19.5 28.8c1.6-.8 3.4-.6 4.6.3M24.6 28.6c1.4-.6 2.8-.2 3.6.8" fill="none" stroke={PAPER} strokeWidth="1.3" strokeLinecap="round" />}
+      {fatty && <path d="M19.5 28.8c1.6-.8 3.4-.6 4.6.3M24.6 28.6c1.4-.6 2.8-.2 3.6.8" fill="none" stroke={CREAM} strokeWidth="1.3" strokeLinecap="round" />}
     </>
   );
 }
@@ -82,9 +82,9 @@ const ICONS: Record<string, () => React.ReactNode> = {
   "TE-01": () => (
     <>
       <path d="M12.5 15v24.5a11.5 3.8 0 0 0 23 0V15z" fill={OK} {...line} />
-      <path d="M12.5 22h23v10h-23z" fill={PAPER} stroke={INK} strokeWidth="1.2" />
+      <path d="M12.5 22h23v10h-23z" fill={CREAM} stroke={INK} strokeWidth="1.2" />
       <path d="M19.5 30c1-5 5.5-7.5 9.5-6.5-1 4.6-5.2 7.6-9.5 6.5zM19.5 30l5-4" fill={LEAF} stroke={OK} strokeWidth="1.1" strokeLinejoin="round" />
-      <path d="M12 12v4.6a12 3.8 0 0 0 24 0V12z" fill={MUSTARD} {...line} />
+      <path d="M12 12v4.6a12 3.8 0 0 0 24 0V12z" fill={AMBER} {...line} />
       <ellipse cx="24" cy="12" rx="12" ry="3.8" fill={GOLD} {...line} />
     </>
   ),
@@ -93,11 +93,11 @@ const ICONS: Record<string, () => React.ReactNode> = {
     <>
       <path d="M12.5 13h23l2 29.5a1.5 1.5 0 0 1-1.5 1.5H12a1.5 1.5 0 0 1-1.5-1.5z" fill={BROWN} {...line} />
       <path d="M12.5 7.5h23V13h-23z" fill={BROWN} {...line} />
-      <path d="M12.5 10.2h23" stroke={PAPER} strokeWidth="1" opacity=".5" />
+      <path d="M12.5 10.2h23" stroke={CREAM} strokeWidth="1" opacity=".5" />
       <rect x="15.5" y="19" width="17" height="18" rx="2" fill={RICE} stroke={INK} strokeWidth="1.3" />
       <ellipse cx="24" cy="28" rx="4.3" ry="6" transform="rotate(25 24 28)" fill={BROWN} stroke={INK} strokeWidth="1.1" />
       <path d="M26 23c-3 3-1 6.5-4 10" fill="none" stroke={RICE} strokeWidth="1.1" strokeLinecap="round" />
-      <circle cx="31" cy="16" r="1.4" fill={MUSTARD} />
+      <circle cx="31" cy="16" r="1.4" fill={AMBER} />
     </>
   ),
   // Khao taen: round rice crackers drizzled with palm sugar.
@@ -106,7 +106,7 @@ const ICONS: Record<string, () => React.ReactNode> = {
       <circle cx="18" cy="29" r="12" fill={RICE} {...line} />
       <circle cx="30.5" cy="20" r="11.5" fill={RICE} {...line} />
       <path d="M23.5 15.5c2 2.4 4 2.4 5.8 0s3.8-2.4 5.6 0M21.2 21.5c2 2.4 4 2.4 5.8 0s3.8-2.4 5.6 0" fill="none" stroke="#b0611c" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M11.5 31h.01M14.5 35h.01M19 33.5h.01M13 26.6h.01M22 37.2h.01M17 38.4h.01M23 30.4h.01" stroke={KRAFT} strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M11.5 31h.01M14.5 35h.01M19 33.5h.01M13 26.6h.01M22 37.2h.01M17 38.4h.01M23 30.4h.01" stroke={TAN} strokeWidth="2.2" strokeLinecap="round" />
       <path d="M10 28.5c2 2.2 4 2.2 6 0s4-2.2 6 0" fill="none" stroke="#b0611c" strokeWidth="1.8" strokeLinecap="round" />
     </>
   ),
@@ -130,8 +130,8 @@ const ICONS: Record<string, () => React.ReactNode> = {
   // Candied tamarind: sugared pods in a clear tray with a label.
   "SW-03": () => (
     <>
-      <rect x="7" y="10" width="34" height="31" rx="4" fill={PAPER} {...line} />
-      <rect x="7" y="10" width="34" height="8" rx="3" fill={MUSTARD} {...line} />
+      <rect x="7" y="10" width="34" height="31" rx="4" fill={CREAM} {...line} />
+      <rect x="7" y="10" width="34" height="8" rx="3" fill={AMBER} {...line} />
       {[23.5, 32].map((y) => (
         <g key={y}>
           <path
@@ -146,14 +146,14 @@ const ICONS: Record<string, () => React.ReactNode> = {
       ))}
     </>
   ),
-  // Gift box with a mustard ribbon and bow.
+  // Gift box with a amber ribbon and bow.
   "GF-01": () => (
     <>
       <rect x="9" y="22" width="30" height="20" rx="1.5" fill={WARN} {...line} />
       <rect x="7" y="16" width="34" height="7.5" rx="1.5" fill={WARN} {...line} />
-      <rect x="21.5" y="16" width="5" height="26" fill={MUSTARD} stroke={INK} strokeWidth="1.3" />
-      <path d="M24 16c-3-6-11-8.5-11-3.6 0 3 6 3.6 11 3.6zM24 16c3-6 11-8.5 11-3.6 0 3-6 3.6-11 3.6z" fill={MUSTARD} {...line} strokeWidth={1.5} />
-      <path d="M9 30h12.5M26.5 30H39" stroke={PAPER} strokeWidth="1" opacity=".35" />
+      <rect x="21.5" y="16" width="5" height="26" fill={AMBER} stroke={INK} strokeWidth="1.3" />
+      <path d="M24 16c-3-6-11-8.5-11-3.6 0 3 6 3.6 11 3.6zM24 16c3-6 11-8.5 11-3.6 0 3-6 3.6-11 3.6z" fill={AMBER} {...line} strokeWidth={1.5} />
+      <path d="M9 30h12.5M26.5 30H39" stroke={CREAM} strokeWidth="1" opacity=".35" />
     </>
   ),
 };
@@ -161,9 +161,9 @@ const ICONS: Record<string, () => React.ReactNode> = {
 function Parcel() {
   return (
     <>
-      <path d="M8 17l16-7 16 7v21l-16 6-16-6z" fill={KRAFT} {...line} />
+      <path d="M8 17l16-7 16 7v21l-16 6-16-6z" fill={TAN} {...line} />
       <path d="M8 17l16 6 16-6M24 23v21" fill="none" {...line} strokeWidth={1.4} />
-      <path d="M15.5 13.7l16 6.6v6" fill="none" stroke={MUSTARD} strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M15.5 13.7l16 6.6v6" fill="none" stroke={AMBER} strokeWidth="3.2" strokeLinecap="round" />
     </>
   );
 }

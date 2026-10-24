@@ -11,7 +11,7 @@ import { ui } from "./copy";
 import { LANG_SWITCH_CLASS } from "./shop-css";
 
 const field =
-  "mt-1.5 block w-full rounded-lg border border-(--line) bg-white px-3.5 py-2.5 text-base text-(--ink) transition-colors focus:border-(--brand) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--brand)";
+  "mt-1.5 block w-full rounded-lg border border-[#8a958f] bg-white px-3.5 py-2.5 text-base text-(--ink) transition-colors focus:border-(--brand) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--brand)";
 
 /** A plain white bar across the top of the login page, with the shop name and the language switch. */
 export function LoginBar() {

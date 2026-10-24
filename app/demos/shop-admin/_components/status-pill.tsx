@@ -14,19 +14,14 @@ export const STATUS_PILL: Record<ShopOrderStatus, string> = {
 
 /**
  * A small rounded pill with the order status in the current language. `fresh` fades it in
- * once (only when motion is allowed). `children` go after the label, e.g. a chevron when the
- * pill fronts a picker.
+ * once (only when motion is allowed).
  */
 export function StatusPill({
   status,
   fresh = false,
-  className = "",
-  children,
 }: {
   status: ShopOrderStatus;
   fresh?: boolean;
-  className?: string;
-  children?: React.ReactNode;
 }) {
   const lang = useLang();
   return (
@@ -34,10 +29,9 @@ export function StatusPill({
       data-testid="status-pill"
       className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm font-medium leading-[1.45] ${STATUS_PILL[status]} ${
         fresh ? "motion-safe:animate-[rd-fade_.25s_ease-out]" : ""
-      } ${className}`}
+      }`}
     >
       {statusLabel[status][lang]}
-      {children}
     </span>
   );
 }

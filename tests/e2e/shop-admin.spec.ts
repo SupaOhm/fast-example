@@ -18,7 +18,7 @@ test("opens on the overview without logging in", async ({ page }) => {
   await expect(page.getByTestId("sales-chart")).toBeVisible();
 });
 
-test("one tap packs an order: the row stamps, the tile counts down, the order is packed", async ({ page }) => {
+test("one tap packs an order: the row shows packed, the tile counts down, the order is packed", async ({ page }) => {
   await page.goto("/demos/shop-admin");
   const before = await countIn(page, "todo-pack");
   const row = page.getByTestId("pack-row").first();
@@ -167,6 +167,26 @@ test("stock rows show a drawn product icon", async ({ page }) => {
   await page.goto("/demos/shop-admin/stock");
   await expect(page.getByTestId("stock-row-NP-02").getByTestId("product-icon")).toBeVisible();
   await expect(page.getByTestId("stock-row-GF-01")).toContainText("กล่องของฝากรวม");
+});
+
+test.describe("at laptop width", () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+
+  test("the orders panel does not scroll sideways and the first status picker is on screen", async ({ page }) => {
+    await page.goto("/demos/shop-admin/orders");
+    const first = page.getByTestId("order-row").first();
+    await expect(first).toBeVisible();
+    const panel = first.locator("xpath=ancestor::div[contains(@class,'overflow-x-auto')][1]");
+    const { scrollWidth, clientWidth } = await panel.evaluate((el) => ({
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    const box = await first.getByRole("combobox", { name: /^สถานะคำสั่งซื้อ RD-\d{4}$/ }).boundingBox();
+    const view = page.viewportSize()!;
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(view.width);
+  });
 });
 
 test.describe("in English", () => {

@@ -26,7 +26,7 @@ import { PANEL } from "./shop-css";
 const PAGE_SIZE = 15;
 
 const FIELD =
-  "min-h-11 w-full rounded-lg border border-(--line) bg-(--panel) text-base leading-[1.3] text-(--ink) transition-colors hover:border-(--muted) focus:border-(--brand)";
+  "min-h-11 w-full rounded-lg border border-[#8a958f] bg-(--panel) text-base leading-[1.3] text-(--ink) transition-colors hover:border-(--muted) focus:border-(--brand)";
 
 /** The status as a pill that is also the picker: a native `<select>` styled like `StatusPill`. */
 function StatusSelect({
@@ -67,7 +67,7 @@ function Items({ order }: { order: ShopOrder }) {
   const shown = order.items.slice(0, 3);
   const extra = order.items.length - shown.length;
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="flex items-center gap-2">
       <span className="inline-flex items-center gap-1">
         {shown.map((item) => (
           <ProductIcon key={item.sku} sku={item.sku} className="size-7" />
@@ -97,23 +97,23 @@ function OrderRow({
   const lang = useLang();
   const ChannelIcon = CHANNEL_ICON[order.channel];
   const cancelled = order.status === "cancelled";
-  const cell = "whitespace-nowrap sm:table-cell sm:px-3 sm:py-3";
+  const cell = "whitespace-nowrap xl:table-cell xl:px-3 xl:py-3";
 
   return (
     <tr
       data-testid="order-row"
       data-order-id={order.id}
-      className={`grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3.5 sm:table-row sm:p-0 sm:hover:bg-[#f9faf9] ${
+      className={`grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3.5 xl:table-row xl:p-0 xl:hover:bg-[#f9faf9] ${
         cancelled ? "text-(--muted)" : ""
       }`}
     >
-      <td className={`col-span-3 col-start-1 row-start-2 text-sm tabular-nums text-(--muted) sm:py-3 sm:pl-5 sm:pr-3 sm:text-base sm:font-medium sm:text-(--ink) sm:whitespace-nowrap sm:table-cell ${cancelled ? "sm:!text-(--muted)" : ""}`}>
+      <td className={`col-span-3 col-start-1 row-start-2 text-sm tabular-nums text-(--muted) xl:py-3 xl:pl-5 xl:pr-3 xl:text-base xl:font-medium xl:whitespace-nowrap xl:table-cell ${cancelled ? "" : "xl:text-(--ink)"}`}>
         {order.id}
       </td>
       <td className={`col-start-1 row-start-3 text-(--muted) ${cell}`}>{shortDate(order.date, lang)}</td>
-      <td className={`col-span-2 col-start-1 row-start-1 font-semibold sm:font-normal ${cell}`}>{order.customer[lang]}</td>
+      <td className={`col-span-2 col-start-1 row-start-1 font-semibold xl:font-normal ${cell}`}>{order.customer[lang]}</td>
       <td className={`col-start-2 row-start-3 ${cell}`}>
-        <span className="inline-flex items-center gap-1.5 text-(--muted)">
+        <span className="flex items-center gap-1.5 leading-none text-(--muted)">
           <ChannelIcon className="size-4 shrink-0" aria-hidden />
           {channelLabel[order.channel][lang]}
         </span>
@@ -122,13 +122,13 @@ function OrderRow({
         <Items order={order} />
       </td>
       <td
-        className={`col-start-3 row-start-1 justify-self-end font-semibold tabular-nums sm:text-right ${cell} ${
+        className={`col-start-3 row-start-1 justify-self-end font-semibold tabular-nums xl:text-right ${cell} ${
           cancelled ? "line-through" : ""
         }`}
       >
         {formatTHB(order.total)}
       </td>
-      <td className="col-start-3 row-start-4 mt-1 justify-self-end sm:table-cell sm:whitespace-nowrap sm:py-2 sm:pl-3 sm:pr-5">
+      <td className="col-start-3 row-start-4 mt-1 justify-self-end xl:table-cell xl:whitespace-nowrap xl:py-2 xl:pl-3 xl:pr-5">
         <StatusSelect order={order} fresh={fresh} onChange={onChange} />
       </td>
     </tr>
@@ -267,8 +267,8 @@ export function OrdersTable() {
           </div>
         ) : (
           <>
-            <table className="block w-full leading-[1.4] sm:table">
-              <thead className="hidden sm:table-header-group">
+            <table className="block w-full leading-[1.4] xl:table">
+              <thead className="sr-only xl:not-sr-only xl:table-header-group">
                 <tr className="border-b border-(--line) bg-[#f9faf9] text-left text-sm text-(--muted)">
                   <th scope="col" className="py-3 pl-5 pr-3 font-medium">{ui.colOrder[lang]}</th>
                   <th scope="col" className="px-3 py-3 font-medium">{ui.colDate[lang]}</th>
@@ -279,7 +279,7 @@ export function OrdersTable() {
                   <th scope="col" className="py-3 pl-3 pr-5 font-medium">{ui.statusFilter[lang]}</th>
                 </tr>
               </thead>
-              <tbody className="block divide-y divide-(--line) sm:table-row-group">
+              <tbody className="block divide-y divide-(--line) xl:table-row-group">
                 {visible.map((o) => (
                   <OrderRow
                     key={o.id}

@@ -136,7 +136,7 @@ function StockRow({ product, onSave }: { product: Product; onSave: (stock: numbe
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : hintId}
             className={`min-h-11 w-20 rounded-lg border bg-(--panel) px-2.5 text-right text-base font-semibold tabular-nums transition-colors ${
-              error ? "border-(--warn)" : "border-(--line) hover:border-(--muted) focus:border-(--brand)"
+              error ? "border-(--warn)" : "border-[#8a958f] hover:border-(--muted) focus:border-(--brand)"
             }`}
           />
           <button
@@ -200,7 +200,7 @@ export function StockTable() {
 
       <div className={`mt-4 overflow-hidden ${PANEL}`}>
         <table className="block w-full leading-[1.4] sm:table">
-          <thead className="hidden border-b border-(--line) bg-[#f9faf9] text-left text-(--muted) sm:table-header-group">
+          <thead className="sr-only sm:not-sr-only border-b border-(--line) bg-[#f9faf9] text-left text-(--muted) sm:table-header-group">
             <tr>
               <th scope="col" className={`${th} pl-5 pr-3`}>{ui.colProduct[lang]}</th>
               <th scope="col" className={`${th} hidden px-3 md:table-cell lg:hidden xl:table-cell`}>{ui.colCategory[lang]}</th>

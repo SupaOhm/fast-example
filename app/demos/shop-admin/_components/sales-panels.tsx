@@ -11,6 +11,7 @@ import { CHANNEL_ICON, dayMonth, shortDate, weekdayDate } from "./format";
 import { ProductIcon } from "./product-icon";
 import { PANEL } from "./shop-css";
 
+// Chart colours mirror --brand, --line and --muted in layout.tsx.
 const BRAND = "#1f7a5a";
 const GRID = "#e3e8e4";
 const TICK = "#56655c";
