@@ -181,6 +181,7 @@ test("phones get a section row under the header with Compare, and the full heade
     ["/en", "Sections", false],
     ["/th", "เมนู", false],
     ["/en/compare", "Sections", true],
+    ["/th/compare", "เมนู", true],
   ] as const) {
     await page.goto(path);
     const locale = path.slice(1, 3);

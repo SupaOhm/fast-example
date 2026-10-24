@@ -48,7 +48,7 @@ export function SiteHeader({ locale, t, path = "" }: { locale: Locale; t: Dictio
                 key={href}
                 href={href}
                 aria-current={current ? "page" : undefined}
-                className={`flex min-h-11 flex-1 items-center justify-center whitespace-nowrap transition hover:text-cream ${current ? "text-cream" : ""}`}
+                className={`flex min-h-11 flex-1 items-center justify-center whitespace-nowrap transition hover:text-cream ${current ? "text-cream underline decoration-lime decoration-2 underline-offset-8" : ""}`}
               >
                 {label}
               </a>
