@@ -82,3 +82,7 @@ Ohm said that all six "still look ahh":
 - [x] Service-tile fans load their images twice. Not reproducible: every thumbnail URL is requested once at 1440 and 375. Done 2026-10-24.
 - [x] The hero body copy still says "scope", which was removed from the package data. Done 2026-10-24.
 - [x] On phones, turn off the plan-fan hover/focus enlargement. A tap triggers the hover and the fan grows over the text. In `app/globals.css:143-148`, put the `.group:is(:hover, :focus-within) .plan-stack` rules behind `@media (hover: hover) and (pointer: fine)` (or `md+`). Done 2026-10-24.
+
+## Small items
+
+- [ ] **Back button on the compare page.** `/{locale}/compare` has no way back to the hub except the header nav or the browser's back button. Add a clear "← Back" link near the top of the page, going to the hub's work section (`/{locale}#work`) and keeping the selected service (`?service=`). It needs copy in both languages, a 44px tap target on phones and an e2e test. Added 2026-10-24.
