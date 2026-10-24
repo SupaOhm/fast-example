@@ -6,7 +6,7 @@ import type { LineNotification } from "@/lib/demos/orders-api/api";
 import { ui } from "./copy";
 import { LineChatMessage } from "./line-message";
 
-export interface ConsoleMessage {
+interface ConsoleMessage {
   id: number;
   n: LineNotification;
   time: string;

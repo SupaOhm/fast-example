@@ -126,14 +126,15 @@ export function ClinicInfo() {
           <p className="mt-4 max-w-md text-[17px] leading-[1.75] text-(--muted)">{ui.clinicBody[lang]}</p>
           <dl className="mt-10 grid gap-6 border-t border-(--line) pt-8">
             {facts.map(({ icon: Icon, label, value }) => (
-              <div key={label.en} className="flex gap-4">
-                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-(--paper) text-(--wine)">
-                  <Icon className="size-5" />
-                </span>
-                <div>
-                  <dt className="font-medium">{label[lang]}</dt>
-                  <dd className="mt-0.5 leading-[1.65] text-(--muted)">{value}</dd>
-                </div>
+              // A <dl> row may only hold <dt> and <dd>, so the icon sits inside the <dt> and hangs in the padding.
+              <div key={label.en} className="relative min-h-10 pl-14">
+                <dt className="font-medium">
+                  <span aria-hidden className="absolute top-0 left-0 grid size-10 place-items-center rounded-full bg-(--paper) text-(--wine)">
+                    <Icon className="size-5" />
+                  </span>
+                  {label[lang]}
+                </dt>
+                <dd className="mt-0.5 leading-[1.65] text-(--muted)">{value}</dd>
               </div>
             ))}
           </dl>

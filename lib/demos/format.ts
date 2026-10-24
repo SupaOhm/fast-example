@@ -3,7 +3,7 @@ import type { Lang } from "./lang";
 
 export { formatTHB } from "@/lib/packages";
 
-export type DateStyle = "day" | "dayMonth" | "dayMonthYear" | "weekdayDayMonth" | "weekday" | "weekdayNarrow" | "weekdayLong" | "full";
+type DateStyle = "day" | "dayMonth" | "dayMonthYear" | "weekdayDayMonth" | "weekday" | "weekdayNarrow" | "weekdayLong" | "full";
 
 const OPTIONS: Record<DateStyle, Intl.DateTimeFormatOptions> = {
   day: { day: "numeric" },

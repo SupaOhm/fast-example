@@ -19,7 +19,7 @@ import type { Lang } from "@/lib/demos/lang";
 /** Longest phrase, in characters, that is kept as one unbreakable unit. */
 const MAX_UNBREAKABLE = 20;
 
-export function Phrases({ text }: { text: string }) {
+function Phrases({ text }: { text: string }) {
   const phrases: string[] = [];
   let carry = "";
   for (const token of text.split(" ")) {

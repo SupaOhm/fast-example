@@ -36,7 +36,7 @@ describe("i18n", () => {
 
   it("returns the dictionary per locale", () => {
     expect(getDictionary("en").work.tryDemo).toBe("Try the demo");
-    expect(getDictionary("th").work.tryDemo).toBe("ลองเดโม่");
+    expect(getDictionary("th").work.tryDemo).toBe("ลองเดโม");
   });
 
   it("lineup copy keeps its placeholders", () => {

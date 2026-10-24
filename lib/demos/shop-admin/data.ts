@@ -68,7 +68,7 @@ const CUSTOMERS: L[] = [
 ];
 
 // Small deterministic PRNG so the seed is stable for tests and screenshots.
-export function mulberry32(seed: number): () => number {
+function mulberry32(seed: number): () => number {
   let a = seed;
   return () => {
     a = (a + 0x6d2b79f5) | 0;

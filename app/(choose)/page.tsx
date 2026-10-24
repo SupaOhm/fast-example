@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "SupaOhm | Choose your language · เลือกภาษา",
-  description: "Websites and web apps with live demos. รับทำเว็บไซต์และเว็บแอป พร้อมเดโม่ให้ลอง",
-  alternates: { languages: { en: "/en", th: "/th", "x-default": "/" } },
+  description: "Websites and web apps with live demos. รับทำเว็บไซต์และเว็บแอป พร้อมเดโมให้ลอง",
+  alternates: { canonical: "/", languages: { en: "/en", th: "/th", "x-default": "/" } },
 };
 
 const CHOICES = [

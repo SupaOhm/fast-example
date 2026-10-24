@@ -34,7 +34,7 @@ export function SiteFooter({ locale, t, path = "" }: { locale: Locale; t: Dictio
             href={FASTWORK_PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest text-lime transition hover:bg-forest-2"
+            className="mt-8 inline-block rounded-md bg-forest px-6 py-3.5 text-base font-bold text-lime transition hover:bg-forest-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
           >
             {t.cta.button}
             <span className="sr-only"> {t.nav.newTab}</span>
@@ -59,10 +59,7 @@ export function SiteFooter({ locale, t, path = "" }: { locale: Locale; t: Dictio
               >
                 {t.footer.profile} <span aria-hidden>↗</span><span className="sr-only"> {t.nav.newTab}</span>
               </a>
-              {/* LocaleSwitch is shared with the header; here its two halves grow to a 44px tap target. */}
-              <div className="[&>div>*]:flex [&>div>*]:min-h-11 [&>div>*]:items-center [&>div>*]:px-3.5">
-                <LocaleSwitch locale={locale} path={path} ariaLabel={t.nav.switchLocaleLabel} />
-              </div>
+              <LocaleSwitch locale={locale} path={path} ariaLabel={t.nav.switchLocaleLabel} size="lg" />
             </div>
           </div>
           <nav aria-label={t.footer.siteLabel}>

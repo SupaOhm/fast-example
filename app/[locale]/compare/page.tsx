@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t.compare.metaTitle,
     description: t.compare.metaDescription,
-    alternates: { languages: { th: "/th/compare", en: "/en/compare", "x-default": "/en/compare" } },
+    alternates: { canonical: `/${locale}/compare`, languages: { th: "/th/compare", en: "/en/compare", "x-default": "/en/compare" } },
   };
 }
 

@@ -33,10 +33,10 @@ export interface InquiryInput {
   email: string;
 }
 
-export type InquiryErrors = Partial<Record<keyof InquiryInput, string>>;
+type InquiryErrors = Partial<Record<keyof InquiryInput, string>>;
 
 /** The longest stay one inquiry can cover. */
-export const MAX_NIGHTS = 30;
+const MAX_NIGHTS = 30;
 
 const messages = {
   checkInRequired: { th: "กรุณาเลือกวันเช็กอิน", en: "Choose a check-in date" },

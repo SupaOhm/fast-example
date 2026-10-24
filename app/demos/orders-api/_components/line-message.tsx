@@ -21,7 +21,7 @@ export const STATUS_WORD: Record<OrderStatus, L> = {
 };
 
 /** The title and two lines the shop reads in LINE, in the given language. */
-export function lineText(n: LineNotification, lang: Lang): { title: string; lines: [string, string] } {
+function lineText(n: LineNotification, lang: Lang): { title: string; lines: [string, string] } {
   const who = `${n.orderId} · ${n.customer}`;
   return n.kind === "new"
     ? {

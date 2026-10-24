@@ -42,7 +42,7 @@ export function ClinicFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ClinicShell({ children }: { children: React.ReactNode }) {
+function ClinicShell({ children }: { children: React.ReactNode }) {
   const lang = useLang();
   const pathname = usePathname();
   const narrowEn = lang === "en" ? NARROW_EN : "";
@@ -166,9 +166,9 @@ function DemoSessionBanner() {
   }
 
   return (
-    <div data-testid="demo-session" className="border-b border-(--line) bg-(--rose-2)/60">
+    <aside aria-labelledby="demo-session-label" data-testid="demo-session" className="border-b border-(--line) bg-(--rose-2)/60">
       <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-4 py-2 sm:px-6 lg:px-10">
-        <p className="flex items-center gap-2.5 leading-[1.4] text-(--wine)">
+        <p id="demo-session-label" className="flex items-center gap-2.5 leading-[1.4] text-(--wine)">
           <span aria-hidden className="relative grid size-2.5 shrink-0 place-items-center">
             <span className="absolute size-2.5 rounded-full bg-(--accent)/25" />
             <span className="size-1.5 rounded-full bg-(--accent)" />
@@ -184,6 +184,6 @@ function DemoSessionBanner() {
           {ui.logout[lang]}
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

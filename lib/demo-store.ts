@@ -8,7 +8,7 @@ export interface DemoStore<T> {
 
 const PREFIX = "demo:";
 
-export interface DemoStoreOptions<T> {
+interface DemoStoreOptions<T> {
   /**
    * Value to use while nothing is stored, worked out on the client when first read.
    * It is never written to storage, and the server snapshot stays `seed`.

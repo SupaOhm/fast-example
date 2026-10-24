@@ -68,7 +68,7 @@ test("compare button links to the compare page for the shown service", async ({ 
 test("Thai lineup uses Thai labels", async ({ page }) => {
   await page.goto("/th");
   await expect(page.getByRole("tab", { name: /เว็บไซต์/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByTestId("plan-web-basic").getByRole("link", { name: "ลองเดโม่" })).toHaveAttribute(
+  await expect(page.getByTestId("plan-web-basic").getByRole("link", { name: "ลองเดโม" })).toHaveAttribute(
     "href",
     "/demos/sale-page",
   );

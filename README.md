@@ -22,7 +22,7 @@ pnpm test           # unit tests (Vitest)
 pnpm test:e2e       # builds, then runs Playwright at 375px and 1440px
 ```
 
-## Update prices or scope
+## Update prices or features
 
 Edit `lib/packages.ts`. The hub lineup, the compare page (`/en/compare`) and the demo pills all read from it, including each plan's feature values. A new service is a new entry in `services` plus its packages.
 

@@ -7,8 +7,9 @@ import { useLang } from "@/components/demo/lang";
 import { type Lang, savedHubLang } from "@/lib/demos/lang";
 import { formatTHB, getPackage, type PackageId } from "@/lib/packages";
 
-const copy: Record<Lang, Record<"back" | "order" | "note" | "collapse" | "expand", string>> = {
+const copy: Record<Lang, Record<"label" | "back" | "order" | "note" | "collapse" | "expand", string>> = {
   th: {
+    label: "แถบเว็บตัวอย่าง",
     back: "กลับหน้าผลงาน",
     order: "สั่งแพ็กเกจนี้",
     note: "เว็บตัวอย่าง · ธุรกิจสมมติ",
@@ -16,6 +17,7 @@ const copy: Record<Lang, Record<"back" | "order" | "note" | "collapse" | "expand
     expand: "แสดงแถบตัวอย่าง",
   },
   en: {
+    label: "Demo bar",
     back: "Back to showcase",
     order: "Order this package",
     note: "Demo · fictional business",
@@ -39,22 +41,24 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        data-testid="demo-pill"
-        lang={locale}
-        aria-label={c.expand}
-        onClick={() => setOpen(true)}
-        style={font}
-        className="fixed bottom-4 right-4 z-[100] grid size-11 place-items-center rounded-full bg-neutral-950 text-white shadow-lg"
-      >
-        <ChevronUp className="size-5" aria-hidden />
-      </button>
+      <aside aria-label={c.label} lang={locale}>
+        <button
+          type="button"
+          data-testid="demo-pill"
+          aria-label={c.expand}
+          onClick={() => setOpen(true)}
+          style={font}
+          className="fixed bottom-4 right-4 z-[100] grid size-11 place-items-center rounded-full bg-neutral-950 text-white shadow-lg"
+        >
+          <ChevronUp className="size-5" aria-hidden />
+        </button>
+      </aside>
     );
   }
 
   return (
-    <div
+    <aside
+      aria-label={c.label}
       data-testid="demo-pill"
       lang={locale}
       style={font}
@@ -72,7 +76,7 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
         <p className="truncate text-sm font-semibold">
           {pkg.title[locale]} · {formatTHB(pkg.priceTHB)}
         </p>
-        <p className="truncate text-[11px] text-white/60">{c.note}</p>
+        <p className="truncate text-xs text-white/60">{c.note}</p>
       </div>
       <a
         href={pkg.fastworkUrl}
@@ -91,6 +95,6 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
       >
         <ChevronDown className="size-4" aria-hidden />
       </button>
-    </div>
+    </aside>
   );
 }

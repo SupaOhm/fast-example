@@ -55,13 +55,13 @@ export default function ContactPage() {
             </h2>
             <dl className="mt-6 space-y-5">
               {info.map(({ icon: Icon, label, value }) => (
-                <div key={label.en} className="flex gap-4">
-                  <Icon className="mt-0.5 size-5 shrink-0 text-(--orange)" aria-hidden />
-                  <div>
-                    <dt className="text-sm leading-[1.4] text-white/60"><T value={label} />
-                    </dt>
-                    <dd className="mt-0.5 text-base leading-[1.6]">{value}</dd>
-                  </div>
+                // A <dl> row may only hold <dt> and <dd>, so the icon sits inside the <dt> and hangs in the padding.
+                <div key={label.en} className="relative pl-9">
+                  <dt className="text-sm leading-[1.4] text-white/60">
+                    <Icon className="absolute top-0.5 left-0 size-5 text-(--orange)" aria-hidden />
+                    <T value={label} />
+                  </dt>
+                  <dd className="mt-0.5 text-base leading-[1.6]">{value}</dd>
                 </div>
               ))}
             </dl>
