@@ -20,7 +20,7 @@ import { fill, formatDate, formatTHB } from "@/lib/demos/format";
 import { useDemoStore } from "@/lib/use-demo-store";
 import { countText, ui } from "./copy";
 import { StaffPortrait } from "./staff-portrait";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
 // The clinic palette (see layout.tsx); recharts takes plain colours, so they are written out here.
 const BAR = "#6b1f3a"; // --wine
@@ -69,12 +69,11 @@ function Panel({ title, note, className = "", children }: { title: string; note?
 export function Reports() {
   const lang = useLang();
   const [stored] = useDemoStore(clinicData);
-  useMinuteTick();
+  const { now: today } = useClinicNow();
   // Below about 480px the seven day ticks only fit at 14px with one-letter weekdays, in English as in Thai.
   const [narrowChart, setNarrowChart] = useState(false);
-  // Reports render only after hydration (RequireSession), so "today" is the browser's clock. Today's bookings
-  // count with the status the queue shows (moved on by the clock), so the queue, reports and customers agree.
-  const today = new Date();
+  // Reports render only after hydration (RequireSession), so "today" is the clinic's clock in the browser. Today's
+  // bookings count with the status the queue shows (moved on by the clock), so the queue, reports and customers agree.
   const todayISO = toISODate(today);
   const duration = (id: string) => stored.services.find((s) => s.id === id)?.durationMin ?? 30;
   const data = {

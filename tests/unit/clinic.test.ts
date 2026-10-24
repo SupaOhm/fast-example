@@ -6,7 +6,9 @@ import {
   bookingsByService,
   buildClinicSeed,
   ClinicError,
+  clinicNow,
   CLOSE,
+  DEMO_TIME,
   deleteCustomer,
   deleteService,
   displayStatus,
@@ -25,6 +27,7 @@ import {
   upsertCustomer,
   type Booking,
 } from "@/lib/demos/clinic-booking/data";
+import { toISODate } from "@/lib/dates";
 
 const today = new Date(2026, 9, 19, 9, 0);
 const tomorrow = "2026-10-20";
@@ -294,5 +297,34 @@ describe("admin mutations and reports", () => {
     const rows = bookingsByService(data);
     expect(rows.reduce((s, x) => s + x.count, 0)).toBe(data.bookings.length);
     expect(rows[0].name.en.length).toBeGreaterThan(0);
+  });
+});
+
+describe("clinicNow", () => {
+  it("uses the real time while the clinic is open for booking", () => {
+    const real = new Date(2026, 9, 24, 14, 5);
+    expect(clinicNow(real)).toEqual({ now: real, isDemo: false });
+    expect(clinicNow(new Date(2026, 9, 24, 10, 0)).isDemo).toBe(false);
+    expect(clinicNow(new Date(2026, 9, 24, 17, 59)).isDemo).toBe(false);
+  });
+
+  it("shows today at the demo time when the clinic is closed", () => {
+    for (const [h, m] of [[0, 30], [8, 0], [9, 59], [18, 0], [21, 45]]) {
+      const { now, isDemo } = clinicNow(new Date(2026, 9, 24, h, m));
+      expect(isDemo).toBe(true);
+      expect(toISODate(now)).toBe("2026-10-24");
+      expect(`${now.getHours()}:${now.getMinutes()}`).toBe("10:30");
+    }
+    expect(DEMO_TIME).toBe("10:30");
+  });
+
+  it("gives evening visitors a day in progress and today's free times", () => {
+    const { now } = clinicNow(new Date(2026, 9, 24, 21, 0));
+    const data = buildClinicSeed(now);
+    const statuses = new Set(data.bookings.filter((b) => b.date === "2026-10-24").map((b) => b.status));
+    expect(statuses).toContain("done");
+    expect(statuses).toContain("booked");
+    expect(bookingDay(now)).toEqual({ date: "2026-10-24", isToday: true });
+    expect(freeTimes(data, { serviceId: "s-facial", date: "2026-10-24", now }).length).toBeGreaterThan(0);
   });
 });

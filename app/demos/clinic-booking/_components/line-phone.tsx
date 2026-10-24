@@ -4,26 +4,27 @@ import { BatteryFull, Camera, ChevronLeft, ImageIcon, Menu, Mic, Phone, Plus, Se
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { useLang } from "@/components/demo/lang";
+import { clinicNow } from "@/lib/demos/clinic-booking/data";
 import { useHydrated } from "@/lib/use-demo-store";
 import { focusRing } from "./admin-format";
 import { ui } from "./copy";
 import { RingMark } from "./ring-mark";
 import { clock } from "./time-format";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
-// The moment the chat opened in this browser, for the greeting's timestamps. The server snapshot is empty, so the
-// prerendered HTML never carries a build-time clock.
+// The moment the chat opened in this browser, on the clinic's clock, for the greeting's timestamps. The server
+// snapshot is empty, so the prerendered HTML never carries a build-time clock.
 let openedAt: string | null = null;
 const noopSubscribe = () => () => {};
-const getOpenedAt = () => (openedAt ??= clock(new Date()));
+const getOpenedAt = () => (openedAt ??= clock(clinicNow(new Date()).now));
 const getNoTime = () => "";
 export const useOpenedAt = () => useSyncExternalStore(noopSubscribe, getOpenedAt, getNoTime);
 
-/** The status bar's time: empty on the server, then the browser's clock, kept current each minute. */
+/** The status bar's time: empty on the server, then the clinic's clock, kept current each minute. */
 function useStatusBarTime() {
   const hydrated = useHydrated();
-  useMinuteTick();
-  return hydrated ? clock(new Date()) : "";
+  const { now } = useClinicNow();
+  return hydrated ? clock(now) : "";
 }
 
 /**

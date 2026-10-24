@@ -6,7 +6,7 @@ import { clinicData } from "@/lib/demos/clinic-booking/store";
 import { fill } from "@/lib/demos/format";
 import { useDemoStore, useHydrated } from "@/lib/use-demo-store";
 import { ui } from "./copy";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
 const box = "inline-flex min-h-11 items-center gap-3 rounded-full px-4 py-2";
 
@@ -16,11 +16,11 @@ export function NextOpening() {
   const lang = useLang();
   const [data] = useDemoStore(clinicData);
   // Re-read the clock every minute so a page left open doesn't offer a time that has passed.
-  useMinuteTick();
+  const { now } = useClinicNow();
 
   if (!hydrated) return <span aria-hidden className={`${box} w-72 max-w-full bg-(--paper)/60`} />;
 
-  const next = nextOpening(data, new Date());
+  const next = nextOpening(data, now);
   const text = next
     ? fill((next.isToday ? ui.nextFreeToday : ui.nextFreeTomorrow)[lang], {
         time: next.time,

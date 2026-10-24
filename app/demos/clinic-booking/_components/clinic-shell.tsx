@@ -15,7 +15,7 @@ import { focusRing } from "./admin-format";
 import { ui } from "./copy";
 import { LineGlyph } from "./line-glyph";
 import { RingMark } from "./ring-mark";
-import { useMinuteTick } from "./use-minute-tick";
+import { useClinicNow } from "./use-clinic-now";
 
 const BASE = "/demos/clinic-booking/admin";
 const BOOK = "/demos/clinic-booking/book";
@@ -47,10 +47,9 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const narrowEn = lang === "en" ? NARROW_EN : "";
   const [data] = useDemoStore(clinicData);
-  useMinuteTick();
-  // The shell only renders after hydration (RequireSession), so this is the browser's clock. The count follows
-  // the same clock-driven status as the queue and the booking page.
-  const now = new Date();
+  // The shell only renders after hydration (RequireSession), so this is the clinic's clock in the browser. The
+  // count follows the same clock-driven status as the queue and the booking page.
+  const { now } = useClinicNow();
   const today = toISODate(now);
   const duration = (id: string) => data.services.find((s) => s.id === id)?.durationMin ?? 30;
   const waiting = data.bookings.filter(

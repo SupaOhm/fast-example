@@ -179,10 +179,31 @@ export function availableSlots(
   return slots;
 }
 
-/** The day the 3-tap booking offers: today while an hour is left before closing, otherwise tomorrow. */
+/**
+ * The day the 3-tap booking offers: today while an hour is left before closing, otherwise tomorrow. The pages pass
+ * `clinicNow`'s time, which is always inside those hours, so they always offer today; the tomorrow branch is kept
+ * for any other caller.
+ */
 export function bookingDay(now: Date): { date: string; isToday: boolean } {
   const isToday = now.getHours() * 60 + now.getMinutes() < toMinutes(CLOSE) - 60;
   return { date: toISODate(isToday ? now : addDays(now, 1)), isToday };
+}
+
+/** The time the demo runs at while the clinic is closed, so every visitor sees the day in progress. */
+export const DEMO_TIME = "10:30";
+
+/**
+ * The clinic's "now". While there is still time to book today (from opening until an hour before closing) it is
+ * the real time. Otherwise (before opening, the last hour, after closing, after midnight) it is the visitor's own
+ * today at `DEMO_TIME`, never another day, and `isDemo` is true so the page can say so.
+ */
+export function clinicNow(real: Date): { now: Date; isDemo: boolean } {
+  const min = real.getHours() * 60 + real.getMinutes();
+  if (min >= toMinutes(OPEN) && min < toMinutes(CLOSE) - 60) return { now: real, isDemo: false };
+  const [h, m] = DEMO_TIME.split(":").map(Number);
+  const now = new Date(real);
+  now.setHours(h, m, 0, 0);
+  return { now, isDemo: true };
 }
 
 /** The earliest free start times for a service on one day, each with the first staff member free then. */

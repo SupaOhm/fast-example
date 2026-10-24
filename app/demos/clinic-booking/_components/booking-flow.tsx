@@ -8,6 +8,7 @@ import {
   bookAsGuest,
   bookingDay,
   ClinicError,
+  clinicNow,
   freeTimes,
   fromMinutes,
   STAFF,
@@ -30,6 +31,7 @@ import { BotSay, chip, FlexCard, LinePhone, MeSay, useOpenedAt } from "./line-ph
 import { RingMark } from "./ring-mark";
 import { StaffPortrait } from "./staff-portrait";
 import { clock } from "./time-format";
+import { useClinicNow } from "./use-clinic-now";
 import { useWide } from "./use-wide";
 
 type Step = 1 | 2 | 3 | 4;
@@ -85,6 +87,8 @@ export function BookingFlow() {
   const greetedAt = useOpenedAt();
   // Tabs exist below `lg` only. False on the server, so the first render matches the HTML.
   const wide = useWide();
+  // The clinic's clock: the browser's while the clinic takes bookings, else today at the demo time.
+  const { now } = useClinicNow();
 
   const step = stepOf(picks);
   const logRef = useRef<HTMLDivElement>(null);
@@ -108,15 +112,14 @@ export function BookingFlow() {
   }, [step]);
 
   const service = data.services.find((s) => s.id === picks.serviceId);
-  // Step 2 is only reachable by tapping, so "now" here is always the browser's clock.
-  const offerDay = step === 2 ? bookingDay(new Date()) : null;
-  const options =
-    offerDay && service ? freeTimes(data, { serviceId: service.id, date: offerDay.date, now: new Date() }) : [];
+  // Step 2 is only reachable by tapping, so "now" here is always the clinic's clock in the browser.
+  const offerDay = step === 2 ? bookingDay(now) : null;
+  const options = offerDay && service ? freeTimes(data, { serviceId: service.id, date: offerDay.date, now }) : [];
   const nameValue = name ?? ui.guestName[lang];
 
   function tap(patch: Partial<Picks>) {
     setError(null);
-    setPicks((p) => ({ ...p, ...patch, stamps: [...p.stamps, clock(new Date())] }));
+    setPicks((p) => ({ ...p, ...patch, stamps: [...p.stamps, clock(clinicNow(new Date()).now)] }));
   }
 
   function back() {
@@ -140,11 +143,10 @@ export function BookingFlow() {
     const slot = picks.slot;
     if (!service || !slot) return;
     try {
-      const now = new Date();
       const result = bookAsGuest(
         data,
         { name: nameValue, serviceId: service.id, staffId: slot.staffId, date: slot.date, time: slot.time },
-        now,
+        clinicNow(new Date()).now,
       );
       setData(result.data);
       clinicLastBooking.set(result.booking.id);
@@ -198,7 +200,7 @@ export function BookingFlow() {
   const nameError = error?.code === "name-required";
   const formError = error && !nameError ? (error.code ? errorText[error.code] : ui.bookFailed)[lang] : null;
   // Follows the schedule's own day (see `scheduleDay`), so the label and the lanes always agree.
-  const clinicLabel = hydrated && !scheduleDay(data, landedId, new Date()).isToday ? ui.sideClinicTomorrow : ui.sideClinic;
+  const clinicLabel = hydrated && !scheduleDay(data, landedId, now).isToday ? ui.sideClinicTomorrow : ui.sideClinic;
 
   // One toast at a time: a fixed bar on phones, an in-flow banner inside the schedule on wide screens, so it
   // never covers the chat's confirmation or the lanes. The server and hydration render the phone variant.

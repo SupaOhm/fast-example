@@ -39,3 +39,20 @@ test.describe("in English", () => {
     await expect(page.locator("main")).toContainText("Brightening facial");
   });
 });
+
+test.describe("outside opening hours", () => {
+  test.use({ locale: "th-TH" });
+
+  for (const [h, m] of [
+    [18, 30],
+    [8, 0],
+  ] as const) {
+    test(`at ${h}:${String(m).padStart(2, "0")} the hero still offers a time today`, async ({ page }) => {
+      const t = new Date();
+      t.setHours(h, m, 0, 0);
+      await page.clock.setFixedTime(t);
+      await page.goto("/demos/clinic-booking");
+      await expect(page.getByTestId("next-opening")).toContainText(/คิวว่างถัดไปวันนี้ \d{2}:\d{2}/);
+    });
+  }
+});
