@@ -35,6 +35,8 @@ lsof -ti tcp:3100 | xargs kill
 ```
 Screenshots land in `public/thumbs/` (hero wall, Fastwork covers) and `public/thumbs/pages/` (one per page of each plan, used by the hub lineup). Re-run after changing a demo's look.
 
+The shared-link pictures (`public/share/{en,th}.jpg`, 1200×630) come from `node scripts/capture-share.mjs http://localhost:3100`, run the same way after the thumbnails. Re-run after changing the hero line or the demo screenshots; it loads Google Fonts, so it needs the network.
+
 ## Deploy
 
 The site is a static export (`out/`) served by Cloudflare Workers static assets; config is in `wrangler.jsonc`. `/` is a language chooser (`app/(choose)`); visitors who already picked a language go straight to `/en` or `/th`. Cloudflare's build runs `pnpm run build`, then `npx wrangler deploy`. To preview the production server locally, run `pnpm build && pnpm start`.

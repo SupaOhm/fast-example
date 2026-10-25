@@ -203,10 +203,9 @@ test("hub pages carry absolute language links, a canonical and a share card", as
   await page.goto("/th/compare");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://devbyohm.com/th/compare");
   await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute("href", "https://devbyohm.com/en/compare");
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://devbyohm.com/thumbs/web-premium.jpg");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://devbyohm.com/share/th.jpg");
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute("content", "th_TH");
-  const image = await page.request.get("/thumbs/web-premium.jpg");
-  expect(image.ok()).toBe(true);
+  for (const locale of ["en", "th"]) expect((await page.request.get(`/share/${locale}.jpg`)).ok()).toBe(true);
 });
 
 test("robots.txt points to a sitemap that lists the hub in both languages and every demo", async ({ request }) => {
