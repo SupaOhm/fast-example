@@ -96,7 +96,7 @@ export function ServiceTiles({
                   className="absolute right-0 bottom-0 block aspect-[16/10] w-[88%] overflow-hidden rounded-md bg-white shadow-[0_10px_30px_#0008]"
                   style={{ transform: `translate(${-j * 26}px, ${-j * 18}px) rotate(${-j * 6}deg)`, zIndex: 3 - j }}
                 >
-                  <Image src={src} alt="" width={640} height={400} sizes="300px" className="h-full w-full object-cover object-top" />
+                  <Image src={src} alt="" width={640} height={400} unoptimized className="h-full w-full object-cover object-top" />
                 </span>
               ))}
             </span>

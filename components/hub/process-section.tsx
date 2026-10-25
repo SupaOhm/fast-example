@@ -54,7 +54,7 @@ function Artefact({ step, t }: { step: number; t: Dictionary }) {
           alt=""
           width={640}
           height={400}
-          sizes="240px"
+          unoptimized
           className="absolute inset-x-3.5 inset-y-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.75rem)] rounded-md object-cover object-top"
         />
         <span className="absolute top-8 left-8 h-10 w-24 -rotate-6 rounded-[50%] border-2 border-lime" />

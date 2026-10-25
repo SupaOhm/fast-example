@@ -1,36 +1,23 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, type TooltipContentProps } from "recharts";
+import dynamic from "next/dynamic";
 import { useLang } from "@/components/demo/lang";
 import { fill, formatTHB } from "@/lib/demos/format";
-import type { Lang } from "@/lib/demos/lang";
 import { channelSales, dailySales, topProducts, type ShopData } from "@/lib/demos/shop-admin/data";
 import { byCount, channelLabel, ui } from "./copy";
-import { CHANNEL_ICON, dayMonth, shortDate, weekdayDate } from "./format";
+import { CHANNEL_ICON, shortDate } from "./format";
 import { ProductIcon } from "./product-icon";
 import { PANEL } from "./shop-css";
 
-// Chart colours mirror --brand, --line and --muted in layout.tsx.
-const BRAND = "#1f7a5a";
-const GRID = "#e3e8e4";
-const TICK = "#56655c";
+// recharts is the biggest script on the site; the numbers beside the chart show first and the chart follows.
+// The placeholder keeps the chart's 220px so nothing moves when it arrives.
+const SalesChart = dynamic(() => import("./sales-chart").then((m) => m.SalesChart), {
+  ssr: false,
+  loading: () => <div className="h-[220px]" />,
+});
 
 const sum = (xs: { revenue: number }[]) => xs.reduce((s, d) => s + d.revenue, 0);
-
-// The draw-in animation is motion; skip it when the visitor asked for less. Only read inside the chart (client-only).
-const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function SalesTooltip({ active, payload, lang }: TooltipContentProps & { lang: Lang }) {
-  const point = payload?.[0]?.payload as { date: string; revenue: number } | undefined;
-  if (!active || !point) return null;
-  return (
-    <div className="rounded-lg border border-(--line) bg-white px-3 py-2 leading-[1.4] shadow-[0_8px_24px_-12px_rgba(23,32,27,0.3)]">
-      <p className="text-sm text-(--muted)">{weekdayDate(point.date, lang)}</p>
-      <p className="font-semibold tabular-nums">{formatTHB(point.revenue)}</p>
-    </div>
-  );
-}
 
 /** A thin brand-green bar showing a share from 0 to 100. */
 function ShareBar({ pct }: { pct: number }) {
@@ -88,47 +75,7 @@ export function SalesPanels({ data, today }: { data: ShopData; today: Date }) {
           })}
           className="min-w-0"
         >
-          <ResponsiveContainer width="100%" height={220} minWidth={0}>
-            <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} accessibilityLayer={false}>
-              <defs>
-                <linearGradient id="shop-sales-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={BRAND} stopOpacity={0.22} />
-                  <stop offset="100%" stopColor={BRAND} stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} stroke={GRID} />
-              <XAxis
-                dataKey="date"
-                tickFormatter={dayMonth}
-                tick={{ fill: TICK, fontSize: 12 }}
-                tickLine={false}
-                axisLine={{ stroke: GRID }}
-                minTickGap={22}
-                tickMargin={8}
-              />
-              <YAxis
-                tickFormatter={(v: number) => (v >= 1000 ? `฿${v / 1000}k` : `฿${v}`)}
-                tick={{ fill: TICK, fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={48}
-              />
-              <Tooltip
-                content={(props) => <SalesTooltip {...props} lang={lang} />}
-                cursor={{ stroke: BRAND, strokeWidth: 1, strokeDasharray: "3 3" }}
-              />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                stroke={BRAND}
-                strokeWidth={2}
-                fill="url(#shop-sales-fill)"
-                activeDot={{ r: 5, stroke: "#fff", strokeWidth: 2, fill: BRAND }}
-                animationDuration={700}
-                isAnimationActive={!reducedMotion()}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <SalesChart series={series} lang={lang} />
         </div>
       </div>
 

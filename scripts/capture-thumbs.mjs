@@ -6,7 +6,7 @@ import { chromium } from "@playwright/test";
 
 const base = process.argv[2] ?? "http://localhost:3100";
 
-// Hero wall and Fastwork covers: one 1440×900 shot per package.
+// Fastwork covers: one 1440×900 shot per package.
 const thumbs = {
   "web-basic": "/demos/sale-page",
   "web-standard": "/demos/company",
@@ -16,7 +16,7 @@ const thumbs = {
   "app-premium": "/demos/clinic-booking/book",
 };
 
-// Hub lineup fans: every page a plan includes, at 640×400. Keep in step with `pages` in lib/packages.ts.
+// Hub hero wall and lineup fans: every page a plan includes, at 640×400. Keep in step with `pages` in lib/packages.ts.
 const pages = {
   "web-basic": ["/demos/sale-page"],
   "web-standard": ["/demos/company", "/demos/company/services", "/demos/company/contact"],

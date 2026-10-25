@@ -19,7 +19,7 @@ export function PlanStack({ pages, className = "" }: { pages: string[]; classNam
               alt=""
               width={640}
               height={400}
-              sizes="(min-width: 768px) 24vw, 60vw"
+              unoptimized
               className="h-full w-full object-cover object-top"
             />
           </div>
