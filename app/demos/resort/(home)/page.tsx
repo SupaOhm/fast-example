@@ -58,7 +58,7 @@ export default function ResortHome() {
                     src={unsplash(photo.id, 1100)}
                     alt={photo.alt}
                     fill
-                    sizes="(min-width: 768px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 75vw, 140vw"
                     className="object-cover"
                   />
                 </div>

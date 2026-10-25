@@ -99,7 +99,7 @@ export function MoonriseHero() {
       <div ref={stageRef} data-hero-stage className="sticky top-0 isolate flex h-[100svh] min-h-[620px] items-end overflow-hidden text-white [container-type:size]">
         <div aria-hidden className="absolute inset-0 -z-10 will-change-transform" style={STYLE.photo}>
           {/* Decorative: the h1 and the moonrise line already describe the scene. */}
-          <Image src={unsplash(resort.heroImage, 2000)} alt="" fill preload sizes="100vw" className="object-cover" />
+          <Image src={unsplash(resort.heroImage, 2000)} alt="" fill preload sizes="(max-width: 767px) 175vw, 100vw" className="object-cover" />
         </div>
         {/* The day scene's own shading, kept from the original hero so the first frame is unchanged. */}
         <div

@@ -119,7 +119,7 @@ export default function CompanyHome() {
                     src={unsplash(s.image, 700)}
                     alt={s.name}
                     fill
-                    sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 112px"
+                    sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 260px"
                     className="object-cover"
                   />
                 </div>

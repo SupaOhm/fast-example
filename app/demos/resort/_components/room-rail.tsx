@@ -281,7 +281,7 @@ export function RoomRail() {
                 alt=""
                 fill
                 draggable={false}
-                sizes={featured ? "(min-width: 1024px) 600px, (min-width: 640px) 460px, 84vw" : "(min-width: 1024px) 340px, (min-width: 640px) 300px, 70vw"}
+                sizes={featured ? "(min-width: 1024px) 600px, (min-width: 640px) 640px, 155vw" : "(min-width: 640px) 640px, 140vw"}
                 className="-z-20 object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.045] group-focus-visible:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100"
               />
               <span

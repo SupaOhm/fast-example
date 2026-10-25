@@ -115,7 +115,7 @@ export function ClinicInfo() {
             src={unsplash(PHOTOS.clinicInterior, 1200)}
             alt={ui.interiorPhotoAlt[lang]}
             fill
-            sizes="(min-width: 1024px) 560px, 100vw"
+            sizes="(min-width: 1024px) 980px, 100vw"
             className="object-cover"
           />
         </div>
