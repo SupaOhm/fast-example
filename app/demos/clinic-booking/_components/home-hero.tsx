@@ -61,7 +61,7 @@ export function HomeHero() {
               alt={ui.heroPhotoAlt[lang]}
               fill
               preload
-              sizes="(min-width: 1024px) 460px, (min-width: 448px) 448px, 100vw"
+              sizes="(min-width: 448px) 840px, 175vw"
               className="object-cover"
             />
           </div>

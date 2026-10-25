@@ -99,7 +99,7 @@ export function RoomFilter() {
                   src={unsplash(room.image, 900)}
                   alt={room.name[lang]}
                   fill
-                  sizes="(min-width: 768px) 45vw, 100vw"
+                  sizes="(min-width: 768px) 60vw, 140vw"
                   className="object-cover"
                 />
               </div>

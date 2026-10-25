@@ -20,7 +20,7 @@ export default function AboutPage() {
             alt={resort.aboutAlt}
             fill
             preload
-            sizes="(min-width: 768px) 45vw, 100vw"
+            sizes="(min-width: 768px) 45vw, 120vw"
             className="object-cover"
           />
         </div>

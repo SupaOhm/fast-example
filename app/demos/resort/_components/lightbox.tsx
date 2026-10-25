@@ -88,8 +88,10 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
                 src={unsplash(item.id, 900)}
                 alt=""
                 fill
-                sizes="(min-width: 1024px) 31vw, 50vw"
-                preload={i === 0}
+                sizes="(min-width: 1024px) 52vw, 100vw"
+                // The first tile is the page's largest picture; let it go ahead of the other eight.
+                loading={i === 0 ? "eager" : undefined}
+                fetchPriority={i === 0 ? "high" : undefined}
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
               />
               <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-(--sea-deep)/80 to-transparent px-4 pt-10 pb-3 text-left text-base leading-[1.4] text-white opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-visible:opacity-100">
