@@ -4,11 +4,10 @@ import type { Locale } from "@/lib/i18n/config";
 /** The live site. Metadata and the sitemap need absolute URLs (hreflang links must be absolute). */
 export const SITE_URL = "https://devbyohm.com";
 
-// The resort demo's screenshot (scripts/capture-thumbs.mjs, 1440×900) is the picture on shared links.
-const SHARE_IMAGE = { url: "/thumbs/web-premium.jpg", width: 1440, height: 900 };
+// The picture on shared links, one per language (scripts/capture-share.mjs, 1200×630).
 const SHARE_ALT: Record<Locale, string> = {
-  en: "Saeng Chan Resort, one of the live demos",
-  th: "แสงจันทร์ รีสอร์ท หนึ่งในเดโมที่ลองใช้ได้",
+  en: "SupaOhm: See exactly what you're paying for. Websites and web apps, each with a live demo.",
+  th: "SupaOhm: เห็นชัดๆ ว่าจ่ายแล้วได้อะไร รับทำเว็บไซต์และเว็บแอป ทุกแพ็กเกจมีเว็บตัวอย่างให้ลอง",
 };
 
 /** The preview card LINE, Facebook and chat apps show for a shared link. */
@@ -23,7 +22,7 @@ export function shareMetadata({
   path: string;
   locale: Locale;
 }): Pick<Metadata, "openGraph" | "twitter"> {
-  const image = { ...SHARE_IMAGE, alt: SHARE_ALT[locale] };
+  const image = { url: `/share/${locale}.jpg`, width: 1200, height: 630, alt: SHARE_ALT[locale] };
   return {
     openGraph: {
       type: "website",
