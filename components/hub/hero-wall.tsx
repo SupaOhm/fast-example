@@ -27,12 +27,12 @@ export function HeroWall({ pauseLabel, playLabel }: { pauseLabel: string; playLa
                   {[...half, ...half].map((id, j) => (
                     <div key={j} className="mb-3 overflow-hidden rounded-lg shadow-2xl shadow-black/50 sm:mb-4">
                       <Image
-                        src={`/thumbs/${id}.jpg`}
+                        src={`/thumbs/pages/${id}-1.jpg`}
                         alt=""
-                        width={1440}
-                        height={900}
+                        width={640}
+                        height={400}
+                        unoptimized
                         loading="eager"
-                        sizes="(min-width: 1024px) 18vw, 33vw"
                         className="aspect-[16/10] w-full object-cover object-top"
                       />
                     </div>

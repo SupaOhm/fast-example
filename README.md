@@ -33,7 +33,7 @@ pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 node scripts/capture-thumbs.mjs http://localhost:3100
 lsof -ti tcp:3100 | xargs kill
 ```
-Screenshots land in `public/thumbs/` (hero wall, Fastwork covers) and `public/thumbs/pages/` (one per page of each plan, used by the hub lineup). Re-run after changing a demo's look.
+Screenshots land in `public/thumbs/` (Fastwork covers) and `public/thumbs/pages/` (one per page of each plan, used by the hub hero wall and lineup). Re-run after changing a demo's look.
 
 The shared-link pictures (`public/share/{en,th}.jpg`, 1200×630) come from `node scripts/capture-share.mjs http://localhost:3100`, run the same way after the thumbnails. Re-run after changing the hero line or the demo screenshots; it loads Google Fonts, so it needs the network.
 
