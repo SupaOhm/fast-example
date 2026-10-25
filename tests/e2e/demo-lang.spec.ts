@@ -77,7 +77,7 @@ for (const d of DEMOS) {
   });
 }
 
-test("the demo bar shows the package and its price in full on phones too", async ({ page }) => {
+test("the demo bar shows the package and its price in full, on phones and desktops", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("showcase:locale", "en"));
   await page.goto("/demos/clinic-booking");
   const order = bar(page).getByRole("link", { name: /^Order/ });
@@ -85,9 +85,9 @@ test("the demo bar shows the package and its price in full on phones too", async
   const price = bar(page).getByText("฿29,900").filter({ visible: true });
   await expect(title).toContainText("Web app · Premium");
   await expect(price).toHaveCount(1);
+  expect(await title.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
   if (test.info().project.name === "mobile") {
     await expect(order).toHaveAccessibleName("Order");
-    expect(await title.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
     // The price leads the second line, so truncation only ever cuts the small print after it.
     const [box, line] = [await price.boundingBox(), await bar(page).locator("p").nth(1).boundingBox()];
     expect(box!.x + box!.width).toBeLessThanOrEqual(line!.x + line!.width);

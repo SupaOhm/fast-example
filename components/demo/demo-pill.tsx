@@ -64,7 +64,7 @@ export function DemoPill({ packageId }: { packageId: PackageId }) {
       data-testid="demo-pill"
       lang={locale}
       style={font}
-      className="fixed inset-x-3 bottom-3 z-[100] mx-auto flex max-w-xl items-center gap-1 rounded-full bg-neutral-950/95 p-1.5 text-white shadow-2xl backdrop-blur"
+      className="fixed inset-x-3 bottom-3 z-[100] mx-auto flex max-w-2xl items-center gap-1 rounded-full bg-neutral-950/95 p-1.5 text-white shadow-2xl backdrop-blur"
     >
       <Link
         href={`/${hubLang ?? locale}#work`}
