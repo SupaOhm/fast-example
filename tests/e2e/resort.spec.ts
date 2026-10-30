@@ -28,6 +28,15 @@ test("room filter narrows results", async ({ page }) => {
   await expect(page.getByTestId("rooms-empty")).toBeVisible();
 });
 
+test("gallery photos load as their tiles near the screen, and all nine by the end of the page", async ({ page }) => {
+  await page.goto("/demos/resort/gallery");
+  const tiles = page.getByTestId("gallery-item");
+  await expect(tiles.first().locator("img")).toHaveCount(1);
+  expect(await tiles.locator("img").count()).toBeLessThan(9);
+  await tiles.last().scrollIntoViewIfNeeded();
+  await expect(tiles.locator("img")).toHaveCount(9);
+});
+
 test("gallery lightbox opens, navigates and closes", async ({ page }) => {
   await page.goto("/demos/resort/gallery");
   await page.getByTestId("gallery-item").first().click();
