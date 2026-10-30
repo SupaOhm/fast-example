@@ -1,7 +1,7 @@
 // The 1200×630 picture LINE, Facebook and chat apps show for a shared hub link, one per language.
 // Usage: pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 //        node scripts/capture-share.mjs http://localhost:3100
-//        lsof -ti tcp:3100 | xargs kill
+//        scripts/stop-preview.sh
 // Needs the network for Google Fonts. Re-run after changing the hero line or the demo screenshots.
 import { mkdir, readFile } from "node:fs/promises";
 import { chromium } from "@playwright/test";
