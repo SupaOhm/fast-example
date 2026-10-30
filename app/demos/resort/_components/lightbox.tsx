@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { L } from "@/lib/demos/lang";
 import { unsplash } from "@/lib/images";
-import { ui } from "./copy";
+import { LightboxDialog } from "./lightbox-dialog";
 import { useLang } from "@/components/demo/lang";
 
 // Row spans on a 3-column grid give a masonry rhythm while keeping row-by-row reading order,
@@ -48,8 +47,6 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
   const lang = useLang();
   const [index, setIndex] = useState<number | null>(null);
   const triggers = useRef<(HTMLButtonElement | null)[]>([]);
-  const closeRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const count = items.length;
 
   const openedFrom = useRef(0);
@@ -63,43 +60,6 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
     triggers.current[openedFrom.current]?.focus();
   }, []);
   const step = useCallback((d: number) => setIndex((i) => (i === null ? i : (i + d + count) % count)), [count]);
-
-  const isOpen = index !== null;
-  useEffect(() => {
-    if (!isOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-      else if (e.key === "Tab") {
-        // Focus trap: cycle Tab / Shift+Tab among the dialog's controls only.
-        const focusables = Array.from(
-          dialogRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])") ?? [],
-        );
-        if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        const active = document.activeElement;
-        const inside = active instanceof Node && dialogRef.current?.contains(active);
-        if (e.shiftKey && (!inside || active === first)) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && (!inside || active === last)) {
-          e.preventDefault();
-          first.focus();
-        }
-      } else if (e.key === "ArrowRight") step(1);
-      else if (e.key === "ArrowLeft") step(-1);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [isOpen, close, step]);
-
-  const current = index !== null ? items[index] : null;
 
   return (
     <>
@@ -138,61 +98,7 @@ export function Lightbox({ items }: { items: { id: string; alt: L }[] }) {
         ))}
       </ul>
 
-      {current && index !== null && (
-        <div
-          ref={dialogRef}
-          data-testid="lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-label={current.alt[lang]}
-          className="fixed inset-0 z-[200] flex flex-col bg-(--night) text-(--sand)"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) close();
-          }}
-        >
-          <div className="flex items-center justify-between px-4 py-3 sm:px-6">
-            <p className="text-sm tabular-nums" aria-live="polite">
-              {index + 1} / {count}
-            </p>
-            <button
-              ref={closeRef}
-              type="button"
-              onClick={close}
-              aria-label={ui.close[lang]}
-              className="grid size-11 place-items-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-(--sun)"
-            >
-              <X className="size-6" aria-hidden />
-            </button>
-          </div>
-          <div className="relative min-h-0 flex-1" onClick={(e) => e.target === e.currentTarget && close()}>
-            <Image
-              key={current.id}
-              src={unsplash(current.id, 1600)}
-              alt={current.alt[lang]}
-              fill
-              sizes="100vw"
-              className="object-contain px-2 sm:px-20"
-            />
-            <button
-              type="button"
-              onClick={() => step(-1)}
-              aria-label={ui.previous[lang]}
-              className="absolute top-1/2 left-2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-(--sea-deep)/70 hover:bg-(--sea-deep) focus-visible:outline-2 focus-visible:outline-(--sun) sm:left-5"
-            >
-              <ChevronLeft className="size-6" aria-hidden />
-            </button>
-            <button
-              type="button"
-              onClick={() => step(1)}
-              aria-label={ui.next[lang]}
-              className="absolute top-1/2 right-2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-(--sea-deep)/70 hover:bg-(--sea-deep) focus-visible:outline-2 focus-visible:outline-(--sun) sm:right-5"
-            >
-              <ChevronRight className="size-6" aria-hidden />
-            </button>
-          </div>
-          <p className="px-4 pt-3 pb-6 text-center leading-[1.5] sm:pb-8">{current.alt[lang]}</p>
-        </div>
-      )}
+      {index !== null && <LightboxDialog items={items} index={index} onStep={step} onClose={close} />}
     </>
   );
 }
