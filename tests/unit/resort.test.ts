@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { addDays, parseISODate, toISODate } from "@/lib/dates";
-import { ROOMS } from "@/lib/demos/resort/content";
+import { SPANS } from "@/app/demos/resort/_components/gallery-spans";
+import { GALLERY, ROOMS } from "@/lib/demos/resort/content";
 import { filterRooms, nightsBetween, validateInquiry, type InquiryInput } from "@/lib/demos/resort/logic";
 
 describe("filterRooms", () => {
@@ -65,5 +66,11 @@ describe("validateInquiry", () => {
     // checkIn today+1 → checkOut today+32 is 31 nights
     expect(validateInquiry({ ...ok, checkIn: plus(1), checkOut: plus(32) }, today, "en").checkOut).toBe("Stays can be up to 30 nights");
     expect(validateInquiry({ ...ok, checkIn: plus(1), checkOut: plus(31) }, today, "en").checkOut).toBeUndefined();
+  });
+});
+
+describe("gallery layout", () => {
+  it("has one row span per photo, so the grid ends level", () => {
+    expect(SPANS).toHaveLength(GALLERY.length);
   });
 });
