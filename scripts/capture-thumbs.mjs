@@ -1,6 +1,6 @@
 // Usage: pnpm build && (pnpm start --port 3100 > /dev/null 2>&1 &) && sleep 6
 //        node scripts/capture-thumbs.mjs http://localhost:3100
-//        lsof -ti tcp:3100 | xargs kill
+//        scripts/stop-preview.sh
 import { mkdir } from "node:fs/promises";
 import { chromium } from "@playwright/test";
 
